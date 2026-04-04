@@ -4,24 +4,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-HTML_CLI is a project exploring AI-assisted HTML visual editing workflows — specifically the round-trip of AI generating HTML, users visually editing it, and AI refining the result. The vision is that HTML will increasingly replace traditional presentation formats (like PPT) due to AI's native ability to generate web content.
+htmlcli is a Python CLI tool that bridges GrapesJS visual HTML editor with Claude Code. It enables a round-trip workflow: AI generates HTML -> user edits visually in browser -> AI reads the changelog and refines.
 
-## Environment
-
-- Python 3.13 virtual environment at `.venv/`
-- Platform: Windows 11
-- Activate venv: `.venv/Scripts/activate`
-
-## Development Commands
+## Commands
 
 ```bash
-# Activate virtual environment
-source .venv/Scripts/activate
+# Install dependencies
+uv sync
 
-# Install dependencies (once requirements.txt exists)
-pip install -r requirements.txt
+# Run CLI
+uv run htmlcli --help
+uv run htmlcli create mypage.html     # Create new HTML from template
+uv run htmlcli open mypage.html       # Open visual editor in browser
+uv run htmlcli diff mypage.html       # Show changelog from last edit
+
+# Run tests
+uv run pytest -v
+uv run pytest tests/test_differ.py -v  # Single test file
+uv run pytest -k "test_name" -v        # Single test by name
 ```
 
 ## Architecture
 
-Project is in early/initialization phase. No application code exists yet.
+Four modules in `src/htmlcli/`:
+
+- **cli.py** — Click-based CLI entry point. Commands: `open`, `create`, `diff`.
+- **server.py** — aiohttp web server. Serves GrapesJS editor, provides `/api/load` and `/api/save` endpoints. Runs on port 8432 by default.
+- **differ.py** — HTML diff engine. Compares old/new HTML, produces structured changelog (`.changelog.json`) that Claude Code can read to understand what the user changed.
+- **static/** — GrapesJS frontend. `editor.html` loads GrapesJS from CDN, `editor.js` handles init/load/save.
+
+## AI Integration Workflow
+
+When user runs `htmlcli open`, the server tracks the original HTML. On save, it diffs against the original and writes `<filename>.changelog.json` alongside the HTML file. Claude Code should read both the HTML and changelog to understand user intent.
