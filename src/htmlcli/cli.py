@@ -75,7 +75,8 @@ def open(filepath: str, port: int):
 
 @main.command()
 @click.argument("filepath")
-def create(filepath: str):
+@click.option("--template", "-t", default="default", help="Template to use (run 'htmlcli templates' to list)")
+def create(filepath: str, template: str):
     """Create a new HTML file from template."""
     path = Path(filepath).resolve()
     if path.exists():
@@ -84,9 +85,30 @@ def create(filepath: str):
 
     title = path.stem.replace("-", " ").replace("_", " ").title()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
+
+    if template == "default":
+        path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
+    else:
+        from htmlcli.templates import get_template
+        try:
+            content = get_template(template, title)
+        except ValueError as e:
+            click.echo(f"Error: {e}", err=True)
+            sys.exit(1)
+        path.write_text(content, encoding="utf-8")
+
     click.echo(f"Created: {path}")
     click.echo(f"Run 'htmlcli open {filepath}' to edit visually.")
+
+
+@main.command()
+def templates():
+    """List available templates."""
+    from htmlcli.templates import list_templates
+    click.echo("Available templates:")
+    click.echo(f"  default          - Simple single-page HTML")
+    for t in list_templates():
+        click.echo(f"  {t['name']:<16} - {t['description']}")
 
 
 @main.command()
