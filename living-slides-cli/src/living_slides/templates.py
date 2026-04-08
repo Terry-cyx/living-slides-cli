@@ -24,9 +24,23 @@ def _register_preset(name: str, description: str, builder):
     PRESETS[name] = {"description": description, "builder": builder}
 
 
+# Templates other than `starter` are scheduled for removal in v0.3.
+# slive is not in the generation business — frontend-slides is better at it.
+# `starter` is the only template needed to bootstrap the iteration loop.
+_DEPRECATED_TEMPLATES = {"presentation", "business", "tech"}
+
+
 def get_template(name: str, title: str) -> str:
     if name not in TEMPLATES:
         raise ValueError(f"Unknown template: {name}. Available: {', '.join(TEMPLATES)}")
+    if name in _DEPRECATED_TEMPLATES:
+        import warnings
+        warnings.warn(
+            f"--template {name} is deprecated and will be removed in v0.3. "
+            f"Use --template starter or --preset <name> instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
     return TEMPLATES[name]["builder"](title)
 
 
@@ -766,3 +780,90 @@ result = pipe.<span class="fn">run</span>()
 
 
 _register_preset("terminal-green", "Mono + scan lines + GitHub-dark green. For DevTools / infra / open-source decks.", _build_terminal_green)
+
+
+# ─── Template: Starter (canonical 4-slide minimal deck for the iteration loop) ───
+
+
+def _build_starter(title: str) -> str:
+    """Minimal 4-slide deck with data-oid on every meaningful element.
+
+    The point of this template is *not* to look impressive — it's to give
+    the iteration loop something to chew on. Every slide gets a unique
+    section, every meaningful element gets a stable data-oid, and the
+    structure invites the user to hand-edit and ask AI to refine.
+    """
+    return f"""\
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<style>
+  :root {{
+    --bg: #0b0d12;
+    --fg: #f3f4f6;
+    --muted: #9ca3af;
+    --accent: #f59e0b;
+  }}
+  body {{
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, "Segoe UI", Inter, sans-serif;
+    line-height: 1.5;
+  }}
+  section.slide {{
+    width: 100vw;
+    min-height: 100vh;
+    padding: clamp(2rem, 6vw, 6rem);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #1f2937;
+  }}
+  h1, h2 {{ margin: 0 0 1rem; font-weight: 700; letter-spacing: -0.02em; }}
+  h1 {{ font-size: clamp(2.5rem, 6vw, 5rem); }}
+  h2 {{ font-size: clamp(1.75rem, 4vw, 3rem); color: var(--accent); }}
+  p {{ font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--muted); max-width: 60ch; }}
+  ul {{ font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--fg); }}
+  li {{ margin-bottom: 0.5rem; }}
+  .metric {{ font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; color: var(--accent); }}
+  .metric-label {{ color: var(--muted); }}
+</style>
+</head>
+<body>
+
+<section class="slide" data-oid="s0-slide" id="slide-1">
+  <h1 data-oid="s0-title">{title}</h1>
+  <p data-oid="s0-subtitle">A starter deck. Hand-edit any element and ask AI to refine the rest — your edits stay.</p>
+</section>
+
+<section class="slide" data-oid="s1-slide" id="slide-2">
+  <h2 data-oid="s1-title">The problem</h2>
+  <ul data-oid="s1-list">
+    <li data-oid="s1-item-1">Replace this with the pain you're addressing.</li>
+    <li data-oid="s1-item-2">Then the symptom your audience feels every week.</li>
+    <li data-oid="s1-item-3">Then why prior solutions fall short.</li>
+  </ul>
+</section>
+
+<section class="slide" data-oid="s2-slide" id="slide-3">
+  <h2 data-oid="s2-title">The numbers</h2>
+  <div data-oid="s2-metric" class="metric">42%</div>
+  <p data-oid="s2-metric-label" class="metric-label">Replace with the one number that matters most.</p>
+</section>
+
+<section class="slide" data-oid="s3-slide" id="slide-4">
+  <h2 data-oid="s3-title">What's next</h2>
+  <p data-oid="s3-body">Your call to action goes here. Be specific. One ask per slide.</p>
+</section>
+
+</body>
+</html>
+"""
+
+
+_register("starter", "Minimal 4-slide deck with data-oid on every element — the canonical iteration-loop starter.", _build_starter)
