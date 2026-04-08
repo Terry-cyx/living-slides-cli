@@ -139,19 +139,7 @@ def presets():
     click.echo("(adapted from zarazhangrui/frontend-slides under MIT) — AI can generate any of them on demand.")
 
 
-@main.command()
-@click.argument("filepath")
-def diff(filepath: str):
-    """Show the changelog from the last visual editing session."""
-    path = Path(filepath).resolve()
-    changelog_path = path.parent / (path.stem + ".changelog.json")
-
-    if not changelog_path.exists():
-        click.echo(f"No changelog found for {path.name}")
-        click.echo("Edit the file with 'slive open' first.")
-        sys.exit(0)
-
-    data = json.loads(changelog_path.read_text(encoding="utf-8"))
+def _print_changelog(data: dict) -> None:
     click.echo(f"File: {data['file']}")
     click.echo(f"Time: {data['timestamp']}")
     click.echo(f"Summary: {data['summary']}")
@@ -163,12 +151,57 @@ def diff(filepath: str):
             click.echo(f"  [{ctype}] {sel}: '{change['before']}' -> '{change['after']}'")
         elif ctype == "attribute_change":
             click.echo(f"  [{ctype}] {sel} @{change['attribute']}: '{change['before']}' -> '{change['after']}'")
-        elif ctype == "element_added":
-            click.echo(f"  [{ctype}] {sel} ({change['tag']})")
-        elif ctype == "element_removed":
-            click.echo(f"  [{ctype}] {sel} ({change['tag']})")
+        elif ctype in ("element_added", "element_removed"):
+            click.echo(f"  [{ctype}] {sel} ({change.get('tag','')})")
         else:
             click.echo(f"  [{ctype}] {sel}")
+
+
+@main.command()
+@click.argument("filepath")
+@click.option("--history", "show_history", is_flag=True,
+              help="Show every recorded round, not just the latest.")
+@click.option("--touched", is_flag=True,
+              help="Print just the set of data-oid values touched across history.")
+def diff(filepath: str, show_history: bool, touched: bool):
+    """Show the changelog from the last visual editing session.
+
+    With --history, prints every recorded round (the cross-round preserve set).
+    With --touched, prints just the data-oid values AI must not stomp.
+    """
+    from living_slides.history import load_history, touched_oids
+
+    path = Path(filepath).resolve()
+
+    if touched:
+        oids = sorted(touched_oids(str(path)))
+        if not oids:
+            click.echo("No touched oids yet (no edit history).")
+            return
+        click.echo(f"Touched oids ({len(oids)}):")
+        for oid in oids:
+            click.echo(f"  {oid}")
+        return
+
+    if show_history:
+        rounds = load_history(str(path))
+        if not rounds:
+            click.echo(f"No history found for {path.name}")
+            return
+        for i, round_data in enumerate(rounds, start=1):
+            click.echo(f"=== Round {i} ===")
+            _print_changelog(round_data)
+            click.echo("")
+        return
+
+    changelog_path = path.parent / (path.stem + ".changelog.json")
+    if not changelog_path.exists():
+        click.echo(f"No changelog found for {path.name}")
+        click.echo("Edit the file with 'slive open' first.")
+        return
+
+    data = json.loads(changelog_path.read_text(encoding="utf-8"))
+    _print_changelog(data)
 
 
 @main.command()

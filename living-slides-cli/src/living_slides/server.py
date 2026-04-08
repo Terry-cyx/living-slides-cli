@@ -7,6 +7,7 @@ from pathlib import Path
 from aiohttp import web
 
 from living_slides.differ import compute_changelog, save_changelog
+from living_slides.history import append_changelog_history
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -76,6 +77,10 @@ async def handle_save(request: web.Request) -> web.Response:
     changelog_name = html_path.stem + ".changelog.json"
     changelog_path = html_path.parent / changelog_name
     save_changelog(changelog, str(changelog_path))
+
+    # Append to history (preserve+cascade across rounds).
+    if changelog["changes"]:
+        append_changelog_history(str(html_path), changelog)
 
     # Update original for next diff
     request.app["original_html"] = full_html
