@@ -88,13 +88,11 @@ def create(filepath: str, template: str | None, preset: str | None):
     Pass exactly one of --template or --preset; pass neither for the default empty page.
     """
     if template and preset:
-        click.echo("Error: pass --template OR --preset, not both.", err=True)
-        sys.exit(1)
+        raise click.UsageError("pass --template OR --preset, not both.")
 
     path = Path(filepath).resolve()
     if path.exists():
-        click.echo(f"Error: File already exists: {path}", err=True)
-        sys.exit(1)
+        raise click.UsageError(f"File already exists: {path}")
 
     title = path.stem.replace("-", " ").replace("_", " ").title()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -104,16 +102,14 @@ def create(filepath: str, template: str | None, preset: str | None):
         try:
             content = get_preset(preset, title)
         except ValueError as e:
-            click.echo(f"Error: {e}", err=True)
-            sys.exit(1)
+            raise click.BadParameter(str(e), param_hint="--preset")
         path.write_text(content, encoding="utf-8")
-    elif template and template != "default":
+    elif template:
         from living_slides.templates import get_template
         try:
             content = get_template(template, title)
         except ValueError as e:
-            click.echo(f"Error: {e}", err=True)
-            sys.exit(1)
+            raise click.BadParameter(str(e), param_hint="--template")
         path.write_text(content, encoding="utf-8")
     else:
         path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
@@ -127,7 +123,6 @@ def templates():
     """List available content templates."""
     from living_slides.templates import list_templates
     click.echo("Content templates (--template):")
-    click.echo(f"  default          - Simple single-page HTML")
     for t in list_templates():
         click.echo(f"  {t['name']:<16} - {t['description']}")
 

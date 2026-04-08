@@ -45,7 +45,7 @@ uv run pytest -k "test_name" -v        # Single test by name
 
 Five modules in `src/living_slides/`:
 
-- **cli.py** — Click-based CLI entry point. Commands: `create`, `open`, `diff`, `templates`, `presets`, `asset {list,gen-chart,import}`. (Phase C will add `adopt` and `verify`.)
+- **cli.py** — Click-based CLI entry point. Commands: `create`, `open`, `diff`, `templates`, `presets`, `asset {list,gen-chart,import}`.
 - **server.py** — aiohttp web server. Serves GrapesJS editor, provides `/api/load` and `/api/save` endpoints. Runs on port 8432 by default. On save, computes the diff against the original HTML and writes `<deck>.changelog.json`.
 - **differ.py** — HTML diff engine. Compares old/new HTML, produces structured changelog with selector-level change tracking. **Recognizes `data-oid` attributes as the canonical stable selector** (preferred over CSS path) — this is what makes the iteration loop survive DOM-path drift across rounds.
 - **templates.py** — Two registries: `TEMPLATES` (content shape: presentation/business/tech) and `PRESETS` (visual style: bold-signal/dark-botanical/terminal-green). Presets adapted from frontend-slides STYLE_PRESETS.md (MIT) — see Acknowledgements in README.
@@ -61,6 +61,6 @@ The whole point of this tool: when the user hand-edits a deck and asks AI to ref
 3. **Cascade the user's edits** — when the user changes one number/word/style, find every other slide element that depends on it and update them. The user's edit is the source of truth for the cascade.
 4. **Never stomp** — any element in the touched set must be left exactly as the user left it, unless the user explicitly says otherwise in the next prompt.
 
-The structured changelog contains: `text_edit`, `attribute_change`, `element_added`, `element_removed` (and after Phase C4: `element_moved`, `slides_reordered`, `element_resized`), plus a unified diff and human-readable summary.
+The structured changelog contains: `text_edit`, `attribute_change`, `element_added`, `element_removed`, plus a unified diff and human-readable summary.
 
 See `docs/PRD.md` for the full product framing and `docs/refactor-plan.md` for the v0.2 refactor in progress.

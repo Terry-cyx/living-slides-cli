@@ -7,7 +7,7 @@ def test_cli_help():
     runner = CliRunner()
     result = runner.invoke(main, ["--help"])
     assert result.exit_code == 0
-    assert "slive" in result.output.lower() or "slides" in result.output.lower()
+    assert "slive" in result.output.lower()
 
 
 def test_create_command(tmp_path):
