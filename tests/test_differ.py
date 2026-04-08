@@ -1,5 +1,5 @@
 import json
-from htmlcli.differ import compute_changelog
+from living_slides.differ import compute_changelog
 
 
 def test_no_changes():
@@ -72,7 +72,7 @@ def test_data_oid_survives_dom_path_change():
 
 
 def test_save_changelog(tmp_path):
-    from htmlcli.differ import save_changelog
+    from living_slides.differ import save_changelog
 
     old = '<h1 class="title">Hello</h1>'
     new = '<h1 class="title">World</h1>'

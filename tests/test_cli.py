@@ -1,5 +1,5 @@
 from click.testing import CliRunner
-from htmlcli.cli import main
+from living_slides.cli import main
 from pathlib import Path
 
 
@@ -7,7 +7,7 @@ def test_cli_help():
     runner = CliRunner()
     result = runner.invoke(main, ["--help"])
     assert result.exit_code == 0
-    assert "htmlcli" in result.output.lower() or "html" in result.output.lower()
+    assert "slive" in result.output.lower() or "slides" in result.output.lower()
 
 
 def test_create_command(tmp_path):

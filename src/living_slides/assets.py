@@ -1,4 +1,4 @@
-"""Asset management for htmlcli — generated images, charts, diagrams.
+"""Asset management for living-slides — generated images, charts, diagrams.
 
 Convention: for an HTML file `mypage.html`, assets live in `mypage-assets/` directory
 next to it. HTML references them as `./mypage-assets/chart1.png`.

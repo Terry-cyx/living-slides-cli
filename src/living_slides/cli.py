@@ -1,4 +1,4 @@
-"""CLI entry point for htmlcli."""
+"""CLI entry point for living-slides (slive command)."""
 
 from __future__ import annotations
 
@@ -31,16 +31,19 @@ TEMPLATE = """\
 </head>
 <body>
     <h1>{title}</h1>
-    <p>This page was created by htmlcli. Edit it visually or with AI.</p>
+    <p>This page was created by slive. Edit it visually or with AI.</p>
 </body>
 </html>
 """
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version="0.2.0", prog_name="slive")
 def main():
-    """htmlcli - Visual HTML editor for AI-assisted workflows."""
+    """slive — the iteration loop for AI-generated HTML slide decks.
+
+    Your slides stay. The rest catches up.
+    """
     pass
 
 
@@ -66,7 +69,7 @@ def open(filepath: str, port: int):
 
     threading.Thread(target=open_browser, daemon=True).start()
 
-    from htmlcli.server import run_server
+    from living_slides.server import run_server
     try:
         run_server(str(path), port=port)
     except KeyboardInterrupt:
@@ -75,8 +78,8 @@ def open(filepath: str, port: int):
 
 @main.command()
 @click.argument("filepath")
-@click.option("--template", "-t", default=None, help="Content template (run 'htmlcli templates' to list)")
-@click.option("--preset", "-p", default=None, help="Visual style preset (run 'htmlcli presets' to list)")
+@click.option("--template", "-t", default=None, help="Content template (run 'slive templates' to list)")
+@click.option("--preset", "-p", default=None, help="Visual style preset (run 'slive presets' to list)")
 def create(filepath: str, template: str | None, preset: str | None):
     """Create a new HTML file from a template or visual preset.
 
@@ -97,7 +100,7 @@ def create(filepath: str, template: str | None, preset: str | None):
     path.parent.mkdir(parents=True, exist_ok=True)
 
     if preset:
-        from htmlcli.templates import get_preset
+        from living_slides.templates import get_preset
         try:
             content = get_preset(preset, title)
         except ValueError as e:
@@ -105,7 +108,7 @@ def create(filepath: str, template: str | None, preset: str | None):
             sys.exit(1)
         path.write_text(content, encoding="utf-8")
     elif template and template != "default":
-        from htmlcli.templates import get_template
+        from living_slides.templates import get_template
         try:
             content = get_template(template, title)
         except ValueError as e:
@@ -116,13 +119,13 @@ def create(filepath: str, template: str | None, preset: str | None):
         path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
 
     click.echo(f"Created: {path}")
-    click.echo(f"Run 'htmlcli open {filepath}' to edit visually.")
+    click.echo(f"Run 'slive open {filepath}' to edit visually.")
 
 
 @main.command()
 def templates():
     """List available content templates."""
-    from htmlcli.templates import list_templates
+    from living_slides.templates import list_templates
     click.echo("Content templates (--template):")
     click.echo(f"  default          - Simple single-page HTML")
     for t in list_templates():
@@ -132,12 +135,12 @@ def templates():
 @main.command()
 def presets():
     """List available visual style presets."""
-    from htmlcli.templates import list_presets
+    from living_slides.templates import list_presets
     click.echo("Visual style presets (--preset):")
     for p in list_presets():
         click.echo(f"  {p['name']:<16} - {p['description']}")
     click.echo("")
-    click.echo("More presets are documented in skills/htmlcli/references/style-presets.md")
+    click.echo("More presets are documented in skills/living-slides/references/style-presets.md")
     click.echo("(adapted from zarazhangrui/frontend-slides under MIT) — AI can generate any of them on demand.")
 
 
@@ -150,7 +153,7 @@ def diff(filepath: str):
 
     if not changelog_path.exists():
         click.echo(f"No changelog found for {path.name}")
-        click.echo("Edit the file with 'htmlcli open' first.")
+        click.echo("Edit the file with 'slive open' first.")
         sys.exit(0)
 
     data = json.loads(changelog_path.read_text(encoding="utf-8"))
@@ -183,7 +186,7 @@ def asset():
 @click.argument("filepath")
 def asset_list(filepath: str):
     """List all assets for an HTML file."""
-    from htmlcli.assets import list_assets, get_assets_dir
+    from living_slides.assets import list_assets, get_assets_dir
 
     assets = list_assets(filepath)
     assets_dir = get_assets_dir(filepath)
@@ -212,11 +215,11 @@ def asset_gen_chart(filepath: str, name: str, chart_type: str, data: str,
     """Generate a chart image using matplotlib.
 
     Example:
-      htmlcli asset gen-chart deck.html --name revenue --type bar \\
+      slive asset gen-chart deck.html --name revenue --type bar \\
         --data '{"labels":["Q1","Q2","Q3"],"values":[100,200,300]}' \\
         --title "Revenue by Quarter"
     """
-    from htmlcli.assets import generate_chart
+    from living_slides.assets import generate_chart
 
     # Data can be inline JSON or a file path
     if Path(data).exists():
@@ -244,9 +247,9 @@ def asset_import(filepath: str, name: str, source: str):
     """Import an externally-generated image into the assets directory.
 
     Example:
-      htmlcli asset import deck.html --name hero --from ./my-generated-image.png
+      slive asset import deck.html --name hero --from ./my-generated-image.png
     """
-    from htmlcli.assets import save_external_image
+    from living_slides.assets import save_external_image
 
     try:
         rel_path = save_external_image(filepath, name, source)

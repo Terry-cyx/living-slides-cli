@@ -41,7 +41,7 @@
         <h1 class="slide-title animate-in" style="font-size: var(--text-5xl); max-width: 18ch;">
             The biggest shift in AI presentations since PowerPoint
         </h1>
-        <p class="subtitle animate-in">How html-cli lets you edit AI-generated decks visually</p>
+        <p class="subtitle animate-in">How living-slides lets you edit AI-generated decks visually</p>
     </div>
     <div class="slide-footer">
         <span>by Terry</span>
@@ -164,7 +164,7 @@
     <div class="slide-body" style="justify-content: center; padding: 0 var(--s-7);">
         <div style="position: absolute; top: var(--s-6); left: var(--s-7); font-size: 200px; color: var(--color-primary); opacity: 0.2; line-height: 1; font-family: Georgia, serif;">"</div>
         <blockquote class="animate-in" style="font-size: var(--text-2xl); font-weight: 500; line-height: var(--lh-snug); max-width: 24ch; position: relative; z-index: 1;">
-            html-cli changed how our marketing team works with AI.
+            living-slides changed how our marketing team works with AI.
         </blockquote>
         <div class="animate-in" style="margin-top: var(--s-5); display: flex; align-items: center; gap: var(--s-3);">
             <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--color-primary);"></div>
@@ -235,12 +235,12 @@
 <section class="slide">
     <div class="slide-header"><span class="eyebrow">VS. COMPETITION</span></div>
     <div class="slide-body">
-        <h2 class="slide-title animate-in">Only html-cli delivers all four</h2>
+        <h2 class="slide-title animate-in">Only living-slides delivers all four</h2>
         <table class="animate-in" style="width: 100%; border-collapse: collapse; margin-top: var(--s-3);">
             <thead>
                 <tr>
                     <th style="text-align: left; padding: var(--s-2); font-size: var(--text-sm); color: var(--color-fg-subtle); font-weight: 600;">Feature</th>
-                    <th style="padding: var(--s-2); font-size: var(--text-sm); color: var(--color-primary); font-weight: 700;">html-cli</th>
+                    <th style="padding: var(--s-2); font-size: var(--text-sm); color: var(--color-primary); font-weight: 700;">living-slides</th>
                     <th style="padding: var(--s-2); font-size: var(--text-sm); color: var(--color-fg-subtle);">PowerPoint</th>
                     <th style="padding: var(--s-2); font-size: var(--text-sm); color: var(--color-fg-subtle);">Gamma</th>
                 </tr>
@@ -289,7 +289,7 @@
     <div class="slide-header"><span class="eyebrow">NEXT STEPS</span></div>
     <div class="slide-body" style="justify-content: center; align-items: flex-start; gap: var(--s-5);">
         <h2 class="slide-title animate-in" style="font-size: var(--text-4xl); max-width: 18ch;">
-            Ready to try html-cli?
+            Ready to try living-slides?
         </h2>
         <div class="animate-in" style="display: flex; gap: var(--s-3);">
             <button style="background: var(--color-primary); color: white; border: none; padding: var(--s-3) var(--s-5); font-size: var(--text-base); font-weight: 600; border-radius: var(--radius-full); cursor: pointer;">
@@ -300,7 +300,7 @@
             </button>
         </div>
         <p class="animate-in" style="font-size: var(--text-sm); color: var(--color-fg-subtle); margin-top: var(--s-3);">
-            hello@html-cli.com · github.com/Terry-cyx/html-cli
+            hello@living-slides.com · github.com/Terry-cyx/living-slides
         </p>
     </div>
     <div class="slide-footer"><span></span><span>11</span></div>

@@ -1,11 +1,13 @@
 ---
-name: htmlcli
-description: Create professional HTML presentations that replace PowerPoint. Use when the user asks to create a presentation, deck, slides, pitch deck, QBR, or wants to visually edit HTML. Produces production-quality 16:9 slide decks with design tokens, proper typography, and the htmlcli visual editor workflow.
+name: living-slides
+description: Iterate on AI-generated HTML slide decks with the slive CLI. Use when the user has an existing HTML deck (from frontend-slides, Claude direct, or any source) and wants to hand-edit some elements while AI cascades the change to the rest of the deck without stomping the user's edits. Also use when the user asks to create a new HTML presentation/deck/slides/pitch deck/QBR. Body of this skill will be fully rewritten in Phase C5 to lead with preserve+cascade.
 ---
 
-# htmlcli — Professional HTML Presentation Creator
+# living-slides — The Iteration Loop for AI-Generated HTML Decks
 
-You have access to `htmlcli`, a CLI tool that creates, edits, and tracks HTML presentations. This skill provides the design knowledge needed to generate **professional, non-amateur** HTML slide decks that can genuinely replace PowerPoint.
+> **Note**: This SKILL body is the pre-rewrite version (still oriented around generation). The Phase C5 rewrite will replace it with preserve+cascade as the lead. For now, the design knowledge below remains accurate for *generating* decks; the iteration semantics are documented in `references/` and CLAUDE.md.
+
+You have access to `slive`, a CLI tool that creates, edits, and tracks HTML presentations. This skill provides the design knowledge needed to generate **professional, non-amateur** HTML slide decks that can genuinely replace PowerPoint.
 
 ## Core Principle
 
@@ -23,15 +25,15 @@ Trigger when the user asks to create any of these:
 ## Available CLI Commands
 
 ```bash
-htmlcli create <file> [--template NAME]       # Create from template
-htmlcli open <file> [--port PORT]             # Open GrapesJS visual editor
-htmlcli diff <file>                           # Show changelog from last edit
-htmlcli templates                             # List templates
+slive create <file> [--template NAME]       # Create from template
+slive open <file> [--port PORT]             # Open GrapesJS visual editor
+slive diff <file>                           # Show changelog from last edit
+slive templates                             # List templates
 
 # Asset management (charts, images, diagrams)
-htmlcli asset list <file>                     # List all assets for an HTML file
-htmlcli asset gen-chart <file> --name N --type T --data JSON --title T
-htmlcli asset import <file> --name N --from PATH
+slive asset list <file>                     # List all assets for an HTML file
+slive asset gen-chart <file> --name N --type T --data JSON --title T
+slive asset import <file> --name N --from PATH
 ```
 
 ## The Non-Negotiable Design Rules
@@ -72,11 +74,11 @@ Use the base template in `references/slide-template.md`. This template includes:
 - Responsive fallbacks for mobile
 - Chart.js CDN for data viz
 
-**Do NOT use `htmlcli create --template` for the initial generation.** The built-in templates are placeholders. Instead, generate the full HTML with the Write tool using the professional template from `references/slide-template.md`.
+**Do NOT use `slive create --template` for the initial generation.** The built-in templates are placeholders. Instead, generate the full HTML with the Write tool using the professional template from `references/slide-template.md`.
 
 ### Step 5: Open for user review
 ```bash
-htmlcli open <file>
+slive open <file>
 ```
 Tell the user to open it in their terminal (the server blocks, so you can't run it for them).
 

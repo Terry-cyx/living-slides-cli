@@ -2,6 +2,6 @@
   {
     "event": "after_write",
     "pattern": "*.changelog.json",
-    "command": "echo \"[htmlcli] Changelog updated: $FILE — run 'htmlcli diff' or read the file to see what changed.\""
+    "command": "echo \"[slive] Changelog updated: $FILE — run 'slive diff' or read the file to see what changed.\""
   }
 ]

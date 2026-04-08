@@ -27,7 +27,7 @@ The difference between "topic" and "insight" in slide titles.
 **Template**: "[Pain point]? Every [time frame], [consequence]. [Solution] fixes this."
 
 **Example**:
-> "Creating a deck takes 8 hours. Every week, your team loses a full day to slide design. html-cli cuts that to 30 minutes."
+> "Creating a deck takes 8 hours. Every week, your team loses a full day to slide design. living-slides cuts that to 30 minutes."
 
 ### AIDA (Attention-Interest-Desire-Action)
 **Use**: CTAs, closing slides, opening hooks
@@ -35,7 +35,7 @@ The difference between "topic" and "insight" in slide titles.
 **Template**: "[Bold statement]. [Benefit detail]. [Social proof]. [CTA]."
 
 **Example**:
-> "PowerPoint is dying. AI can't generate it, your team hates making it, and no one can version-control it. 10,000 teams switched to html-cli last quarter. Try it free →"
+> "PowerPoint is dying. AI can't generate it, your team hates making it, and no one can version-control it. 10,000 teams switched to living-slides last quarter. Try it free →"
 
 ### FAB (Features-Advantages-Benefits)
 **Use**: Feature slides, product descriptions
@@ -51,7 +51,7 @@ The difference between "topic" and "insight" in slide titles.
 **Template**: "Without [solution], you're losing [amount] every [timeframe]."
 
 **Example**:
-> "Without html-cli, your marketing team wastes 30 hours/month formatting slides. That's $45,000/year in lost productivity."
+> "Without living-slides, your marketing team wastes 30 hours/month formatting slides. That's $45,000/year in lost productivity."
 
 ### Before-After-Bridge
 **Use**: Case studies, transformation stories

@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-from htmlcli.cli import main
-from htmlcli.assets import get_assets_dir, list_assets, generate_chart, save_external_image
+from living_slides.cli import main
+from living_slides.assets import get_assets_dir, list_assets, generate_chart, save_external_image
 
 
 def test_get_assets_dir(tmp_path):

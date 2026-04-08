@@ -2,8 +2,8 @@
 
 import json
 from pathlib import Path
-from htmlcli.cli import main
-from htmlcli.server import create_app
+from living_slides.cli import main
+from living_slides.server import create_app
 from click.testing import CliRunner
 
 
@@ -36,8 +36,8 @@ async def test_full_workflow(aiohttp_client, tmp_path):
         "<h1>Demo</h1>",
         "<h1>My Awesome Presentation</h1>"
     ).replace(
-        "<p>This page was created by htmlcli. Edit it visually or with AI.</p>",
-        '<p>This is an AI-powered slide deck.</p>\n    <p class="highlight">Built with htmlcli + Claude Code.</p>'
+        "<p>This page was created by slive. Edit it visually or with AI.</p>",
+        '<p>This is an AI-powered slide deck.</p>\n    <p class="highlight">Built with living-slides + Claude Code.</p>'
     )
 
     # Step 5: Save (what happens when user presses Ctrl+S)

@@ -1,6 +1,6 @@
 """Edge case tests for the differ module — ensuring robustness with real-world HTML."""
 
-from htmlcli.differ import compute_changelog
+from living_slides.differ import compute_changelog
 
 
 class TestDuplicateElements:

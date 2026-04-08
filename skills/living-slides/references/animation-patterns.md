@@ -2,7 +2,7 @@
 
 Match animations to the intended feeling. **Restraint over flair** — one or two motion ideas per deck, not five.
 
-> **Attribution**: Adapted from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `animation-patterns.md` (MIT). The effect-to-feeling table and core CSS snippets are reproduced; htmlcli's `data-oid` and design-token conventions added.
+> **Attribution**: Adapted from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `animation-patterns.md` (MIT). The effect-to-feeling table and core CSS snippets are reproduced; living-slides' `data-oid` and design-token conventions added.
 
 ## Effect-to-Feeling Guide
 

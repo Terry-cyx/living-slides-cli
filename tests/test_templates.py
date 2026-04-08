@@ -4,11 +4,11 @@ import json
 from pathlib import Path
 import pytest
 from click.testing import CliRunner
-from htmlcli.cli import main
+from living_slides.cli import main
 
 
 class TestPresentationTemplate:
-    """htmlcli create --template presentation should produce a multi-slide HTML."""
+    """slive create --template presentation should produce a multi-slide HTML."""
 
     def test_create_presentation_template(self, tmp_path):
         runner = CliRunner()
@@ -46,7 +46,7 @@ class TestPresentationTemplate:
 
 
 class TestBusinessTemplate:
-    """htmlcli create --template business should produce a business deck."""
+    """slive create --template business should produce a business deck."""
 
     def test_create_business_template(self, tmp_path):
         runner = CliRunner()
@@ -75,7 +75,7 @@ class TestBusinessTemplate:
 
 
 class TestTechTemplate:
-    """htmlcli create --template tech should produce a technical presentation."""
+    """slive create --template tech should produce a technical presentation."""
 
     def test_create_tech_template(self, tmp_path):
         runner = CliRunner()
@@ -111,7 +111,7 @@ class TestTechTemplate:
 
 
 class TestTemplateList:
-    """htmlcli templates should list available templates."""
+    """slive templates should list available templates."""
 
     def test_list_templates(self):
         runner = CliRunner()
@@ -123,7 +123,7 @@ class TestTemplateList:
 
 
 class TestStylePresets:
-    """htmlcli create --preset should produce a styled multi-slide deck with stable data-oid."""
+    """slive create --preset should produce a styled multi-slide deck with stable data-oid."""
 
     @pytest.mark.parametrize("preset", ["bold-signal", "dark-botanical", "terminal-green"])
     def test_create_preset(self, tmp_path, preset):

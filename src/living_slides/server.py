@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from aiohttp import web
 
-from htmlcli.differ import compute_changelog, save_changelog
+from living_slides.differ import compute_changelog, save_changelog
 
 STATIC_DIR = Path(__file__).parent / "static"
 

@@ -1,7 +1,7 @@
 import json
 import pytest
 from pathlib import Path
-from htmlcli.server import create_app
+from living_slides.server import create_app
 
 
 @pytest.fixture

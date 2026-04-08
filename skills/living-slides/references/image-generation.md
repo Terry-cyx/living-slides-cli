@@ -1,6 +1,6 @@
 # Image Generation & Asset Management
 
-htmlcli supports three ways to include images in slides: built-in chart generation, external tool integration, and client-side rendering.
+living-slides supports three ways to include images in slides: built-in chart generation, external tool integration, and client-side rendering.
 
 ## Asset Directory Convention
 
@@ -19,7 +19,7 @@ HTML references them with relative paths: `<img src="./mypage-assets/revenue-cha
 
 ## Method 1: Built-in Chart Generation (matplotlib)
 
-For standard data charts, use `htmlcli asset gen-chart`. It produces themed PNGs matching the deck's dark/light theme.
+For standard data charts, use `slive asset gen-chart`. It produces themed PNGs matching the deck's dark/light theme.
 
 ### Supported Chart Types
 - `bar` — vertical bar chart (category comparison)
@@ -32,7 +32,7 @@ For standard data charts, use `htmlcli asset gen-chart`. It produces themed PNGs
 
 ```bash
 # Simple bar chart
-htmlcli asset gen-chart deck.html \
+slive asset gen-chart deck.html \
   --name revenue \
   --type bar \
   --data '{"labels":["Q1","Q2","Q3","Q4"],"values":[120,190,300,450]}' \
@@ -43,7 +43,7 @@ htmlcli asset gen-chart deck.html \
 ### Python API (preferred when generating many charts)
 
 ```python
-from htmlcli.assets import generate_chart
+from living_slides.assets import generate_chart
 
 # Single-series bar
 generate_chart(
@@ -97,7 +97,7 @@ When you need AI-generated images, complex Python visualizations, or diagrams be
 
 3. **Import** into the assets directory:
    ```bash
-   htmlcli asset import deck.html --name my-chart --from /tmp/chart.png
+   slive asset import deck.html --name my-chart --from /tmp/chart.png
    ```
 
 ### Python Script Example (custom plotly chart)
@@ -105,7 +105,7 @@ When you need AI-generated images, complex Python visualizations, or diagrams be
 ```python
 # generate-funnel.py
 import plotly.graph_objects as go
-from htmlcli.assets import save_external_image
+from living_slides.assets import save_external_image
 
 fig = go.Figure(go.Funnel(
     y=["Website Visits", "Signups", "Active", "Paid"],
@@ -141,8 +141,8 @@ image_bytes = some_ai_image_api.generate(
 with open("/tmp/hero.png", "wb") as f:
     f.write(image_bytes)
 
-# Register with htmlcli
-from htmlcli.assets import save_external_image
+# Register with living-slides
+from living_slides.assets import save_external_image
 rel = save_external_image("deck.html", "hero-bg", "/tmp/hero.png")
 # Use as <img src="./deck-assets/hero-bg.png"> or CSS background
 ```
@@ -190,7 +190,7 @@ Already in the base template. Use for dashboards where interactivity matters.
 
 ```
 Is it a standard data chart (bar, line, pie)?
-├── Yes → htmlcli asset gen-chart (matplotlib, static PNG)
+├── Yes → slive asset gen-chart (matplotlib, static PNG)
 └── No
     │
     Is it a diagram (flow, architecture, sequence)?
@@ -198,7 +198,7 @@ Is it a standard data chart (bar, line, pie)?
     └── No
         │
         Is it an AI-generated image (hero, background, illustration)?
-        ├── Yes → Generate with AI tool → htmlcli asset import
+        ├── Yes → Generate with AI tool → slive asset import
         └── No
             │
             Is it a complex data viz (plotly, seaborn, custom)?
@@ -228,10 +228,10 @@ For external tools, explicitly set these colors in your script/prompt.
 
 ```bash
 # List all assets for an HTML file
-htmlcli asset list deck.html
+slive asset list deck.html
 
 # Generate a standard chart
-htmlcli asset gen-chart deck.html \
+slive asset gen-chart deck.html \
   --name <name> \
   --type <bar|hbar|line|pie|scatter> \
   --data <json-string-or-path> \
@@ -239,7 +239,7 @@ htmlcli asset gen-chart deck.html \
   [--theme dark|light]
 
 # Import an externally-generated image
-htmlcli asset import deck.html \
+slive asset import deck.html \
   --name <target-name> \
   --from <source-path>
 ```

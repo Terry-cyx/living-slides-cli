@@ -1,10 +1,10 @@
-"""Real-world PPT scenarios: test that htmlcli can handle actual presentation editing workflows."""
+"""Real-world PPT scenarios: test that living-slides can handle actual presentation editing workflows."""
 
 import json
 from pathlib import Path
 from click.testing import CliRunner
-from htmlcli.cli import main
-from htmlcli.server import create_app
+from living_slides.cli import main
+from living_slides.server import create_app
 
 
 class TestBusinessDeckEditing:
@@ -172,7 +172,7 @@ class TestDiffReadability:
     """Changelog must be readable enough for Claude Code to understand user intent."""
 
     async def test_diff_cli_output_is_informative(self, aiohttp_client, tmp_path):
-        """After edits, 'htmlcli diff' should give Claude Code useful context."""
+        """After edits, 'slive diff' should give Claude Code useful context."""
         runner = CliRunner()
         filepath = tmp_path / "review.html"
         runner.invoke(main, ["create", str(filepath), "--template", "business"])

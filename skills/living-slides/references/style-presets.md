@@ -2,12 +2,12 @@
 
 12 curated visual styles for slide decks. Each preset is grounded in a real design reference — **no generic AI-slop aesthetics**. Pick one and stick to it for the whole deck; never mix two presets.
 
-> **Attribution**: This catalog is adapted from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `STYLE_PRESETS.md` (MIT). Color tokens, font pairings, and signature elements are reproduced with adjustments for htmlcli's design-tokens conventions. Use this list as a *style menu* — when generating, also load `design-tokens.md`, `viewport-base.md`, and `slide-template.md`.
+> **Attribution**: This catalog is adapted from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `STYLE_PRESETS.md` (MIT). Color tokens, font pairings, and signature elements are reproduced with adjustments for living-slides' design-tokens conventions. Use this list as a *style menu* — when generating, also load `design-tokens.md`, `viewport-base.md`, and `slide-template.md`.
 
 ## How to use
 
 1. Ask the user (or pick) one preset by name from the table below.
-2. Map the preset's colors into htmlcli's CSS token names (`--color-bg`, `--color-fg`, `--color-primary`, `--color-accent`).
+2. Map the preset's colors into living-slides' CSS token names (`--color-bg`, `--color-fg`, `--color-primary`, `--color-accent`).
 3. Load the **fonts** from the preset's font row (Google Fonts or Fontshare CDN link).
 4. Apply the **signature elements** as recurring slide motifs (one or two per deck, not all at once).
 5. Always include `viewport-base.md`'s base CSS.
@@ -147,9 +147,9 @@ CSS does not allow a leading `-` before function names. The browser drops the en
 
 ## Built-in CLI presets
 
-A subset of these are available as `htmlcli create --preset <name>`:
+A subset of these are available as `slive create --preset <name>`:
 - `bold-signal`
 - `dark-botanical`
 - `terminal-green`
 
-The rest are documented here so AI can generate them on demand following the spec above. Adding new built-in presets is just adding a builder function in `src/htmlcli/templates.py`.
+The rest are documented here so AI can generate them on demand following the spec above. Adding new built-in presets is just adding a builder function in `src/living_slides/templates.py`.

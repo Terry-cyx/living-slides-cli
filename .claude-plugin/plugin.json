@@ -1,10 +1,10 @@
 {
-  "name": "html-cli",
-  "description": "Visual HTML editor for AI-assisted workflows. Edit AI-generated HTML visually in GrapesJS, with structured changelogs for AI refinement.",
-  "version": "0.1.0",
+  "name": "living-slides-cli",
+  "description": "The iteration loop for AI-generated HTML slide decks. Hand-edit your slides visually; AI cascades changes across the deck without stomping your edits.",
+  "version": "0.2.0",
   "author": {
     "name": "Terry-cyx"
   },
-  "repository": "https://github.com/Terry-cyx/html-cli",
+  "repository": "https://github.com/Terry-cyx/living-slides-cli",
   "license": "MIT"
 }

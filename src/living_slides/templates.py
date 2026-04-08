@@ -1,11 +1,11 @@
-"""Presentation templates for htmlcli — real-world PPT replacement scenarios.
+"""Presentation templates for living-slides — real-world PPT replacement scenarios.
 
 Two registries:
 - TEMPLATES — content-oriented decks (presentation, business, tech). Pick by content shape.
 - PRESETS — visual style decks (bold-signal, dark-botanical, terminal-green). Pick by aesthetic.
 
 Presets are adapted from zarazhangrui/frontend-slides (MIT) STYLE_PRESETS.md;
-the full 12-preset catalog lives in skills/htmlcli/references/style-presets.md and
+the full 12-preset catalog lives in skills/living-slides/references/style-presets.md and
 AI can generate any of them on demand. Built-in presets are the curated subset
 that ships ready-to-edit.
 """
@@ -142,7 +142,7 @@ def _build_presentation(title: str) -> str:
 
 <div class="slide" style="background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);">
     <h1>{title}</h1>
-    <p class="subtitle">Created with htmlcli + Claude Code</p>
+    <p class="subtitle">Created with living-slides + Claude Code</p>
 </div>
 
 <div class="slide">
@@ -156,7 +156,7 @@ def _build_presentation(title: str) -> str:
 
 <div class="slide">
     <h2>Key Points</h2>
-    <p>Add your content here. Edit visually with htmlcli or let AI refine it.</p>
+    <p>Add your content here. Edit visually with slive or let AI refine it.</p>
 </div>
 
 <div class="slide">

@@ -2,7 +2,7 @@
 
 **Mandatory base styles for every slide deck.** Paste this entire CSS block into the `<style>` of any deck — it locks each slide to one viewport, prevents overflow, and scales typography responsively with `clamp()`.
 
-> **Attribution**: Adapted verbatim (with token-name alignment to htmlcli's `--color-*` / `--s-*` system) from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `viewport-base.css` (MIT). Use as the **first** CSS layer; preset / theme tokens override afterwards; deck-chrome variables override last.
+> **Attribution**: Adapted verbatim (with token-name alignment to living-slides' `--color-*` / `--s-*` system) from [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) `viewport-base.css` (MIT). Use as the **first** CSS layer; preset / theme tokens override afterwards; deck-chrome variables override last.
 
 ## Why this exists
 
@@ -143,7 +143,7 @@ When generating a deck, write CSS in this order so cascade works correctly:
 
 1. `viewport-base` (this file) — locks viewport, defines `--*-size` and `--slide-padding`
 2. **Preset tokens** from `style-presets.md` — `--color-bg`, `--color-fg`, font families
-3. `design-tokens.md` — htmlcli core tokens (`--s-*`, `--text-*`, `--color-*`)
+3. `design-tokens.md` — living-slides core tokens (`--s-*`, `--text-*`, `--color-*`)
 4. **Deck chrome** tokens — `--deck-chrome-bg`, `--deck-chrome-accent`, etc. (only if you ship the editor runtime)
 5. **Slide-specific** styles last
 

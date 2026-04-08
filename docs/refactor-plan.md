@@ -47,9 +47,11 @@ See "Naming (DECIDED)" table at the top of this file. Decision rationale:
 
 ---
 
-## Phase B — Rename (EXECUTE after the 4 remaining decisions below)
+## Phase B — Rename (DONE ✅ 2026-04-08)
 
-The rename touches three distinct name layers — keep them straight:
+Status: completed on `refactor/living-slides` branch. All 70 tests pass after rename. `slive --help` and `slive --version` work. The final project root directory rename `E:\HTML_CLI\` → `E:\HTML_CLI\living-slides-cli\` is deferred to the end of the refactor (no code or test impact).
+
+The rename touched three distinct name layers — kept straight per the table below:
 
 | Layer | Old | New |
 |---|---|---|
