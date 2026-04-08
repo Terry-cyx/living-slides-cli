@@ -242,6 +242,31 @@ def adopt(filepath: str, strategy: str, dry_run: bool):
     click.echo(f"{path.name}: added {added} data-oid attribute(s).")
 
 
+@main.command()
+@click.argument("filepath")
+def verify(filepath: str):
+    """Check that every <img>, <script>, <link> reference resolves on disk.
+
+    Exits 1 if any reference is broken (CI-friendly).
+    """
+    from living_slides.verify import verify_html
+
+    path = Path(filepath).resolve()
+    if not path.exists():
+        raise click.UsageError(f"File not found: {path}")
+
+    issues = verify_html(str(path))
+    if not issues:
+        click.echo(f"{path.name}: ok (0 broken references).")
+        return
+
+    click.echo(f"{path.name}: {len(issues)} broken reference(s):")
+    for issue in issues:
+        oid = f'[data-oid="{issue["oid"]}"]' if issue.get("oid") else f'<{issue["tag"]}>'
+        click.echo(f"  line {issue['line']}: {oid} src='{issue['src']}' not found")
+    sys.exit(1)
+
+
 @main.group()
 def asset():
     """Manage assets (charts, images, diagrams) for an HTML file."""
