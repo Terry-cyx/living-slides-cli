@@ -153,6 +153,13 @@ def _print_changelog(data: dict) -> None:
             click.echo(f"  [{ctype}] {sel} @{change['attribute']}: '{change['before']}' -> '{change['after']}'")
         elif ctype in ("element_added", "element_removed"):
             click.echo(f"  [{ctype}] {sel} ({change.get('tag','')})")
+        elif ctype == "element_resized":
+            click.echo(f"  [{ctype}] {sel}: '{change['before']}' -> '{change['after']}'")
+        elif ctype == "element_moved":
+            fp, tp = change.get("from_parent"), change.get("to_parent")
+            click.echo(f"  [{ctype}] {sel}: parent {fp} -> {tp}, index {change.get('from_index')} -> {change.get('to_index')}")
+        elif ctype == "slides_reordered":
+            click.echo(f"  [{ctype}] {change.get('before')} -> {change.get('after')}")
         else:
             click.echo(f"  [{ctype}] {sel}")
 
