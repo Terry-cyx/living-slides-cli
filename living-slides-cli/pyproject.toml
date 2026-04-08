@@ -16,7 +16,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pptx = ["python-pptx>=0.6"]
+pptx = [
+    "python-pptx>=0.6",
+]
 
 [project.urls]
 Homepage = "https://github.com/Terry-cyx/living-slides-cli"
