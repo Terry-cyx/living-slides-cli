@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusAI — 下一代企业 AI 操作系统发布会</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+  --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+  --font-display:'Inter',-apple-system,system-ui,sans-serif;
+  --font-body:'Inter',-apple-system,system-ui,sans-serif;
+  --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+  --tracking-tight:-0.03em;--tracking-wide:0.05em;
+  --color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+  --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+  --color-border:#27272A;
+  --color-primary:#6366F1;--color-primary-hover:#818CF8;--color-accent:#F59E0B;
+  --color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:24px;--radius-full:9999px;
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg)}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3)}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2)}
+p{font-size:var(--text-base);color:var(--color-fg-muted)}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3)}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600;margin-bottom:var(--s-2)}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4)}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4)}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle)}
+.layout-hero{justify-content:center;align-items:flex-start}
+.layout-hero h1.slide-title{font-size:var(--text-5xl);max-width:18ch}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4)}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4)}
+.feature-icon{width:48px;height:48px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--color-primary),var(--color-accent));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;margin-bottom:var(--s-3)}
+.brand-logo{display:inline-flex;align-items:center;gap:var(--s-2);font-weight:800;font-size:var(--text-lg);letter-spacing:var(--tracking-tight)}
+.brand-mark{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--color-primary) 0%,var(--color-accent) 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px;box-shadow:0 0 24px rgba(99,102,241,0.35)}
+table.compare{width:100%;border-collapse:collapse;margin-top:var(--s-3)}
+table.compare th{text-align:left;padding:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-subtle);font-weight:600}
+table.compare th.us{color:var(--color-primary);font-weight:700;text-align:center}
+table.compare th.them{text-align:center}
+table.compare td{padding:var(--s-3) var(--s-2);font-size:var(--text-base);border-top:1px solid var(--color-border)}
+table.compare td.center{text-align:center}
+.tick{color:var(--color-success);font-weight:700}
+.cross{color:var(--color-error);font-weight:700}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;justify-content:center}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated)}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards}
+.slide.active .animate-in:nth-child(1){animation-delay:0ms}
+.slide.active .animate-in:nth-child(2){animation-delay:80ms}
+.slide.active .animate-in:nth-child(3){animation-delay:160ms}
+.slide.active .animate-in:nth-child(4){animation-delay:240ms}
+.slide.active .animate-in:nth-child(5){animation-delay:320ms}
+.chart-img{max-width:100%;max-height:100%;border-radius:var(--radius-lg);display:block;margin:0 auto}
+.use-case{display:flex;flex-direction:column;gap:var(--s-2)}
+.use-case .num{font-size:var(--text-2xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1. HERO -->
+<section class="slide active layout-hero">
+  <div class="slide-header">
+    <div class="brand-logo"><img src="./test02-assets/nexusai-logo.png" alt="NexusAI logo" style="width:36px;height:36px;border-radius:8px;box-shadow:0 0 24px rgba(99,102,241,0.35)"><span>NexusAI</span></div>
+    <span class="eyebrow">2026 春季发布会</span>
+  </div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" id="hero-title">NexusAI：让每位员工都拥有 AI 同事</h1>
+    <p class="subtitle animate-in" id="hero-tagline">下一代企业 AI 操作系统 · 让 AI 成为团队的一员</p>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>1</span></div>
+</section>
+
+<!-- 2. PROBLEM (PAS) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">问题</span><span class="eyebrow">PAS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">企业每周浪费 18 小时在重复性沟通上</h2>
+    <p class="animate-in" style="max-width:48ch;font-size:var(--text-lg)">每名知识工作者平均花 41% 时间处理邮件、会议纪要与跨部门答疑。等到上线一个内部 AI 工具，又要 6 个月集成、3 个月合规审计——而你的对手已经先一步交付了。</p>
+    <p class="animate-in" style="color:var(--color-accent);font-weight:600;font-size:var(--text-lg)">NexusAI 让企业 7 天上线、30 天回本。</p>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>2</span></div>
+</section>
+
+<!-- 3. SOLUTION OVERVIEW -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">解决方案</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">一个 AI，连接你公司的每一份知识</h2>
+      <p style="margin-top:var(--s-3);font-size:var(--text-lg)">NexusAI 把 LLM、企业数据、权限体系和工作流编排融合在一个开箱即用的平台。员工像聊天一样工作，IT 像配置策略一样管控。</p>
+    </div>
+    <div class="animate-in" style="background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-5);aspect-ratio:4/3;display:flex;flex-direction:column;gap:var(--s-3);justify-content:center">
+      <div style="display:flex;align-items:center;gap:var(--s-2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-primary)"></span><span>对话式入口</span></div>
+      <div style="display:flex;align-items:center;gap:var(--s-2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-accent)"></span><span>企业知识库 RAG</span></div>
+      <div style="display:flex;align-items:center;gap:var(--s-2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-success)"></span><span>角色 / 权限策略</span></div>
+      <div style="display:flex;align-items:center;gap:var(--s-2)"><span style="width:10px;height:10px;border-radius:50%;background:var(--color-info,#3B82F6)"></span><span>工作流自动化</span></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>3</span></div>
+</section>
+
+<!-- 4. 3 FEATURES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">三大核心能力</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">从「能聊天」到「能干活」的关键三步</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in">
+        <div class="feature-icon">K</div>
+        <h3>企业知识引擎</h3>
+        <p style="font-size:var(--text-sm)">私有 RAG 检索，覆盖 Confluence、SharePoint、飞书、Notion，结果可溯源到原文段落。</p>
+      </div>
+      <div class="card animate-in">
+        <div class="feature-icon">A</div>
+        <h3>智能体编排</h3>
+        <p style="font-size:var(--text-sm)">无代码搭建多步骤 Agent：审批、报销、客户工单一键自动化，可调用 80+ 内置工具。</p>
+      </div>
+      <div class="card animate-in">
+        <div class="feature-icon">S</div>
+        <h3>企业级安全</h3>
+        <p style="font-size:var(--text-sm)">私有化部署、SSO/SAML、字段级权限、完整审计日志，已通过 SOC 2 与 ISO 27001。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>4</span></div>
+</section>
+
+<!-- 5. METRICS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">实测效果</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">客户在 90 天内平均节省 32% 工时</h2>
+    <div class="layout-grid-4">
+      <div class="card animate-in"><div style="font-size:var(--text-3xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">32%</div><div style="font-size:var(--text-xs);color:var(--color-fg-subtle);margin-top:var(--s-2);text-transform:uppercase">工时节省</div></div>
+      <div class="card animate-in"><div style="font-size:var(--text-3xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">7 天</div><div style="font-size:var(--text-xs);color:var(--color-fg-subtle);margin-top:var(--s-2);text-transform:uppercase">上线周期</div></div>
+      <div class="card animate-in"><div style="font-size:var(--text-3xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">96%</div><div style="font-size:var(--text-xs);color:var(--color-fg-subtle);margin-top:var(--s-2);text-transform:uppercase">回答准确率</div></div>
+      <div class="card animate-in"><div style="font-size:var(--text-3xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">4.8x</div><div style="font-size:var(--text-xs);color:var(--color-fg-subtle);margin-top:var(--s-2);text-transform:uppercase">投资回报</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：12 家试点客户 · 2025 Q4</span><span>5</span></div>
+</section>
+
+<!-- 6. FEATURE COMPARE CHART -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">能力对比</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">NexusAI 在四项核心能力上全面领先</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:var(--s-3)">
+      <img src="./test02-assets/feature-compare.png" alt="Feature comparison chart" class="chart-img" id="feature-compare-img">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：内部基准测试 · 2026 Q1</span><span>6</span></div>
+</section>
+
+<!-- 7. PRICING -->
+<section class="slide" id="pricing-slide">
+  <div class="slide-header"><span class="eyebrow">定价</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">透明定价，按席位起步</h2>
+    <div class="layout-grid-3" style="align-items:stretch">
+      <div class="card animate-in">
+        <h3>Starter</h3>
+        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--s-3) 0" class="price-tier">$19<span style="font-size:var(--text-base);color:var(--color-fg-muted)">/席/月</span></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:var(--s-2);font-size:var(--text-sm)">
+          <li>✓ 最多 50 席</li>
+          <li>✓ 通用知识库</li>
+          <li>✓ 基础智能体</li>
+          <li>✓ 邮件支持</li>
+        </ul>
+      </div>
+      <div class="card animate-in" style="border-color:var(--color-primary);transform:scale(1.05);position:relative;box-shadow:var(--shadow-md),0 0 0 1px var(--color-primary)">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--color-primary);color:#fff;font-size:var(--text-xs);padding:4px 12px;border-radius:var(--radius-full);font-weight:600">最受欢迎</div>
+        <h3>Business</h3>
+        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--s-3) 0" class="price-tier">$49<span style="font-size:var(--text-base);color:var(--color-fg-muted)">/席/月</span></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:var(--s-2);font-size:var(--text-sm)">
+          <li>✓ 不限席位</li>
+          <li>✓ 私有 RAG</li>
+          <li>✓ 工作流编排</li>
+          <li>✓ SSO / 审计</li>
+          <li>✓ 优先支持</li>
+        </ul>
+      </div>
+      <div class="card animate-in" style="position:relative;border-color:var(--color-accent)">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--color-accent);color:#0A0A0A;font-size:var(--text-xs);padding:4px 12px;border-radius:var(--radius-full);font-weight:700;letter-spacing:0.05em">ENTERPRISE</div>
+        <h3>Enterprise</h3>
+        <div style="font-size:var(--text-3xl);font-weight:800;margin:var(--s-3) 0" class="price-tier">$129<span style="font-size:var(--text-base);color:var(--color-fg-muted)">/席/月</span></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:var(--s-2);font-size:var(--text-sm)">
+          <li>✓ 全部 Business 功能</li>
+          <li>✓ 私有化部署</li>
+          <li>✓ 专属客户成功</li>
+          <li>✓ SLA 99.95%</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>7</span></div>
+</section>
+
+<!-- 7b. PRICING COMPARISON CHART (NEW) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">定价对比</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">每升一档，效率提升超过价格涨幅 4 倍</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:var(--s-3)">
+      <img src="./test02-assets/pricing-comparison-bar.png" alt="Pricing tier value bar chart" class="chart-img">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：客户 ROI 调研 2026 Q1</span><span>8</span></div>
+</section>
+
+<!-- 8. PRICING VALUE CHART -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">价值对比</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">投资每多 1 倍，效率提升超 3 倍</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;margin-top:var(--s-3)">
+      <img src="./test02-assets/pricing-value.png" alt="Pricing value chart" class="chart-img">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：客户 ROI 调研 · n=120</span><span>8</span></div>
+</section>
+
+<!-- 9. COMPETITOR COMPARISON -->
+<section class="slide" id="competitor-slide">
+  <div class="slide-header"><span class="eyebrow">VS 竞品</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">企业落地能力，只有 NexusAI 全部满足</h2>
+    <table class="compare animate-in">
+      <thead>
+        <tr>
+          <th>能力</th>
+          <th class="us">NexusAI</th>
+          <th class="them">通用 ChatGPT</th>
+          <th class="them">竞品 A</th>
+          <th class="them">竞品 B</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>私有化部署</td><td class="center tick">✓</td><td class="center cross">✗</td><td class="center cross">✗</td><td class="center tick">✓</td></tr>
+        <tr><td>企业知识 RAG</td><td class="center tick">✓</td><td class="center cross">✗</td><td class="center tick">✓</td><td class="center tick">✓</td></tr>
+        <tr><td>多步骤 Agent</td><td class="center tick">✓</td><td class="center cross">✗</td><td class="center tick">✓</td><td class="center cross">✗</td></tr>
+        <tr><td>字段级权限</td><td class="center tick">✓</td><td class="center cross">✗</td><td class="center tick">✓</td><td class="center cross">✗</td></tr>
+        <tr><td>多语言支持 (40+)</td><td class="center tick">✓</td><td class="center tick">✓</td><td class="center cross">✗</td><td class="center tick">✓</td></tr>
+      </tbody>
+    </table>
+    <div class="animate-in" style="margin-top:var(--s-4);display:flex;justify-content:center">
+      <img src="./test02-assets/feature-radar.png" alt="NexusAI vs Competitor radar chart" class="chart-img" id="feature-radar-img" style="max-height:320px">
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>9</span></div>
+</section>
+
+<!-- 10. TESTIMONIAL 1 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">客户证言</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <div style="position:absolute;top:var(--s-6);left:var(--s-7);font-size:200px;color:var(--color-primary);opacity:0.18;line-height:1;font-family:Georgia,serif">"</div>
+    <blockquote class="animate-in" style="font-size:var(--text-2xl);font-weight:500;line-height:var(--lh-snug);max-width:28ch;position:relative;z-index:1">NexusAI 上线 6 周，客服一线响应时间从 4 分钟降到 38 秒，满意度涨了 11 个点。</blockquote>
+    <div class="animate-in" style="margin-top:var(--s-5);display:flex;align-items:center;gap:var(--s-3)">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--color-primary)"></div>
+      <div>
+        <div style="font-weight:600">林彦</div>
+        <div style="color:var(--color-fg-subtle);font-size:var(--text-sm)">客户体验 VP · 海岸科技</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>10</span></div>
+</section>
+
+<!-- 11. TESTIMONIAL 2 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">客户证言</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <div style="position:absolute;top:var(--s-6);left:var(--s-7);font-size:200px;color:var(--color-accent);opacity:0.18;line-height:1;font-family:Georgia,serif">"</div>
+    <blockquote class="animate-in" style="font-size:var(--text-2xl);font-weight:500;line-height:var(--lh-snug);max-width:28ch;position:relative;z-index:1">合规团队第一次主动要求全公司推广一个 AI 工具，因为审计日志比我们自建系统还细。</blockquote>
+    <div class="animate-in" style="margin-top:var(--s-5);display:flex;align-items:center;gap:var(--s-3)">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--color-accent)"></div>
+      <div>
+        <div style="font-weight:600">Sarah Müller</div>
+        <div style="color:var(--color-fg-subtle);font-size:var(--text-sm)">CIO · NordBank AG</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>11</span></div>
+</section>
+
+<!-- 12. USE CASES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">六大场景</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">从 IT 到法务，每个部门都有自己的 NexusAI</h2>
+    <div class="layout-grid-3">
+      <div class="use-case card animate-in"><div class="num">01</div><h3>IT 服务台</h3><p style="font-size:var(--text-sm)">7×24 自动答疑，工单自助分流。</p></div>
+      <div class="use-case card animate-in"><div class="num">02</div><h3>HR 入职</h3><p style="font-size:var(--text-sm)">政策问答 + 流程引导，入职 1 天搞定。</p></div>
+      <div class="use-case card animate-in"><div class="num">03</div><h3>销售助手</h3><p style="font-size:var(--text-sm)">客户 360 + 智能话术 + 邮件起草。</p></div>
+      <div class="use-case card animate-in"><div class="num">04</div><h3>客户成功</h3><p style="font-size:var(--text-sm)">合同要点提炼，续约风险预警。</p></div>
+      <div class="use-case card animate-in"><div class="num">05</div><h3>法务审阅</h3><p style="font-size:var(--text-sm)">合同对比与风险条款高亮。</p></div>
+      <div class="use-case card animate-in"><div class="num">06</div><h3>研发协同</h3><p style="font-size:var(--text-sm)">代码搜索、文档生成、Bug 分诊。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>12</span></div>
+</section>
+
+<!-- 13. SECURITY -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">安全与合规</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">安全不是补丁，而是平台的第一性原理</h2>
+    <div class="layout-grid-4">
+      <div class="card animate-in"><h3>SOC 2 Type II</h3><p style="font-size:var(--text-sm)">2025 年完成审计</p></div>
+      <div class="card animate-in"><h3>ISO 27001</h3><p style="font-size:var(--text-sm)">信息安全管理体系</p></div>
+      <div class="card animate-in"><h3>GDPR / CCPA</h3><p style="font-size:var(--text-sm)">数据驻留可选</p></div>
+      <div class="card animate-in"><h3>VPC / 私有化</h3><p style="font-size:var(--text-sm)">完全离线部署</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>13</span></div>
+</section>
+
+<!-- 14. ROADMAP -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">路线图</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">未来 12 个月，三步走向自治组织</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><div style="color:var(--color-primary);font-weight:700;font-size:var(--text-sm)">2026 Q2</div><h3 style="margin-top:var(--s-2)">语音助手</h3><p style="font-size:var(--text-sm)">实时会议转写 + 行动项提取</p></div>
+      <div class="card animate-in"><div style="color:var(--color-primary);font-weight:700;font-size:var(--text-sm)">2026 Q3</div><h3 style="margin-top:var(--s-2)">多模态 Agent</h3><p style="font-size:var(--text-sm)">读图、读表、读流程图</p></div>
+      <div class="card animate-in"><div style="color:var(--color-primary);font-weight:700;font-size:var(--text-sm)">2026 Q4</div><h3 style="margin-top:var(--s-2)">自治工作流</h3><p style="font-size:var(--text-sm)">目标导向 Agent，跨系统执行</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>14</span></div>
+</section>
+
+<!-- 15. PRICING / OFFER -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">发布优惠</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:center;text-align:center">
+    <div class="animate-in" style="font-size:180px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:var(--tracking-tight)">90 天</div>
+    <p class="animate-in" style="font-size:var(--text-xl);color:var(--color-fg-muted);margin-top:var(--s-4)">前 100 家企业免费试用，含上线辅导</p>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>15</span></div>
+</section>
+
+<!-- 16. CTA -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">下一步</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:flex-start;gap:var(--s-5)">
+    <h2 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch">让你的团队从今天开始，多一位 AI 同事。</h2>
+    <div class="animate-in" style="display:flex;gap:var(--s-3)">
+      <button style="background:var(--color-primary);color:#fff;border:none;padding:var(--s-3) var(--s-5);font-size:var(--text-base);font-weight:600;border-radius:var(--radius-full);cursor:pointer">立即开始 →</button>
+      <button style="background:transparent;color:var(--color-fg);border:1px solid var(--color-border);padding:var(--s-3) var(--s-5);font-size:var(--text-base);font-weight:600;border-radius:var(--radius-full);cursor:pointer">预约演示</button>
+    </div>
+    <p class="animate-in" style="font-size:var(--text-sm);color:var(--color-fg-subtle);margin-top:var(--s-3)">hello@smartbot.ai · smartbot.ai</p>
+  </div>
+  <div class="slide-footer"><span>NexusAI Inc.</span><span>16</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev" aria-label="上一页">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">16</span></span>
+  <button class="nav-btn" data-action="next" aria-label="下一页">→</button>
+</nav>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const pb=document.getElementById('progressBar');
+  let n=0;tot.textContent=total;
+  function show(i){i=Math.max(0,Math.min(total-1,i));n=i;slides.forEach((s,j)=>s.classList.toggle('active',j===i));cur.textContent=i+1;pb.style.width=((i+1)/total*100)+'%';}
+  function next(){show(n+1)}function prev(){show(n-1)}
+  document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',next));
+  document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',prev));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next()}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}if(e.key==='Home')show(0);if(e.key==='End')show(total-1)});
+  show(0);
+})();
+</script>
+</body>
+</html>

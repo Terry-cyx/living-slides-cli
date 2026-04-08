@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Next 3 Years of AI — Annual Keynote 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+  --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;
+  --text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+  --font-display:'Inter',-apple-system,sans-serif;
+  --font-body:'Inter',-apple-system,sans-serif;
+  --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+  --tracking-tight:-0.03em;--tracking-wide:0.08em;
+  --color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+  --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+  --color-border:#27272A;
+  --color-primary:#6366F1;--color-accent:#F59E0B;--color-hot:#F43F5E;
+  --color-success:#10B981;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight)}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);margin-bottom:var(--s-3)}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;margin-bottom:var(--s-2)}
+p{font-size:var(--text-base);color:var(--color-fg-muted)}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);max-width:38ch}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:700}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4)}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);min-height:0}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle)}
+.layout-hero{justify-content:center}
+.layout-hero h1.slide-title{font-size:var(--text-5xl);max-width:18ch}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4)}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4)}
+.card-metric .value{font-size:var(--text-4xl);font-weight:900;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-subtle);margin-top:var(--s-2);font-weight:600}
+.gradient-text{background:linear-gradient(135deg,var(--color-primary),var(--color-hot));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.huge{font-size:var(--text-6xl);font-weight:900;line-height:.95;letter-spacing:var(--tracking-tight)}
+.section-cover{background:linear-gradient(135deg,#0A0A0A 0%,#1a0e2e 100%);justify-content:center}
+.section-num{font-size:var(--text-6xl);font-weight:900;color:var(--color-primary);opacity:.4;line-height:1}
+.transition-slide{justify-content:center;align-items:center;text-align:center}
+.transition-slide .t-quote{font-size:var(--text-2xl);font-weight:600;max-width:24ch;line-height:var(--lh-snug)}
+.urgency-pulse{display:inline-block;background:var(--color-hot);color:#fff;font-size:var(--text-xs);font-weight:700;padding:var(--s-1) var(--s-2);border-radius:var(--radius-full);text-transform:uppercase;letter-spacing:var(--tracking-wide);margin-bottom:var(--s-3)}
+.cta-btn{background:var(--color-primary);color:#fff;border:none;padding:var(--s-3) var(--s-5);font-size:var(--text-base);font-weight:700;border-radius:var(--radius-full);cursor:pointer}
+.cta-btn.secondary{background:transparent;border:1px solid var(--color-border);color:var(--color-fg)}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;justify-content:center}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated)}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards}
+.slide.active .animate-in:nth-child(1){animation-delay:0ms}
+.slide.active .animate-in:nth-child(2){animation-delay:80ms}
+.slide.active .animate-in:nth-child(3){animation-delay:160ms}
+.slide.active .animate-in:nth-child(4){animation-delay:240ms}
+.slide.active .animate-in:nth-child(5){animation-delay:320ms}
+.chart-wrap{flex:1;position:relative;min-height:0;display:flex;align-items:center;justify-content:center}
+.chart-wrap img{max-width:100%;max-height:100%;border-radius:var(--radius-lg)}
+@media (max-width:768px){.slide{padding:var(--s-4) var(--s-3)}h1.slide-title{font-size:var(--text-2xl)}h2.slide-title{font-size:var(--text-xl)}.layout-split,.layout-grid-3,.layout-grid-4{grid-template-columns:1fr;gap:var(--s-3)}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- U1. Urgency cold open -->
+<section class="slide active layout-hero" style="background:linear-gradient(135deg,#0A0A0A 0%,#2a0a14 100%)">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">URGENT · 2025 DATA</span><span class="eyebrow">APRIL 04, 2026</span></div>
+  <div class="slide-body">
+    <span class="urgency-pulse animate-in">THE CLOCK IS RUNNING</span>
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch">In 2025 alone, AI capability doubled — twice.</h1>
+    <p class="subtitle animate-in">Stanford HAI 2025 Index: model performance crossed expert-human baselines on 7 of 10 reasoning benchmarks last year.</p>
+  </div>
+  <div class="slide-footer"><span>Source: Stanford HAI Index 2025</span><span>U1</span></div>
+</section>
+
+<!-- U2. 2025 data shock -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">2025 IN NUMBERS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">The year the curve broke from the page.</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">+142%</div><div class="label">Capability YoY 2025</div></div>
+      <div class="card card-metric animate-in"><div class="value">$184B</div><div class="label">Global AI capex 2025</div></div>
+      <div class="card card-metric animate-in"><div class="value">7/10</div><div class="label">Benchmarks beaten</div></div>
+      <div class="card card-metric animate-in"><div class="value">96%</div><div class="label">Inference cost drop</div></div>
+    </div>
+    <p class="animate-in" style="font-size:var(--text-sm);margin-top:var(--s-2);max-width:60ch">Sources: Stanford HAI 2025 · McKinsey State of AI 2025 · Artificial Analysis Q1 2026.</p>
+  </div>
+  <div class="slide-footer"><span>2025 baseline data</span><span>U2</span></div>
+</section>
+
+<!-- U3. Capability growth chart -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">THE CURVE</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">AI capability crossed the human expert line in 2025.</h2>
+    <div class="chart-wrap animate-in"><img src="./test07-assets/capability-growth.png" alt="AI capability vs human baseline 2018-2025"></div>
+  </div>
+  <div class="slide-footer"><span>Source: Stanford HAI Index 2025 · composite reasoning score</span><span>U3</span></div>
+</section>
+
+
+
+<!-- NL1. Urgency: 2025 shock data -->
+<section class="slide" style="background:linear-gradient(135deg,#0A0A0A 0%,#2a0a14 100%)">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">URGENCY · 2025</span><span class="eyebrow">THE CLOCK IS RUNNING</span></div>
+  <div class="slide-body">
+    <span class="urgency-pulse animate-in">3 YEARS LEFT</span>
+    <h2 class="slide-title animate-in">2025 was the year the goalposts moved — permanently.</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">+142%</div><div class="label">Capability YoY 2025</div></div>
+      <div class="card card-metric animate-in"><div class="value">$184B</div><div class="label">Global AI capex</div></div>
+      <div class="card card-metric animate-in"><div class="value">7/10</div><div class="label">Reasoning benchmarks beaten</div></div>
+      <div class="card card-metric animate-in"><div class="value">96%</div><div class="label">Inference cost drop in 24mo</div></div>
+    </div>
+    <p class="animate-in" style="font-size:var(--text-sm);max-width:60ch">Sources: Stanford HAI Index 2025 · McKinsey State of AI 2025 · Artificial Analysis Q1 2026.</p>
+  </div>
+  <div class="slide-footer"><span>2025 baseline</span><span>NL1</span></div>
+</section>
+
+<!-- NL2. Urgency: capability growth chart -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">THE CURVE THAT CHANGED EVERYTHING</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">From 0.3B parameters to 1.8T in five years.</h2>
+    <div class="chart-wrap animate-in"><img src="./test07-assets/ai-growth.png" alt="AI Capability Growth 2020-2025"></div>
+    <p class="animate-in" style="font-size:var(--text-sm);color:var(--color-fg-subtle)">Model parameter count, frontier systems 2020-2025. Source: Epoch AI 2025.</p>
+  </div>
+  <div class="slide-footer"><span>Source: Epoch AI 2025</span><span>NL2</span></div>
+</section>
+
+<!-- NL3. Urgency: why three years -->
+<section class="slide layout-hero" style="background:linear-gradient(135deg,#0A0A0A 0%,#2a0a14 100%)">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-hot)">WHY THREE YEARS</span></div>
+  <div class="slide-body">
+    <span class="urgency-pulse animate-in">DEFAULTS HARDEN BY 2028</span>
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:22ch">Every governance window in computing history closed in under 36 months. This one will too.</h1>
+    <p class="subtitle animate-in">If you are not in the room by Q4 2026, you are downstream of someone else's defaults for the next decade.</p>
+  </div>
+  <div class="slide-footer"><span>The 3-year window</span><span>NL3</span></div>
+</section>
+
+<!-- 1. Title / Hook -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">AI KEYNOTE 2026</span><span class="eyebrow">APRIL 04, 2026</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in">The Next <span class="gradient-text">3 Years</span> of AI</h1>
+    <p class="subtitle animate-in">Why the window for shaping the future of intelligence is closing faster than anyone expected.</p>
+  </div>
+  <div class="slide-footer"><span>Dr. Lin Wei · Annual AI Summit</span><span>1 / 18</span></div>
+</section>
+
+<!-- 2. Personal Hook -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">A PERSONAL STORY</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Two years ago, I told my team this was impossible.</h2>
+    <p class="animate-in" style="font-size:var(--text-lg);max-width:48ch;">In 2024, I bet a colleague dinner that no model would write production code unsupervised before 2030. Last month, I lost that bet — and three more after it.</p>
+  </div>
+  <div class="slide-footer"><span>Dr. Lin Wei</span><span>2 / 18</span></div>
+</section>
+
+<!-- 3. Credibility -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">WHO IS SPEAKING</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">15 years building AI systems. 4 of them in shock.</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">15</div><div class="label">Years in AI</div></div>
+      <div class="card card-metric animate-in"><div class="value">3</div><div class="label">FAANG labs</div></div>
+      <div class="card card-metric animate-in"><div class="value">120+</div><div class="label">Papers cited</div></div>
+      <div class="card card-metric animate-in"><div class="value">2</div><div class="label">Startups exited</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Dr. Lin Wei · ex-DeepMind, ex-OpenAI</span><span>3 / 18</span></div>
+</section>
+
+<!-- 4. Main Thesis -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">THE THESIS</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:22ch;">AI 将在 3 年内 重写 80% 的知识工作 —— 而我们只剩三年来决定它的形态。</h1>
+    <p class="subtitle animate-in">If you remember one slide tonight, remember this one.</p>
+  </div>
+  <div class="slide-footer"><span>Main Thesis</span><span>4 / 18</span></div>
+</section>
+
+
+<!-- COVER 1: Section 1 现状 -->
+<section class="slide section-cover">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-primary)">SECTION ONE</span><span class="eyebrow">CURRENT STATE</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:flex-start">
+    <div class="section-num animate-in">01</div>
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch">现状 — Where AI actually lives today.</h1>
+    <p class="subtitle animate-in">Production deployments, not Twitter demos.</p>
+  </div>
+  <div class="slide-footer"><span>Section 1 cover</span><span>S1</span></div>
+</section>
+
+<!-- TRANSITION 1 -->
+<section class="slide transition-slide">
+  <div class="slide-body" style="justify-content:center;align-items:center;text-align:center">
+    <p class="t-quote animate-in">"From the hype cycle to the production line — let us look at what is actually shipping."</p>
+  </div>
+  <div class="slide-footer"><span>Transition</span><span>T1</span></div>
+</section>
+
+<!-- 5. Section 1 intro: Current State -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">SECTION 1 · CURRENT STATE</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Where AI actually is today, not where the hype says.</h2>
+    <p class="animate-in" style="max-width:46ch;">Forget Twitter demos. Look at production deployments inside the Fortune 500.</p>
+  </div>
+  <div class="slide-footer"><span>Section 1 of 3</span><span>5 / 18</span></div>
+</section>
+
+<!-- 6. Current State: Metrics -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">REALITY CHECK</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">73% of enterprises now run AI in production.</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">73%</div><div class="label">F500 in production</div></div>
+      <div class="card card-metric animate-in"><div class="value">$184B</div><div class="label">2025 spend</div></div>
+      <div class="card card-metric animate-in"><div class="value">11x</div><div class="label">Inference cost drop</div></div>
+      <div class="card card-metric animate-in"><div class="value">4.2M</div><div class="label">Devs using AI daily</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: McKinsey State of AI 2025</span><span>6 / 18</span></div>
+</section>
+
+<!-- 7. Current State: capability chart -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">BENCHMARK SATURATION</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Every benchmark we built is being saturated within 18 months.</h2>
+    <div class="chart-wrap animate-in"><canvas id="benchChart"></canvas></div>
+  </div>
+  <div class="slide-footer"><span>Source: Stanford HAI Index 2025</span><span>7 / 18</span></div>
+</section>
+
+<!-- 8. Section 2 (Updated) intro: Emerging Patterns -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">SECTION 2 · EMERGING PATTERNS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">The four patterns nobody is talking about loud enough.</h2>
+    <p class="animate-in">Patterns that will define 2026-2028, hiding in plain sight.</p>
+  </div>
+  <div class="slide-footer"><span>Section 2 (Updated) of 3</span><span>8 / 18</span></div>
+</section>
+
+<!-- 9. Pattern: Agents -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PATTERN 01 · AGENTIC WORK</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Single-prompt apps are already obsolete.</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>Long-horizon</h3><p style="font-size:var(--text-sm)">Tasks running 6+ hours autonomously, with self-correction loops.</p></div>
+      <div class="card animate-in"><h3>Multi-agent</h3><p style="font-size:var(--text-sm)">Specialist agents collaborate via shared memory, not chat.</p></div>
+      <div class="card animate-in"><h3>Tool-rich</h3><p style="font-size:var(--text-sm)">Average task touches 12 tools — browser, code, DB, finance.</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Pattern 1 of 4</span><span>9 / 18</span></div>
+</section>
+
+<!-- 10. Pattern: small models -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PATTERN 02 · THE SHRINK</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">2025 frontier-quality now fits on a phone.</h2>
+    <p class="animate-in" style="max-width:48ch;">Distillation, quantization, and RL-from-execution have collapsed the gap between cloud GPUs and consumer silicon. Inference economics flip in 2026.</p>
+  </div>
+  <div class="slide-footer"><span>Pattern 2 of 4</span><span>10 / 18</span></div>
+</section>
+
+<!-- 11. Pattern: cost collapse chart -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PATTERN 03 · COST COLLAPSE</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Cost per million tokens fell 96% in 24 months.</h2>
+    <div class="chart-wrap animate-in"><canvas id="costChart"></canvas></div>
+  </div>
+  <div class="slide-footer"><span>Source: Artificial Analysis 2026 Q1</span><span>11 / 18</span></div>
+</section>
+
+<!-- 12. Pattern: regulation -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PATTERN 04 · GOVERNANCE</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Regulation is 24 months behind capability — and falling.</h2>
+    <p class="animate-in" style="max-width:48ch;">EU AI Act, Beijing Algorithm Law, US Executive Order 14110: written for a world where models still hallucinate citations. None of them anticipated agents.</p>
+  </div>
+  <div class="slide-footer"><span>Pattern 4 of 4</span><span>12 / 18</span></div>
+</section>
+
+
+<!-- COVER 3: Section 3 未来 -->
+<section class="slide section-cover">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-primary)">SECTION THREE</span><span class="eyebrow">FUTURE PREDICTIONS</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:flex-start">
+    <div class="section-num animate-in">03</div>
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch">未来 — Three predictions I will defend publicly.</h1>
+    <p class="subtitle animate-in">By end of 2028. Bookmark this slide.</p>
+  </div>
+  <div class="slide-footer"><span>Section 3 cover</span><span>S3</span></div>
+</section>
+
+<!-- TRANSITION 3 -->
+<section class="slide transition-slide">
+  <div class="slide-body" style="justify-content:center;align-items:center;text-align:center">
+    <p class="t-quote animate-in">"Patterns set the stage. Predictions are how I bet on the next three years."</p>
+  </div>
+  <div class="slide-footer"><span>Transition</span><span>T3</span></div>
+</section>
+
+<!-- 13. Section 3 intro: Future predictions -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">SECTION 3 · FUTURE PREDICTIONS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Three predictions I am willing to be wrong about — publicly.</h2>
+    <p class="animate-in">By end of 2028.</p>
+  </div>
+  <div class="slide-footer"><span>Section 3 of 3</span><span>13 / 18</span></div>
+</section>
+
+<!-- 14. Prediction 1 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PREDICTION 01</span></div>
+  <div class="slide-body" style="justify-content:center;text-align:left;">
+    <div class="huge animate-in gradient-text" style="font-size:var(--text-5xl)">80%</div>
+    <p class="animate-in" style="font-size:var(--text-xl);max-width:30ch;margin-top:var(--s-3)">of new software will be written by AI agents under human review by 2028.</p>
+  </div>
+  <div class="slide-footer"><span>Prediction 1 of 3</span><span>14 / 18</span></div>
+</section>
+
+<!-- 15. Prediction 2 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PREDICTION 02</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <div class="huge animate-in gradient-text" style="font-size:var(--text-5xl)">$1T</div>
+    <p class="animate-in" style="font-size:var(--text-xl);max-width:30ch;margin-top:var(--s-3)">of net-new GDP attributable to autonomous AI workflows by 2028.</p>
+  </div>
+  <div class="slide-footer"><span>Prediction 2 of 3</span><span>15 / 18</span></div>
+</section>
+
+<!-- 16. Prediction 3 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PREDICTION 03</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <div class="huge animate-in gradient-text" style="font-size:var(--text-5xl)">3 yrs</div>
+    <p class="animate-in" style="font-size:var(--text-xl);max-width:32ch;margin-top:var(--s-3)">is all the time we have to write the safety, labor, and education playbooks. After that, the defaults harden.</p>
+  </div>
+  <div class="slide-footer"><span>Prediction 3 of 3</span><span>16 / 18</span></div>
+</section>
+
+<!-- 17. Key Takeaways -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">KEY TAKEAWAYS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">If you remember three things tonight.</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3 style="color:var(--color-primary)">01</h3><p style="font-size:var(--text-sm);color:var(--color-fg)">The window is 3 years, not 10. Plan accordingly.</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-primary)">02</h3><p style="font-size:var(--text-sm);color:var(--color-fg)">Agents, not chatbots, are the unit of work.</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-primary)">03</h3><p style="font-size:var(--text-sm);color:var(--color-fg)">Whoever writes the defaults wins the decade.</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Key Takeaways</span><span>17 / 18</span></div>
+</section>
+
+<!-- 18. CTA -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">YOUR MOVE</span></div>
+  <div class="slide-body" style="justify-content:center;gap:var(--s-5)">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:20ch">Don't wait for AI 将在 3 年内 settle the question for you.</h1>
+    <div class="animate-in" style="display:flex;gap:var(--s-3)">
+      <button class="cta-btn">Join the working group →</button>
+      <button class="cta-btn secondary">Read the full report</button>
+    </div>
+    <p class="animate-in" style="font-size:var(--text-sm);color:var(--color-fg-subtle)">linwei@aikeynote.org · @linwei_ai</p>
+  </div>
+  <div class="slide-footer"><span>Dr. Lin Wei</span><span>18 / 18</span></div>
+</section>
+
+
+
+<!-- ROADMAP. CTA roadmap visualization -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow" style="color:var(--color-primary)">YOUR ROADMAP</span><span class="eyebrow">3 MOVES, 12 MONTHS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">From today to your first shipped AI feature.</h2>
+    <div class="chart-wrap animate-in"><img src="./test07-assets/cta-roadmap.png" alt="CTA roadmap timeline"></div>
+    <p class="animate-in" style="font-size:var(--text-sm);color:var(--color-fg-subtle);text-align:center">Today -> Q3 -> Year-end. Three checkpoints. No excuses.</p>
+  </div>
+  <div class="slide-footer"><span>Roadmap</span><span>R1</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">21</span></span>
+  <button class="nav-btn" data-action="next">→</button>
+</nav>
+
+<script>
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.font.size=14;
+Chart.defaults.color="#A1A1AA";
+Chart.defaults.borderColor="#27272A";
+Chart.defaults.plugins.legend.labels.color="#FAFAFA";
+Chart.defaults.scale.grid.color="rgba(255,255,255,0.05)";
+Chart.defaults.scale.ticks.color="#A1A1AA";
+
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const pb=document.getElementById('progressBar');
+  let i=0;
+  tot.textContent=total;
+  function show(n){n=Math.max(0,Math.min(total-1,n));i=n;slides.forEach((s,k)=>s.classList.toggle('active',k===n));cur.textContent=n+1;pb.style.width=((n+1)/total*100)+'%';}
+  document.querySelectorAll('[data-action=next]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+  document.querySelectorAll('[data-action=prev]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1)}if(e.key==='ArrowLeft'){e.preventDefault();show(i-1)}if(e.key==='Home')show(0);if(e.key==='End')show(total-1)});
+  show(0);
+})();
+
+// Charts (initialized once)
+window.addEventListener('load',()=>{
+  const bench=document.getElementById('benchChart');
+  if(bench){new Chart(bench,{type:'line',data:{labels:['2019','2020','2021','2022','2023','2024','2025'],datasets:[
+    {label:'MMLU',data:[32,44,57,67,82,89,92],borderColor:'#6366F1',backgroundColor:'rgba(99,102,241,.1)',tension:.3,borderWidth:3},
+    {label:'GPQA',data:[15,18,22,28,40,55,72],borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.1)',tension:.3,borderWidth:3},
+    {label:'SWE-Bench',data:[2,4,8,14,28,45,65],borderColor:'#F43F5E',backgroundColor:'rgba(244,63,94,.1)',tension:.3,borderWidth:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,max:100,title:{display:true,text:'Score (%)'}}}}});}
+
+  const cost=document.getElementById('costChart');
+  if(cost){new Chart(cost,{type:'line',data:{labels:['2024 Q1','2024 Q3','2025 Q1','2025 Q3','2026 Q1'],datasets:[
+    {label:'$ per 1M tokens (GPT-4 class)',data:[30,18,8,3,1.2],borderColor:'#10B981',backgroundColor:'rgba(16,185,129,.15)',tension:.3,borderWidth:3,fill:true}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,title:{display:true,text:'USD'}}}}});}
+});
+</script>
+<ul style="list-style:none;padding:0;font-size:24px;line-height:2"><li>1. Start experimenting with AI today</li><li>2. Build your AI knowledge base by Q3</li><li>3. Ship your first AI feature by year-end</li></ul></body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 产品路线图 — Annual Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+  --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;
+  --text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+  --font-display:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;
+  --font-body:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;
+  --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+  --tracking-tight:-0.03em;--tracking-wide:0.05em;
+  --color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+  --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+  --color-border:#27272A;
+  --color-primary:#6366F1;--color-accent:#F59E0B;
+  --color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;--color-info:#3B82F6;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);
+  font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);
+  -webkit-font-smoothing:antialiased;overflow:hidden;}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));
+  aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-6) var(--s-7);
+  background:var(--color-bg);opacity:0;visibility:hidden;
+  transition:opacity 300ms var(--ease-out);overflow:hidden;}
+.slide.active{opacity:1;visibility:visible;}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;
+  line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);}
+h2.slide-title{font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);
+  letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3);}
+h3{font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2);}
+p{font-size:var(--text-base);color:var(--color-fg-muted);}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);
+  color:var(--color-fg-subtle);font-weight:600;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-3);}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-3);min-height:0;}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-3);
+  font-size:var(--text-xs);color:var(--color-fg-subtle);}
+.layout-hero{justify-content:center;align-items:flex-start;}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);align-items:center;flex:1;}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);padding:var(--s-3);}
+.card-metric .value{font-size:var(--text-3xl);font-weight:800;letter-spacing:var(--tracking-tight);
+  line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;
+  color:var(--color-fg-subtle);margin-top:var(--s-2);}
+.chart-frame{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+.chart-frame img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--radius-lg);}
+.theme-pill{display:inline-block;padding:6px 14px;border-radius:var(--radius-full);
+  background:var(--color-bg-elevated);border:1px solid var(--color-border);font-size:var(--text-xs);
+  color:var(--color-fg-muted);font-weight:600;}
+.milestone-row{display:flex;align-items:flex-start;gap:var(--s-3);padding:var(--s-2) 0;
+  border-bottom:1px solid var(--color-border);}
+.milestone-row:last-child{border-bottom:none;}
+.milestone-tag{flex:0 0 110px;color:var(--color-primary);font-size:var(--text-sm);font-weight:600;
+  font-variant-numeric:tabular-nums;}
+.milestone-text{flex:1;font-size:var(--text-base);color:var(--color-fg);}
+.milestone-text small{display:block;color:var(--color-fg-subtle);font-size:var(--text-xs);margin-top:4px;}
+.risk-row{display:grid;grid-template-columns:1fr 90px 90px 1.5fr;gap:var(--s-2);
+  padding:var(--s-2) 0;border-bottom:1px solid var(--color-border);align-items:center;font-size:var(--text-sm);}
+.risk-row:last-child{border-bottom:none;}
+.risk-row.head{color:var(--color-fg-subtle);font-size:var(--text-xs);text-transform:uppercase;
+  letter-spacing:0.05em;font-weight:600;}
+.badge{display:inline-block;padding:3px 10px;border-radius:var(--radius-full);font-size:var(--text-xs);
+  font-weight:600;text-align:center;}
+.badge-high{background:rgba(239,68,68,.15);color:#FCA5A5;}
+.badge-med{background:rgba(245,158,11,.15);color:#FCD34D;}
+.badge-low{background:rgba(16,185,129,.15);color:#6EE7B7;}
+.tag-new{display:inline-block;padding:2px 8px;border-radius:var(--radius-full);
+  background:var(--color-error);color:#fff;font-size:11px;font-weight:700;margin-left:var(--s-2);
+  vertical-align:middle;}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;
+  align-items:center;gap:var(--s-2);background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);
+  border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100;}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;
+  border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);
+  display:flex;align-items:center;justify-content:center;}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated);}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);
+  transition:width 300ms var(--ease-out);z-index:101;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards;}
+.slide.active .animate-in:nth-child(1){animation-delay:0ms;}
+.slide.active .animate-in:nth-child(2){animation-delay:80ms;}
+.slide.active .animate-in:nth-child(3){animation-delay:160ms;}
+.slide.active .animate-in:nth-child(4){animation-delay:240ms;}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+@media (max-width:768px){.slide{padding:var(--s-4) var(--s-3);}.layout-split,.layout-grid-3,.layout-grid-4{grid-template-columns:1fr;gap:var(--s-3);}}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1. TITLE -->
+<section class="slide active layout-hero">
+  <div class="slide-header">
+    <span class="eyebrow">PRODUCT · ROADMAP</span>
+    <span class="eyebrow">2026 ANNUAL PLAN</span>
+  </div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">
+      2026 产品路线图<br>从规模化走向智能化
+    </h1>
+    <p class="subtitle animate-in">面向企业客户的全年产品规划与执行框架</p>
+    <div class="animate-in" style="display:flex;gap:var(--s-2);margin-top:var(--s-3);">
+      <span class="theme-pill">12 个月 · 4 个季度</span>
+      <span class="theme-pill">10 大里程碑</span>
+      <span class="theme-pill">6 个核心团队</span>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Product Org · v2.1</span><span>1 / 17</span></div>
+</section>
+
+<!-- 2. 2025 RETROSPECTIVE -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">2025 RETROSPECTIVE</span><span class="eyebrow">YoY +47%</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">2025 年我们交付了三件大事</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">$8.4M</div><div class="label">ARR</div></div>
+      <div class="card card-metric animate-in"><div class="value">+47%</div><div class="label">YoY 增长</div></div>
+      <div class="card card-metric animate-in"><div class="value">68</div><div class="label">NPS</div></div>
+      <div class="card card-metric animate-in"><div class="value">2.4%</div><div class="label">月流失</div></div>
+    </div>
+    <div class="layout-grid-3" style="margin-top:var(--s-3);">
+      <div class="card animate-in"><h3>平台稳定性</h3><p style="font-size:var(--text-sm);">99.95% 可用性，P99 延迟降至 180ms</p></div>
+      <div class="card animate-in"><h3>客户拓展</h3><p style="font-size:var(--text-sm);">新增 12 个企业 Logo，含 3 家世界 500 强</p></div>
+      <div class="card animate-in"><h3>团队规模</h3><p style="font-size:var(--text-sm);">研发团队从 28 人扩张至 51 人</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 2025 财年报告</span><span>2 / 17</span></div>
+</section>
+
+<!-- 3. STRATEGIC THEMES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">STRATEGIC THEMES</span><span class="eyebrow">2026</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">2026 年的三个战略主题</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in" style="border-left:4px solid var(--color-primary);">
+        <div class="eyebrow" style="color:var(--color-primary);">主题 01</div>
+        <h3 style="margin-top:var(--s-1);">智能化 Intelligence</h3>
+        <p style="font-size:var(--text-sm);">将 AI 能力嵌入到核心工作流，从被动工具升级为智能助手。</p>
+      </div>
+      <div class="card animate-in" style="border-left:4px solid var(--color-accent);">
+        <div class="eyebrow" style="color:var(--color-accent);">主题 02</div>
+        <h3 style="margin-top:var(--s-1);">企业级 Enterprise</h3>
+        <p style="font-size:var(--text-sm);">完善 SSO、审计、合规、SLA，赢取大型客户的长期承诺。</p>
+      </div>
+      <div class="card animate-in" style="border-left:4px solid var(--color-success);">
+        <div class="eyebrow" style="color:var(--color-success);">主题 03</div>
+        <h3 style="margin-top:var(--s-1);">国际化 Global</h3>
+        <p style="font-size:var(--text-sm);">完成 i18n、多区域部署与本地化运营，覆盖东南亚与欧洲。</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Strategy Council</span><span>3 / 17</span></div>
+</section>
+
+<!-- 4. GANTT TIMELINE (UPDATED) -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="eyebrow">TIMELINE · UPDATED</span>
+    <span class="eyebrow">Q2 顺延 2 周</span>
+  </div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">全年甘特图：Q2 里程碑顺延 2 周后的最新视图</h2>
+    <div class="chart-frame animate-in">
+      <img src="./test09-assets/gantt-updated.png" alt="2026 路线图甘特图（更新版）">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: Roadmap Tracker · v2026.02</span><span>4 / 17</span></div>
+</section>
+
+<!-- 5. RISK ASSESSMENT (added Round 1) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">RISK ASSESSMENT</span><span class="eyebrow">Q2 顺延影响</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q2 顺延带来的连锁风险与缓解</h2>
+    <div class="animate-in">
+      <div class="risk-row head">
+        <div>风险</div><div>概率</div><div>影响</div><div>缓解措施</div>
+      </div>
+      <div class="risk-row">
+        <div>Q3 启动延迟，AI Beta 进入旺季前未完成</div>
+        <div><span class="badge badge-high">High</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>AI 团队提前 1 周冲刺，并行推进数据准备</div>
+      </div>
+      <div class="risk-row">
+        <div>国际化节奏被打乱，影响欧洲发布会</div>
+        <div><span class="badge badge-med">Med</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>i18n 拆分为 EU 优先 / APAC 次序两个子流</div>
+      </div>
+      <div class="risk-row">
+        <div>性能优化让位于功能交付</div>
+        <div><span class="badge badge-med">Med</span></div>
+        <div><span class="badge badge-med">Med</span></div>
+        <div>设立 P99 延迟硬指标，超阈值自动触发预警</div>
+      </div>
+      <div class="risk-row">
+        <div>Q4 年度发布窗口被压缩</div>
+        <div><span class="badge badge-low">Low</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>预留 2 周缓冲，关键 feature 可延期至 2027 Q1</div>
+      </div>
+      <div class="risk-row">
+        <div>团队加班引发离职率上升</div>
+        <div><span class="badge badge-med">Med</span></div>
+        <div><span class="badge badge-med">Med</span></div>
+        <div>启动 retention bonus，并暂停低优先级项目</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>新增 · Round 1 风险评估</span><span>5 / 17</span></div>
+</section>
+
+<!-- 6. Q1 MILESTONES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">Q1 · JAN–MAR</span><span class="eyebrow">基础设施季度</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q1：完成平台升级与移动端 v3.0 发布</h2>
+    <div class="animate-in">
+      <div class="milestone-row"><div class="milestone-tag">W1–W10</div><div class="milestone-text">Platform 升级至 v4 内核<small>统一服务网格 · 灰度发布管道 · 可观测性增强</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W2–W12</div><div class="milestone-text">移动端 v3.0 发布<small>新设计语言 · 离线模式 · 推送重构</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W8–W13</div><div class="milestone-text">数据中台一期上线<small>统一指标层 · 自助分析 · 数据血缘</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W10–W13</div><div class="milestone-text">企业版 SSO（SAML / OIDC）<small>对接 Okta、Azure AD、Google Workspace</small></div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Owner: 平台 + 移动 + 数据</span><span>6 / 17</span></div>
+</section>
+
+<!-- 7. Q2 MILESTONES (dates pushed +2 weeks) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">Q2 · APR–JUN</span><span class="eyebrow">已顺延 +2 周</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q2：国际化与 AI 助手 Beta（已顺延 2 周）</h2>
+    <div class="animate-in">
+      <div class="milestone-row"><div class="milestone-tag" style="color:var(--color-accent);">W16–W24 ⚠</div><div class="milestone-text">国际化 i18n 框架（原 W14–W22）<small>多语言架构 · 时区 · 本地化资源管线</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag" style="color:var(--color-accent);">W20–W30 ⚠</div><div class="milestone-text">AI 助手 Beta 上线（原 W18–W28）<small>对话式工作流 · 私有数据问答 · 内测 50 客户</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag" style="color:var(--color-accent);">W26–W34 ⚠</div><div class="milestone-text">性能优化冲刺（原 W24–W32）<small>P99 延迟降至 120ms · 数据库读写分离</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">—</div><div class="milestone-text">Q2 季度评审<small>新增 2 周缓冲，缓解下游交付压力</small></div></div>
+    </div>
+    <p class="animate-in" style="margin-top:var(--s-2);font-size:var(--text-xs);color:var(--color-accent);">
+      ⚠ 顺延原因：依赖团队资源紧张 + 数据中台一期收尾占用 2 周冲刺。
+    </p>
+  </div>
+  <div class="slide-footer"><span>Updated · Round 1 编辑</span><span>7 / 17</span></div>
+</section>
+
+<!-- 8. Q3 MILESTONES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">Q3 · JUL–SEP</span><span class="eyebrow">生态扩张</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q3：开放 API v2 与合规 SOC2 双线并进</h2>
+    <div class="animate-in">
+      <div class="milestone-row"><div class="milestone-tag">W30–W40</div><div class="milestone-text">开放 API v2 + 开发者门户<small>统一 OAuth · Webhook 中心 · SDK · 沙箱</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W34–W44</div><div class="milestone-text">SOC2 Type II 审计闭环<small>控制项 · 证据收集 · 第三方审计</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W36–W42</div><div class="milestone-text">AI 助手 GA（基于 Beta 反馈）<small>计费 · 限流 · 多模型路由</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W38–W44</div><div class="milestone-text">国际化首批语言上线<small>英 / 日 / 西 / 德 4 语种</small></div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Owner: AI + Platform + Security</span><span>8 / 17</span></div>
+</section>
+
+<!-- 9. Q4 MILESTONES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">Q4 · OCT–DEC</span><span class="eyebrow">年度发布</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q4：年度发布会与 2027 展望</h2>
+    <div class="animate-in">
+      <div class="milestone-row"><div class="milestone-tag">W40–W48</div><div class="milestone-text">企业版正式 GA<small>SLA 99.99% · 24×7 支持 · 专属客户成功</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W44–W52</div><div class="milestone-text">2026 年度发布会（线下 + 线上）<small>5 大新功能首发 · 客户案例 · 合作伙伴展区</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W46–W50</div><div class="milestone-text">AI 智能推荐 v1（新增）<small>基于行为数据的个性化推荐 · A/B 框架</small></div></div>
+      <div class="milestone-row"><div class="milestone-tag">W48–W52</div><div class="milestone-text">2027 路线图启动会<small>客户访谈 · 内部研讨 · 下年规划</small></div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Owner: All Hands</span><span>9 / 17</span></div>
+</section>
+
+<!-- 10. RESOURCE ALLOCATION (pie + bar embedded) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">RESOURCE ALLOCATION</span><span class="eyebrow">2026 全年</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">资源向 Data/AI 倾斜，支撑智能化主题</h2>
+    <div class="layout-split" style="gap:var(--s-4);">
+      <div class="chart-frame animate-in" style="height:100%;">
+        <img src="./test09-assets/resource-pie.png" alt="2026 资源分配饼图">
+      </div>
+      <div class="chart-frame animate-in" style="height:100%;">
+        <img src="./test09-assets/resource-grouped.png" alt="各团队 Q1-Q4 投入分布">
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 团队规划 v3 · Round 3 调整</span><span>10 / 17</span></div>
+</section>
+
+<!-- 11. TEAM STRUCTURE -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">TEAM STRUCTURE</span><span class="eyebrow">62 人</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">2026 团队结构：6 个产品中队 + 共享平台</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>Platform · 14</h3><p style="font-size:var(--text-sm);">基础设施 · 服务网格 · 可观测性</p></div>
+      <div class="card animate-in"><h3>Mobile · 10</h3><p style="font-size:var(--text-sm);">iOS · Android · Cross-platform 构建</p></div>
+      <div class="card animate-in"><h3>Data / AI · 13</h3><p style="font-size:var(--text-sm);">数据中台 · 模型 · 推荐 · 智能助手</p></div>
+      <div class="card animate-in"><h3>Infra · 7</h3><p style="font-size:var(--text-sm);">DevOps · SRE · 安全合规</p></div>
+      <div class="card animate-in"><h3>Design · 6</h3><p style="font-size:var(--text-sm);">产品设计 · 设计系统 · 用户研究</p></div>
+      <div class="card animate-in"><h3>QA · 12</h3><p style="font-size:var(--text-sm);">自动化 · 性能 · 兼容性测试</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>HR Plan · Round 3 调整</span><span>11 / 17</span></div>
+</section>
+
+<!-- 12. PRIORITY MATRIX (added Round 2) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PRIORITY MATRIX</span><span class="eyebrow">影响 vs 成本</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">优先级评估：AI 智能推荐位列「快赢区」<span class="tag-new">NEW</span></h2>
+    <div class="chart-frame animate-in">
+      <img src="./test09-assets/priority-matrix.png" alt="功能优先级矩阵">
+    </div>
+  </div>
+  <div class="slide-footer"><span>新增 · Round 2 评估 · ★ 标记为新功能</span><span>12 / 17</span></div>
+</section>
+
+<!-- 13. NEW FEATURE: AI 智能推荐 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">NEW FEATURE</span><span class="eyebrow">2026 Q4 交付</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">AI 智能推荐：低成本撬动高影响的快赢机会<span class="tag-new">NEW</span></h2>
+    <div class="layout-split">
+      <div class="animate-in">
+        <h3>它解决什么</h3>
+        <p style="font-size:var(--text-sm);margin-bottom:var(--s-3);">用户在功能广度增加后，发现率与激活率持续下滑。通过行为数据的个性化推荐，可将激活率提升 15-25%。</p>
+        <h3>核心能力</h3>
+        <p style="font-size:var(--text-sm);">· 基于事件流的实时画像<br>· 召回 + 排序双层模型<br>· A/B 实验框架内置<br>· 推荐解释可观测</p>
+      </div>
+      <div class="animate-in">
+        <div class="card" style="border-color:var(--color-error);">
+          <div class="eyebrow" style="color:var(--color-error);">优先级评估摘要</div>
+          <div style="margin-top:var(--s-2);font-size:var(--text-sm);line-height:var(--lh-snug);">
+            <div style="margin-bottom:var(--s-1);"><strong>影响</strong>：9.5 / 10（快赢区）</div>
+            <div style="margin-bottom:var(--s-1);"><strong>成本</strong>：4.0 / 10（中低）</div>
+            <div style="margin-bottom:var(--s-1);"><strong>团队</strong>：Data/AI 主导，3 人 × 8 周</div>
+            <div style="margin-bottom:var(--s-1);"><strong>排期</strong>：W46–W50（Q4）</div>
+            <div><strong>依赖</strong>：数据中台一期、AI 助手 GA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>新增 · Round 2 编辑</span><span>13 / 17</span></div>
+</section>
+
+<!-- 14. KEY RISKS (overall) -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">KEY RISKS</span><span class="eyebrow">全年视角</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">五大全年风险与所有者</h2>
+    <div class="animate-in">
+      <div class="risk-row head"><div>风险</div><div>概率</div><div>影响</div><div>所有者 / 缓解</div></div>
+      <div class="risk-row"><div>AI 模型成本失控</div><div><span class="badge badge-high">High</span></div><div><span class="badge badge-high">High</span></div><div>AI Lead · 多模型路由 + 缓存 + 配额</div></div>
+      <div class="risk-row"><div>SOC2 审计延期</div><div><span class="badge badge-med">Med</span></div><div><span class="badge badge-high">High</span></div><div>Security Lead · 提前 8 周准备证据</div></div>
+      <div class="risk-row"><div>关键人员流失</div><div><span class="badge badge-med">Med</span></div><div><span class="badge badge-high">High</span></div><div>HR · 双备份 · retention 计划</div></div>
+      <div class="risk-row"><div>欧洲数据主权法规变动</div><div><span class="badge badge-med">Med</span></div><div><span class="badge badge-med">Med</span></div><div>Legal · 法务订阅 · EU 区域部署预案</div></div>
+      <div class="risk-row"><div>客户集中度风险</div><div><span class="badge badge-low">Low</span></div><div><span class="badge badge-high">High</span></div><div>CRO · TOP10 客户占比 ≤ 35%</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Risk Council · 季度复盘</span><span>14 / 17</span></div>
+</section>
+
+<!-- 15. SUCCESS METRICS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">SUCCESS METRICS</span><span class="eyebrow">2026 OKR</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">2026 年度成功标准</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">$15M</div><div class="label">ARR 目标</div></div>
+      <div class="card card-metric animate-in"><div class="value">75</div><div class="label">NPS 目标</div></div>
+      <div class="card card-metric animate-in"><div class="value">1.5%</div><div class="label">月流失上限</div></div>
+      <div class="card card-metric animate-in"><div class="value">40%</div><div class="label">国际收入占比</div></div>
+    </div>
+    <div class="layout-grid-4" style="margin-top:var(--s-3);">
+      <div class="card card-metric animate-in"><div class="value">99.99%</div><div class="label">企业 SLA</div></div>
+      <div class="card card-metric animate-in"><div class="value">120ms</div><div class="label">P99 延迟</div></div>
+      <div class="card card-metric animate-in"><div class="value">25</div><div class="label">新增 Logo</div></div>
+      <div class="card card-metric animate-in"><div class="value">15%</div><div class="label">激活率提升</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>OKR · Strategy Council</span><span>15 / 17</span></div>
+</section>
+
+<!-- 16. NEXT STEPS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">NEXT STEPS</span><span class="eyebrow">本周内</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">下一步：让计划落地的 5 个动作</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>1. 团队对齐</h3><p style="font-size:var(--text-sm);">本周内完成 6 个中队的目标对齐与 OKR 拆解。</p></div>
+      <div class="card animate-in"><h3>2. 资源 commit</h3><p style="font-size:var(--text-sm);">财务确认 Headcount 与第三方采购预算。</p></div>
+      <div class="card animate-in"><h3>3. 风险监控</h3><p style="font-size:var(--text-sm);">周会跟踪 Q2 顺延的下游影响，月度复盘。</p></div>
+      <div class="card animate-in"><h3>4. 客户访谈</h3><p style="font-size:var(--text-sm);">TOP20 客户走访，验证主题与优先级假设。</p></div>
+      <div class="card animate-in"><h3>5. 沟通节奏</h3><p style="font-size:var(--text-sm);">月度全员路线图同步 + 季度董事会汇报。</p></div>
+      <div class="card animate-in" style="border-color:var(--color-primary);"><h3 style="color:var(--color-primary);">→ 立即行动</h3><p style="font-size:var(--text-sm);">本周五 16:00 启动 Q1 kickoff 全员会议。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Owner: CPO Office</span><span>16 / 17</span></div>
+</section>
+
+<!-- 17. CLOSING -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">THANK YOU</span><span class="eyebrow">2026</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:20ch;">
+      纪律 × 节奏 × 复利<br>让 2026 成为最值得期待的一年
+    </h1>
+    <p class="subtitle animate-in">问题与讨论：roadmap@company.com</p>
+  </div>
+  <div class="slide-footer"><span>Product Org · 2026 Annual Plan v2.1</span><span>17 / 17</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev" aria-label="Previous">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">17</span></span>
+  <button class="nav-btn" data-action="next" aria-label="Next">→</button>
+</nav>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const pb=document.getElementById('progressBar');
+  let n=0;
+  tot.textContent=total;
+  function show(i){
+    i=Math.max(0,Math.min(total-1,i));
+    n=i;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    cur.textContent=i+1;
+    pb.style.width=((i+1)/total*100)+'%';
+  }
+  document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(n+1)));
+  document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(n-1)));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(n+1);}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(n-1);}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(total-1);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>

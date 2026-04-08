@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextAI — Series A Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+--s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+--text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+--font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;
+--lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+--tracking-tight:-0.03em;--tracking-wide:0.05em;
+--color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+--color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+--color-border:#27272A;
+--color-primary:#8B5CF6;--color-accent:#F43F5E;
+--color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+--shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+--ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden;}
+.slide.active{opacity:1;visibility:visible;}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);}
+h2.slide-title{font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3);}
+h3{font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2);}
+p{font-size:var(--text-base);color:var(--color-fg-muted);}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4);}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle);}
+.layout-hero{justify-content:center;align-items:flex-start;}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1;}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4);}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4);}
+.card-metric .value{font-size:var(--text-4xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-subtle);margin-top:var(--s-2);}
+.gradient-text{background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.placeholder-box{background:var(--color-bg-elevated);border:1px dashed var(--color-border);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:var(--color-fg-subtle);font-size:var(--text-sm);}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100;}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;justify-content:center;}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated);}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:var(--s-2) var(--s-3);text-align:left;border-bottom:1px solid var(--color-border);font-size:var(--text-sm);}
+th{color:var(--color-fg-subtle);font-weight:600;text-transform:uppercase;font-size:var(--text-xs);letter-spacing:var(--tracking-wide);}
+td{color:var(--color-fg);}
+td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
+.tam-text{display:flex;flex-direction:column;gap:var(--s-3);}
+.tam-row{display:flex;align-items:baseline;gap:var(--s-3);}
+.tam-row .lbl{width:80px;color:var(--color-fg-subtle);font-size:var(--text-sm);}
+.tam-row .val{font-size:var(--text-2xl);font-weight:800;}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1 TITLE -->
+<section class="slide active layout-hero">
+<div class="slide-header"><span class="eyebrow">NEXTAI · SERIES A</span><span class="eyebrow">2026</span></div>
+<div class="slide-body">
+<h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">让每一家企业都拥有<span class="gradient-text">自己的AI大脑</span></h1>
+<p class="subtitle animate-in">NextAI — 下一代企业级 AI 平台</p>
+</div>
+<div class="slide-footer"><span>founders@nextai.com</span><span>1 / 15</span></div>
+</section>
+
+<!-- 2 PROBLEM -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">PROBLEM</span><span class="eyebrow">2 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">企业 AI 落地，95% 卡在"最后一公里"</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3 style="color:var(--color-error);">现状 (Problem)</h3><p style="font-size:var(--text-sm);">通用大模型无法直接接入企业私有数据与业务流程</p></div>
+<div class="card animate-in"><h3 style="color:var(--color-warning);">恶化 (Agitate)</h3><p style="font-size:var(--text-sm);">自研团队 6 个月无法上线一个生产级 AI 应用</p></div>
+<div class="card animate-in"><h3 style="color:var(--color-success);">方案 (Solution)</h3><p style="font-size:var(--text-sm);">NextAI 把上线时间从 6 个月压缩到 6 天</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>2</span></div>
+</section>
+
+<!-- 3 SOLUTION -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">SOLUTION</span><span class="eyebrow">3 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">一个平台，三层能力，端到端交付</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3>模型层</h3><p style="font-size:var(--text-sm);">多模型路由 + 私有化微调，成本降低 70%</p></div>
+<div class="card animate-in"><h3>知识层</h3><p style="font-size:var(--text-sm);">企业知识库 RAG，毫秒级语义检索</p></div>
+<div class="card animate-in"><h3>应用层</h3><p style="font-size:var(--text-sm);">低代码 Agent 编排，业务人员即可搭建</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>3</span></div>
+</section>
+
+<!-- 4 PRODUCT -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">PRODUCT</span><span class="eyebrow">4 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">3 分钟构建一个企业级 AI Agent</h2>
+<div class="layout-grid-3" style="flex:1;">
+<div class="placeholder-box animate-in" style="aspect-ratio:4/3;">[ 控制台 Dashboard 截图 ]</div>
+<div class="placeholder-box animate-in" style="aspect-ratio:4/3;">[ Agent 编排画布截图 ]</div>
+<div class="placeholder-box animate-in" style="aspect-ratio:4/3;">[ 知识库管理截图 ]</div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>4</span></div>
+</section>
+
+<!-- 5 TRACTION -->
+<section class="slide" id="slide-traction">
+<div class="slide-header"><span class="eyebrow">TRACTION</span><span class="eyebrow">5 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">12 个月，ARR 增长 12 倍</h2>
+<div class="layout-split">
+<div class="animate-in" style="display:flex;flex-direction:column;gap:var(--s-3);">
+<div class="card card-metric"><div class="value">$8.4M</div><div class="label">ARR</div></div>
+<div class="card card-metric"><div class="value">+1200%</div><div class="label">YoY 增长</div></div>
+<div class="card card-metric"><div class="value">142%</div><div class="label">NDR 净留存</div></div>
+</div>
+<div class="animate-in" style="display:flex;align-items:center;justify-content:center;">
+<img src="./test04-assets/traction.png" alt="ARR 增长曲线" style="max-width:100%;max-height:100%;border-radius:var(--radius-lg);">
+</div>
+</div>
+</div>
+<div class="slide-footer"><span>来源：内部 BI，截至 2026 Q1</span><span>5</span></div>
+</section>
+
+<!-- 6 MARKET -->
+<section class="slide" id="slide-market">
+<div class="slide-header"><span class="eyebrow">MARKET SIZE</span><span class="eyebrow">6 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">一个正在爆发的 $5200 亿市场</h2>
+<div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+<img src="./test04-assets/tam-circles.png" alt="TAM SAM SOM 同心圆" style="max-width:90%;max-height:100%;border-radius:var(--radius-lg);">
+</div>
+</div>
+<div class="slide-footer"><span>来源：Gartner "Forecast: Enterprise AI Software, Worldwide, 2024-2028" (2026年3月更新)</span><span>6</span></div>
+</section>
+
+<!-- 7 BUSINESS MODEL -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">BUSINESS MODEL</span><span class="eyebrow">7 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">订阅 + 用量，毛利 78%</h2>
+<div class="layout-grid-3" style="align-items:stretch;">
+<div class="card animate-in"><h3>Starter</h3><div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-2) 0;">$2k<span style="font-size:var(--text-base);color:var(--color-fg-muted);">/月</span></div><p style="font-size:var(--text-sm);">中小团队，5 个 Agent</p></div>
+<div class="card animate-in" style="border-color:var(--color-primary);"><h3>Growth</h3><div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-2) 0;">$10k<span style="font-size:var(--text-base);color:var(--color-fg-muted);">/月</span></div><p style="font-size:var(--text-sm);">中型企业，无限 Agent + 私有部署</p></div>
+<div class="card animate-in"><h3>Enterprise</h3><div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-2) 0;">Custom</div><p style="font-size:var(--text-sm);">大型客户，SLA + 专属团队</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>7</span></div>
+</section>
+
+<!-- 8 GTM -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">GO-TO-MARKET</span><span class="eyebrow">8 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">PLG 起步，企业销售放量</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3>1. 开发者获客</h3><p style="font-size:var(--text-sm);">免费版 + 开源 SDK，月新增 10k 开发者</p></div>
+<div class="card animate-in"><h3>2. 自助转化</h3><p style="font-size:var(--text-sm);">产品内升级路径，PLG 转化率 4.2%</p></div>
+<div class="card animate-in"><h3>3. 企业销售</h3><p style="font-size:var(--text-sm);">10 人销售团队覆盖 Top 500，ACV $120k</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>8</span></div>
+</section>
+
+<!-- 9 COMPETITION -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">COMPETITION</span><span class="eyebrow">9 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">只有 NextAI 同时具备四项能力</h2>
+<table class="animate-in">
+<thead><tr><th>能力</th><th style="color:var(--color-primary);">NextAI</th><th>OpenAI</th><th>Databricks</th><th>自研</th></tr></thead>
+<tbody>
+<tr><td>多模型路由</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-error);text-align:center;">✗</td></tr>
+<tr><td>低代码 Agent</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-error);text-align:center;">✗</td></tr>
+<tr><td>私有化部署</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-success);text-align:center;">✓</td></tr>
+<tr><td>6 天上线</td><td style="color:var(--color-success);text-align:center;">✓</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-error);text-align:center;">✗</td><td style="color:var(--color-error);text-align:center;">✗</td></tr>
+</tbody>
+</table>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>9</span></div>
+</section>
+
+<!-- 10 TEAM -->
+<section class="slide" id="slide-team">
+<div class="slide-header"><span class="eyebrow">TEAM</span><span class="eyebrow">10 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">来自 Google、Meta、字节的 <span id="team-count">35</span> 人精英团队</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));margin-bottom:var(--s-2);"></div><h3>Alex Chen · CEO</h3><p style="font-size:var(--text-sm);">前 Google Brain Tech Lead，10 年 AI 经验</p></div>
+<div class="card animate-in"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));margin-bottom:var(--s-2);"></div><h3>Mei Liu · CTO</h3><p style="font-size:var(--text-sm);">前 Meta AI Infra Director，分布式系统专家</p></div>
+<div class="card animate-in"><div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));margin-bottom:var(--s-2);"></div><h3>David Wang · CPO</h3><p style="font-size:var(--text-sm);">前字节飞书 PM Lead，企业 SaaS 经验</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>10</span></div>
+</section>
+
+<!-- 11 FINANCIALS -->
+<section class="slide" id="slide-financials">
+<div class="slide-header"><span class="eyebrow">FINANCIALS</span><span class="eyebrow">11 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">2028 实现盈亏平衡，3 年 ARR 增长 14 倍</h2>
+<div class="layout-split" style="flex:1;">
+<div class="animate-in" style="display:flex;align-items:center;justify-content:center;">
+<img src="./test04-assets/breakeven.png" alt="收入 vs 成本曲线" style="max-width:100%;max-height:100%;border-radius:var(--radius-lg);">
+</div>
+<table class="animate-in" style="font-size:var(--text-xs);">
+<thead><tr><th>年份</th><th class="num">客户数</th><th class="num">ARR</th><th class="num">毛利率</th><th class="num">净亏损</th></tr></thead>
+<tbody>
+<tr><td>2026 (实际)</td><td class="num">120</td><td class="num">$8.4M</td><td class="num">78%</td><td class="num">-$3.2M</td></tr>
+<tr><td>2027 (预测)</td><td class="num">400</td><td class="num">$28M</td><td class="num">80%</td><td class="num">-$1M</td></tr>
+<tr><td>2028 (预测)</td><td class="num">900</td><td class="num">$72M</td><td class="num">82%</td><td class="num">+$12M</td></tr>
+<tr><td>2029 (预测)</td><td class="num">1500</td><td class="num">$120M</td><td class="num">83%</td><td class="num">+$28M</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI 内部财务模型</span><span>11</span></div>
+</section>
+
+<!-- 12 USE OF FUNDS -->
+<section class="slide" id="slide-funds">
+<div class="slide-header"><span class="eyebrow">USE OF FUNDS</span><span class="eyebrow">12 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">融资 <span id="raise-amount">1000</span> 万美元，估值 <span id="valuation">1亿</span> 美元 · 释放 10% 股权</h2>
+<div class="layout-split">
+<div class="animate-in" style="display:flex;flex-direction:column;gap:var(--s-3);">
+<div class="card"><h3 style="color:var(--color-primary);">研发 60% · $600 万</h3><p style="font-size:var(--text-sm);">扩充模型与平台团队，建设自研推理引擎</p></div>
+<div class="card"><h3 style="color:var(--color-accent);">市场 20% · $200 万</h3><p style="font-size:var(--text-sm);">品牌建设、行业大会、PLG 增长投入</p></div>
+<div class="card"><h3 style="color:var(--color-warning);">运营 20% · $200 万</h3><p style="font-size:var(--text-sm);">客户成功、合规、IT 基础设施</p></div>
+</div>
+<div class="animate-in" style="display:flex;align-items:center;justify-content:center;">
+<img src="./test04-assets/funds.png" alt="资金用途分配" style="max-width:100%;max-height:100%;border-radius:var(--radius-lg);">
+</div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>12</span></div>
+</section>
+
+<!-- 13 MILESTONES -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">MILESTONES</span><span class="eyebrow">13 / 15</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">本轮融资将达成的关键里程碑</h2>
+<div class="layout-grid-4">
+<div class="card animate-in"><h3 style="color:var(--color-primary);">Q3 2026</h3><p style="font-size:var(--text-sm);">推出 Agent Studio 2.0</p></div>
+<div class="card animate-in"><h3 style="color:var(--color-primary);">Q1 2027</h3><p style="font-size:var(--text-sm);">ARR 突破 $20M</p></div>
+<div class="card animate-in"><h3 style="color:var(--color-primary);">Q3 2027</h3><p style="font-size:var(--text-sm);">客户数突破 500</p></div>
+<div class="card animate-in"><h3 style="color:var(--color-primary);">Q4 2027</h3><p style="font-size:var(--text-sm);">实现单季度盈亏平衡</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>13</span></div>
+</section>
+
+<!-- 14 ASK -->
+<section class="slide" id="slide-ask">
+<div class="slide-header"><span class="eyebrow">THE ASK</span><span class="eyebrow">14 / 15</span></div>
+<div class="slide-body" style="justify-content:center;align-items:center;text-align:center;">
+<div class="animate-in gradient-text" style="font-size:200px;font-weight:900;line-height:1;letter-spacing:var(--tracking-tight);">$<span id="ask-amount">10</span>M</div>
+<p class="animate-in" style="font-size:var(--text-xl);color:var(--color-fg-muted);margin-top:var(--s-4);">Series A · 估值 $<span id="ask-valuation">100</span>M · 释放 10% 股权 · 18 个月 runway · 资金分配见饼图</p>
+</div>
+<div class="slide-footer"><span>NextAI</span><span>14</span></div>
+</section>
+
+<!-- 15 CONTACT -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">CONTACT</span><span class="eyebrow">15 / 15</span></div>
+<div class="slide-body" style="justify-content:center;align-items:flex-start;gap:var(--s-5);">
+<h2 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">让我们一起<span class="gradient-text">定义企业 AI 的未来</span></h2>
+<div class="animate-in" style="display:flex;flex-direction:column;gap:var(--s-2);font-size:var(--text-lg);">
+<div>Alex Chen · CEO &amp; Co-founder</div>
+<div style="color:var(--color-fg-muted);">alex@nextai.com</div>
+<div style="color:var(--color-fg-muted);">nextai.com · linkedin.com/in/alexchen</div>
+</div>
+</div>
+<div class="slide-footer"><span>NextAI · Series A 2026</span><span>15</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+<button class="nav-btn" data-action="prev">←</button>
+<span class="nav-counter"><span id="current">1</span> / <span id="total">15</span></span>
+<button class="nav-btn" data-action="next">→</button>
+</nav>
+
+<script>
+(function(){
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+const cur=document.getElementById('current');
+const tot=document.getElementById('total');
+const pb=document.getElementById('progressBar');
+let i=0;
+tot.textContent=total;
+function show(n){n=Math.max(0,Math.min(total-1,n));i=n;slides.forEach((s,k)=>s.classList.toggle('active',k===n));cur.textContent=n+1;pb.style.width=((n+1)/total*100)+'%';}
+document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+document.addEventListener('keydown',(e)=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1);}if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);}});
+show(0);
+})();
+</script>
+</body>
+</html>

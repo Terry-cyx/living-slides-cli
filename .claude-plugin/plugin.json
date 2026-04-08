@@ -1,0 +1,10 @@
+{
+  "name": "html-cli",
+  "description": "Visual HTML editor for AI-assisted workflows. Edit AI-generated HTML visually in GrapesJS, with structured changelogs for AI refinement.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Terry-cyx"
+  },
+  "repository": "https://github.com/Terry-cyx/html-cli",
+  "license": "MIT"
+}

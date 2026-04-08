@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import pytest
 from click.testing import CliRunner
 from htmlcli.cli import main
 
@@ -119,3 +120,39 @@ class TestTemplateList:
         assert "presentation" in result.output.lower()
         assert "business" in result.output.lower()
         assert "tech" in result.output.lower()
+
+
+class TestStylePresets:
+    """htmlcli create --preset should produce a styled multi-slide deck with stable data-oid."""
+
+    @pytest.mark.parametrize("preset", ["bold-signal", "dark-botanical", "terminal-green"])
+    def test_create_preset(self, tmp_path, preset):
+        runner = CliRunner()
+        filepath = str(tmp_path / f"{preset}.html")
+        result = runner.invoke(main, ["create", filepath, "--preset", preset])
+        assert result.exit_code == 0, result.output
+        content = Path(filepath).read_text(encoding="utf-8")
+        # Multi-slide
+        assert content.count('class="slide') >= 4
+        # Has stable data-oid on key objects
+        assert 'data-oid="s1"' in content
+        assert 'data-oid="s1-title"' in content
+        # Has nav script
+        assert "data-action=\"next\"" in content
+
+    def test_list_presets(self):
+        runner = CliRunner()
+        result = runner.invoke(main, ["presets"])
+        assert result.exit_code == 0
+        assert "bold-signal" in result.output
+        assert "dark-botanical" in result.output
+        assert "terminal-green" in result.output
+
+    def test_template_and_preset_mutually_exclusive(self, tmp_path):
+        runner = CliRunner()
+        filepath = str(tmp_path / "deck.html")
+        result = runner.invoke(main, [
+            "create", filepath, "--template", "presentation", "--preset", "bold-signal"
+        ])
+        assert result.exit_code != 0
+        assert "not both" in result.output.lower()

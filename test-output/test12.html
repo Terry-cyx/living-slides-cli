@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Designing Distributed Systems at Scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+        background: '#0A0A0A',
+        primaryColor: '#6366F1',
+        primaryTextColor: '#FAFAFA',
+        primaryBorderColor: '#27272A',
+        lineColor: '#A1A1AA',
+        secondaryColor: '#161616',
+        tertiaryColor: '#1F1F23',
+        fontFamily: 'Inter, sans-serif'
+    }
+});
+</script>
+<style>
+:root {
+    --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 32px;
+    --s-5: 48px; --s-6: 64px; --s-7: 96px; --s-8: 128px;
+    --text-xs: 14px; --text-sm: 16px; --text-base: 20px;
+    --text-lg: 24px; --text-xl: 32px; --text-2xl: 40px;
+    --text-3xl: 56px; --text-4xl: 72px; --text-5xl: 96px;
+    --text-6xl: 120px;
+    --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --lh-tight: 1.1; --lh-snug: 1.25; --lh-normal: 1.5;
+    --tracking-tight: -0.03em; --tracking-wide: 0.05em;
+    --color-bg: #0A0A0A;
+    --color-bg-elevated: #161616;
+    --color-bg-accent: #1F1F23;
+    --color-fg: #FAFAFA;
+    --color-fg-muted: #A1A1AA;
+    --color-fg-subtle: #71717A;
+    --color-border: #27272A;
+    --color-primary: #6366F1;
+    --color-primary-hover: #818CF8;
+    --color-accent: #F59E0B;
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+    --color-info: #3B82F6;
+    --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 9999px;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    color: var(--color-fg);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--lh-normal);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+.deck { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #000; }
+.slide {
+    position: absolute;
+    width: min(100vw, calc(100vh * 16 / 9));
+    height: min(100vh, calc(100vw * 9 / 16));
+    aspect-ratio: 16 / 9;
+    display: flex;
+    flex-direction: column;
+    padding: var(--s-7) var(--s-8);
+    background: var(--color-bg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms var(--ease-out);
+    overflow: hidden;
+}
+.slide.active { opacity: 1; visibility: visible; }
+
+h1.slide-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-fg);
+}
+h2.slide-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-fg);
+    margin-bottom: var(--s-3);
+}
+h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-fg);
+    margin-bottom: var(--s-2);
+}
+p { font-size: var(--text-base); color: var(--color-fg-muted); }
+.subtitle { font-size: var(--text-lg); color: var(--color-fg-muted); margin-top: var(--s-3); max-width: 60ch; }
+.eyebrow {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-fg-subtle);
+    font-weight: 600;
+}
+
+.slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--s-4);
+}
+.slide-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--s-4);
+    min-height: 0;
+}
+.slide-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--s-4);
+    font-size: var(--text-xs);
+    color: var(--color-fg-subtle);
+}
+
+.layout-hero { justify-content: center; }
+.layout-hero h1.slide-title { font-size: var(--text-5xl); max-width: 18ch; }
+
+.layout-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-6);
+    align-items: center;
+    flex: 1;
+    min-height: 0;
+}
+
+.layout-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+.layout-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+
+.card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--s-4);
+}
+.card h3 { color: var(--color-primary); }
+.card p { font-size: var(--text-sm); }
+
+.card-metric .value {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    letter-spacing: var(--tracking-tight);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.card-metric .label {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-fg-subtle);
+    margin-top: var(--s-2);
+}
+
+.tag {
+    display: inline-block;
+    font-size: var(--text-xs);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-bg-accent);
+    color: var(--color-fg-muted);
+    border: 1px solid var(--color-border);
+    margin-right: var(--s-1);
+}
+.tag.primary { background: rgba(99, 102, 241, 0.15); color: var(--color-primary-hover); border-color: var(--color-primary); }
+
+.mermaid {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--s-4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+}
+.mermaid svg { max-height: 100% !important; max-width: 100% !important; height: auto !important; }
+
+.image-frame {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+}
+.image-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+}
+
+ul.clean { list-style: none; }
+ul.clean li {
+    font-size: var(--text-base);
+    color: var(--color-fg-muted);
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+}
+ul.clean li:last-child { border-bottom: none; }
+ul.clean li::before {
+    content: "→";
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.kbd {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background: var(--color-bg-accent);
+    color: var(--color-accent);
+    padding: 2px 8px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+}
+
+.nav {
+    position: fixed;
+    bottom: var(--s-3);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    padding: var(--s-1) var(--s-3);
+    border-radius: var(--radius-full);
+    z-index: 100;
+}
+.nav-btn {
+    background: transparent;
+    color: var(--color-fg-muted);
+    border: none;
+    width: 28px; height: 28px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: var(--text-sm);
+}
+.nav-btn:hover { color: var(--color-fg); background: var(--color-bg-elevated); }
+.nav-counter { font-size: var(--text-xs); color: var(--color-fg-subtle); font-variant-numeric: tabular-nums; }
+.progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 300ms var(--ease-out);
+    z-index: 101;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.slide.active .animate-in { animation: fadeUp 600ms var(--ease-out) forwards; }
+.slide.active .animate-in:nth-child(1) { animation-delay: 0ms; }
+.slide.active .animate-in:nth-child(2) { animation-delay: 80ms; }
+.slide.active .animate-in:nth-child(3) { animation-delay: 160ms; }
+.slide.active .animate-in:nth-child(4) { animation-delay: 240ms; }
+
+.huge-number {
+    font-size: var(--text-6xl);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .slide { padding: var(--s-4) var(--s-3); }
+    h1.slide-title { font-size: var(--text-2xl); }
+    h2.slide-title { font-size: var(--text-xl); }
+    .layout-split, .layout-grid-3, .layout-grid-4 { grid-template-columns: 1fr; gap: var(--s-3); }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<section class="slide active layout-hero">
+    <div class="slide-header">
+        <span class="eyebrow">CloudCon 2026 · Track 4</span>
+        <span class="eyebrow">April 7, 2026</span>
+    </div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in">Designing Distributed Systems at Scale</h1>
+        <p class="subtitle animate-in">Hard-won lessons from operating systems serving 150K QPS in production.</p>
+    </div>
+    <div class="slide-footer">
+        <span>Jordan Liu · Principal Engineer</span>
+        <span>1 / 20</span>
+    </div>
+</section>
+
+<!-- SLIDE 2: HOOK -->
+<section class="slide">
+    <div class="slide-header">
+        <span class="eyebrow">The Hook</span>
+        <span class="eyebrow">CloudCon 2026</span>
+    </div>
+    <div class="slide-body layout-hero">
+        <h1 class="slide-title animate-in">Have you ever shipped a feature that worked perfectly...</h1>
+        <p class="subtitle animate-in">...until 3 AM Tuesday, when one bad node took down the entire region?</p>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>2 / 20</span></div>
+</section>
+
+<!-- SLIDE 3: PROBLEM AT SCALE -->
+<section class="slide">
+    <div class="slide-header">
+        <span class="eyebrow">The Problem</span>
+        <span class="eyebrow">02</span>
+    </div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Single-node systems collapse under real-world load</h2>
+        <div class="layout-grid-4 animate-in">
+            <div class="card card-metric"><div class="value">150K</div><div class="label">QPS sustained</div></div>
+            <div class="card card-metric"><div class="value">5ms</div><div class="label">P99 target</div></div>
+            <div class="card card-metric"><div class="value">99.99%</div><div class="label">Uptime SLA</div></div>
+            <div class="card card-metric"><div class="value">3 PB</div><div class="label">Daily data</div></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>3 / 20</span></div>
+</section>
+
+<!-- SLIDE 4: WHY DISTRIBUTED -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Why Distribute?</span><span class="eyebrow">03</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Three forcing functions drive every distribution decision</h2>
+        <div class="layout-grid-3 animate-in">
+            <div class="card">
+                <h3>Scale</h3>
+                <p>No single machine can hold petabytes of data or handle six-figure QPS.</p>
+            </div>
+            <div class="card">
+                <h3>Availability</h3>
+                <p>Hardware fails. Software crashes. Distribute to survive any single failure.</p>
+            </div>
+            <div class="card">
+                <h3>Locality</h3>
+                <p>Users on five continents need sub-100ms responses. Bring data closer.</p>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>4 / 20</span></div>
+</section>
+
+<!-- SLIDE 5: CAP THEOREM (mermaid) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Foundations</span><span class="eyebrow">CAP Theorem</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Pick two: you can never have all three</h2>
+        <div class="mermaid animate-in">
+graph TD
+    CAP[CAP Theorem]
+    CAP --> C[Consistency]
+    CAP --> A[Availability]
+    CAP --> P[Partition Tolerance]
+    C --> CP[CP Systems<br/>HBase, MongoDB, Etcd]
+    A --> AP[AP Systems<br/>Cassandra, DynamoDB, Riak]
+    P --> CP
+    P --> AP
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>5 / 20</span></div>
+</section>
+
+<!-- SLIDE 6: CONSISTENCY PATTERNS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Consistency</span><span class="eyebrow">06</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Choose the weakest consistency your business can tolerate</h2>
+        <div class="layout-grid-3 animate-in">
+            <div class="card"><h3>Strong</h3><p>Linearizable. Every read sees the latest write. Costly across regions.</p><br><span class="tag primary">Spanner</span><span class="tag">Etcd</span></div>
+            <div class="card"><h3>Eventual</h3><p>Replicas converge eventually. Cheap, fast, and "good enough" for most reads.</p><br><span class="tag primary">DynamoDB</span><span class="tag">Cassandra</span></div>
+            <div class="card"><h3>Causal</h3><p>Operations causally related are seen in order. The pragmatic middle ground.</p><br><span class="tag primary">CockroachDB</span><span class="tag">MongoDB</span></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>6 / 20</span></div>
+</section>
+
+<!-- SLIDE 6B: CONSISTENCY EXAMPLE (sequence diagram) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Consistency Example</span><span class="eyebrow">Quorum Write</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">A quorum write makes the trade-off concrete</h2>
+        <div class="mermaid animate-in">
+sequenceDiagram
+    Client->>API: Write request
+    API->>Primary: Store
+    Primary->>Replica1: Replicate
+    Primary->>Replica2: Replicate
+    Replica1-->>Primary: Ack
+    Replica2-->>Primary: Ack
+    Primary-->>API: Confirmed
+    API-->>Client: 200 OK
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>6.5 / 20</span></div>
+</section>
+
+<!-- SLIDE 7: PARTITION TOLERANCE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Partition Tolerance</span><span class="eyebrow">07</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">When the network splits, what does your system do?</h2>
+        <ul class="clean animate-in">
+            <li>Quorum reads and writes (R + W > N) for tunable consistency.</li>
+            <li>Hinted handoff: store missed writes for absent replicas.</li>
+            <li>Anti-entropy with Merkle trees to reconcile divergent state.</li>
+            <li>Read repair on the hot path; sync repair in the background.</li>
+            <li>Vector clocks or hybrid logical clocks for ordering.</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>7 / 20</span></div>
+</section>
+
+<!-- SLIDE 8: CASE STUDY -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Case Study</span><span class="eyebrow">08</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Building a high-traffic order pipeline from scratch</h2>
+        <div class="layout-split animate-in">
+            <div>
+                <h3>The brief</h3>
+                <p>An e-commerce checkout taking 150K QPS at peak with 99.99% availability across 4 regions.</p>
+                <br>
+                <h3>The stack</h3>
+                <p>Go services on Kubernetes, Pulsar for events, Postgres + Redis, gRPC end-to-end.</p>
+            </div>
+            <div>
+                <ul class="clean">
+                    <li>Stateless services horizontally scaled</li>
+                    <li>Pulsar as the durable system of record</li>
+                    <li>Postgres sharded by customer_id</li>
+                    <li>Redis for hot read-through cache</li>
+                    <li>Multi-region active-active</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>8 / 20</span></div>
+</section>
+
+<!-- SLIDE 9: ARCHITECTURE EVOLUTION (mermaid) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Architecture</span><span class="eyebrow">Evolution</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Event-driven architecture decouples producers from consumers</h2>
+        <div class="mermaid animate-in" id="arch-diagram">
+graph LR
+    Client[Mobile / Web Client] --> GW[API Gateway]
+    GW --> Order[Order Service]
+    GW --> User[User Service]
+    Order --> Pulsar[(Pulsar<br/>Event Bus)]
+    Pulsar --> Inv[Inventory Service]
+    Pulsar --> Pay[Payment Service]
+    Pulsar --> Ship[Shipping Service]
+    Order --> PG[(Postgres<br/>Sharded)]
+    Order --> Redis[(Redis Cache)]
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>9 / 20</span></div>
+</section>
+
+<!-- SLIDE 10: SHARDING -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Database Sharding</span><span class="eyebrow">10</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Shard by access pattern, never by what feels natural</h2>
+        <div class="layout-grid-3 animate-in">
+            <div class="card"><h3>Hash sharding</h3><p>Even distribution. Range queries become scatter-gather.</p></div>
+            <div class="card"><h3>Range sharding</h3><p>Efficient scans. Risk of hot shards on time-series data.</p></div>
+            <div class="card"><h3>Directory sharding</h3><p>Maximum flexibility, cost of an extra lookup hop.</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>10 / 20</span></div>
+</section>
+
+<!-- SLIDE 11: CACHING -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Caching</span><span class="eyebrow">11</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Each layer of cache trades latency for staleness</h2>
+        <div class="layout-grid-4 animate-in">
+            <div class="card"><h3>Browser</h3><p>HTTP cache, service workers. ~0ms.</p></div>
+            <div class="card"><h3>CDN edge</h3><p>Static assets, signed URLs. ~10ms.</p></div>
+            <div class="card"><h3>Application</h3><p>In-process LRU. ~1us.</p></div>
+            <div class="card"><h3>Distributed</h3><p>Redis, Memcached. ~1ms.</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>11 / 20</span></div>
+</section>
+
+<!-- SLIDE 12: FAILURE MODES (image) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Failure Modes</span><span class="eyebrow">12</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Distributed systems fail in ways monoliths cannot</h2>
+        <div class="image-frame animate-in">
+            <img src="./test12-assets/failure-modes.png" alt="Distribution of failure modes in production">
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: Internal incident review, 2025</span><span>12 / 20</span></div>
+</section>
+
+<!-- SLIDE 13: PERF BENCHMARKS (image) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Performance</span><span class="eyebrow">13</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Our system beats industry averages on every dimension</h2>
+        <div class="layout-split animate-in">
+            <div class="image-frame">
+                <img src="./test12-assets/perf-comparison.png" alt="Performance comparison before and after">
+            </div>
+            <div class="image-frame">
+                <img src="./test12-assets/system-vs-benchmark.png" alt="System vs industry benchmark">
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: Internal benchmarks, March 2026</span><span>13 / 20</span></div>
+</section>
+
+<!-- SLIDE 14: SCALABILITY TEST (image) -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Scalability</span><span class="eyebrow">14</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Throughput scales linearly from 1 to 64 nodes (540K ops/s peak)</h2>
+        <div class="image-frame animate-in">
+            <img src="./test12-assets/scalability-curve.png" alt="Scalability curve showing linear scaling from 1 to 64 nodes">
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: Load test, Jan 2026</span><span>14 / 20</span></div>
+</section>
+
+<!-- SLIDE 15: MONITORING -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Observability</span><span class="eyebrow">15</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">You cannot operate what you cannot see</h2>
+        <div class="layout-grid-3 animate-in">
+            <div class="card"><h3>Metrics</h3><p>RED: rate, errors, duration. USE: utilization, saturation, errors. Prometheus.</p></div>
+            <div class="card"><h3>Logs</h3><p>Structured JSON, correlation IDs, sampled at error rate. Loki, Elastic.</p></div>
+            <div class="card"><h3>Traces</h3><p>OpenTelemetry across every hop. Jaeger or Tempo for storage.</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>15 / 20</span></div>
+</section>
+
+<!-- SLIDE 16: REAL-WORLD INCIDENTS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">War Stories</span><span class="eyebrow">16</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Three incidents that taught us more than any textbook</h2>
+        <ul class="clean animate-in">
+            <li><strong>Thundering herd:</strong> cache stampede after a 30-second outage took down the DB.</li>
+            <li><strong>Cascading retries:</strong> client retry storms multiplied load 8x during partial failure.</li>
+            <li><strong>Clock drift:</strong> a 200ms NTP skew silently corrupted ordering for 6 hours.</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>16 / 20</span></div>
+</section>
+
+<!-- SLIDE 17: BEST PRACTICES -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Best Practices</span><span class="eyebrow">17</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Six rules we now write into every design doc</h2>
+        <ul class="clean animate-in">
+            <li>Make every operation idempotent by default.</li>
+            <li>Set deadlines on every RPC, no exceptions.</li>
+            <li>Circuit-break dependencies that miss SLOs.</li>
+            <li>Bound retries with exponential backoff and jitter.</li>
+            <li>Embrace backpressure rather than queuing forever.</li>
+            <li>Test failure scenarios with chaos engineering, weekly.</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>17 / 20</span></div>
+</section>
+
+<!-- SLIDE 18: KEY TAKEAWAYS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">Takeaways</span><span class="eyebrow">18</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">Three things to remember tomorrow morning</h2>
+        <div class="layout-grid-3 animate-in">
+            <div class="card"><div class="huge-number">1</div><h3 style="margin-top: var(--s-3)">Pick consistency last</h3><p>Start with the weakest model and strengthen only when business demands it.</p></div>
+            <div class="card"><div class="huge-number">2</div><h3 style="margin-top: var(--s-3)">Design for failure</h3><p>Networks partition. Disks corrupt. Plan for the worst case as the default.</p></div>
+            <div class="card"><div class="huge-number">3</div><h3 style="margin-top: var(--s-3)">Measure everything</h3><p>If a metric does not exist, the behavior does not exist. Instrument first.</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>18 / 20</span></div>
+</section>
+
+<!-- SLIDE 19: Q&A -->
+<section class="slide layout-hero">
+    <div class="slide-header"><span class="eyebrow">Q &amp; A</span><span class="eyebrow">19</span></div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in">Questions?</h1>
+        <p class="subtitle animate-in">What part of your system is keeping you up at night? Let's debug it together.</p>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu</span><span>19 / 20</span></div>
+</section>
+
+<!-- SLIDE 20: THANK YOU -->
+<section class="slide layout-hero">
+    <div class="slide-header"><span class="eyebrow">Thank you</span><span class="eyebrow">CloudCon 2026</span></div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in">Thanks for listening.</h1>
+        <p class="subtitle animate-in">jordan@example.com · @jordan_dist · github.com/jordan/talks</p>
+    </div>
+    <div class="slide-footer"><span>Jordan Liu · Principal Engineer</span><span>20 / 20</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+    <button class="nav-btn" data-action="prev" aria-label="Previous slide">&larr;</button>
+    <span class="nav-counter"><span id="current">1</span> / <span id="total">20</span></span>
+    <button class="nav-btn" data-action="next" aria-label="Next slide">&rarr;</button>
+</nav>
+
+<script>
+(function() {
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progressBar');
+    let current = 0;
+    totalEl.textContent = total;
+    function showSlide(n) {
+        n = Math.max(0, Math.min(total - 1, n));
+        current = n;
+        slides.forEach((s, i) => s.classList.toggle('active', i === n));
+        currentEl.textContent = n + 1;
+        progressEl.style.width = ((n + 1) / total * 100) + '%';
+    }
+    function next() { showSlide(current + 1); }
+    function prev() { showSlide(current - 1); }
+    document.querySelectorAll('[data-action="next"]').forEach(b => b.addEventListener('click', next));
+    document.querySelectorAll('[data-action="prev"]').forEach(b => b.addEventListener('click', prev));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+        if (e.key === 'Home') showSlide(0);
+        if (e.key === 'End') showSlide(total - 1);
+    });
+    showSlide(0);
+})();
+</script>
+
+</body>
+</html>

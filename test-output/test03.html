@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>微服务架构评审 — Acme Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { background: '#0A0A0A', primaryColor: '#6366F1', primaryTextColor: '#FAFAFA', lineColor: '#27272A', secondaryColor: '#1F1F23', tertiaryColor: '#161616' } });
+</script>
+<style>
+:root {
+    --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+    --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+    --font-display:'Inter',sans-serif;--font-body:'Inter',sans-serif;
+    --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+    --tracking-tight:-0.03em;--tracking-wide:0.05em;
+    --color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+    --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+    --color-border:#27272A;
+    --color-primary:#6366F1;--color-accent:#F59E0B;
+    --color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+    --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+    --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+    --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-6) var(--s-7);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden;}
+.slide.active{opacity:1;visibility:visible;}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);margin-bottom:var(--s-3);}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;margin-bottom:var(--s-2);}
+p{font-size:var(--text-base);color:var(--color-fg-muted);}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4);}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-3);min-height:0;}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-3);font-size:var(--text-xs);color:var(--color-fg-subtle);}
+.layout-hero{justify-content:center;}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);align-items:center;flex:1;}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-3) var(--s-4);}
+.card-metric .value{font-size:var(--text-3xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-subtle);margin-top:var(--s-2);}
+table{width:100%;border-collapse:collapse;font-size:var(--text-sm);}
+th,td{text-align:left;padding:var(--s-2) var(--s-3);border-bottom:1px solid var(--color-border);}
+th{color:var(--color-fg-subtle);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+td.recommend{color:var(--color-primary);font-weight:600;}
+.mermaid{display:flex;align-items:center;justify-content:center;flex:1;font-size:18px;}
+.mermaid svg{max-height:100%;max-width:100%;}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:var(--s-2);}
+.bullets li{display:flex;gap:var(--s-2);font-size:var(--text-base);color:var(--color-fg-muted);line-height:var(--lh-snug);}
+.bullets li::before{content:"";flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--color-primary);margin-top:.7em;}
+.tag{display:inline-block;padding:4px 12px;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.tag-high{background:rgba(239,68,68,.15);color:var(--color-error);}
+.tag-med{background:rgba(245,158,11,.15);color:var(--color-warning);}
+.tag-low{background:rgba(16,185,129,.15);color:var(--color-success);}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100;}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:var(--text-sm);}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated);}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards;}
+img.chart{max-width:100%;max-height:100%;border-radius:var(--radius-lg);}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s-2);position:relative;}
+.timeline::before{content:"";position:absolute;top:18px;left:5%;right:5%;height:2px;background:var(--color-border);}
+.timeline-step{display:flex;flex-direction:column;align-items:center;gap:var(--s-2);position:relative;z-index:1;}
+.timeline-dot{width:36px;height:36px;border-radius:50%;background:var(--color-bg-elevated);border:2px solid var(--color-primary);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary);}
+.timeline-step h4{font-size:var(--text-sm);font-weight:600;margin-top:var(--s-1);text-align:center;}
+.timeline-step p{font-size:var(--text-xs);text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1. TITLE -->
+<section class="slide active layout-hero">
+    <div class="slide-header"><span class="eyebrow">ARCHITECTURE REVIEW</span><span class="eyebrow">2026 Q2</span></div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">Acme 平台微服务架构评审</h1>
+        <p class="subtitle animate-in">从单体到云原生：可扩展、高可用、可维护的下一代架构</p>
+    </div>
+    <div class="slide-footer"><span>Platform Engineering · Terry</span><span>1 / 20</span></div>
+</section>
+
+<!-- 2. AGENDA -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">AGENDA</span><span class="eyebrow">20 SLIDES</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">本次评审的六大主题</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>1. 现状与问题</h3><p style="font-size:var(--text-sm);">单体瓶颈、扩展性挑战</p></div>
+            <div class="card animate-in"><h3>2. 目标架构</h3><p style="font-size:var(--text-sm);">微服务、技术选型</p></div>
+            <div class="card animate-in"><h3>3. 性能指标</h3><p style="font-size:var(--text-sm);">QPS / 延迟 / 可用性</p></div>
+            <div class="card animate-in"><h3>4. 安全与部署</h3><p style="font-size:var(--text-sm);">零信任、CI/CD</p></div>
+            <div class="card animate-in"><h3>5. 风险与迁移</h3><p style="font-size:var(--text-sm);">风险矩阵、时间线</p></div>
+            <div class="card animate-in"><h3>6. 建议与结论</h3><p style="font-size:var(--text-sm);">行动项、下一步</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Acme Platform</span><span>2 / 20</span></div>
+</section>
+
+<!-- 3. PROBLEM CONTEXT -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">PROBLEM CONTEXT</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">单体架构在用户量翻三倍后开始崩溃</h2>
+        <div class="layout-grid-4">
+            <div class="card card-metric animate-in"><div class="value">3.2x</div><div class="label">用户增长（24个月）</div></div>
+            <div class="card card-metric animate-in"><div class="value">8h+</div><div class="label">月平均故障时长</div></div>
+            <div class="card card-metric animate-in"><div class="value">45min</div><div class="label">单次部署时间</div></div>
+            <div class="card card-metric animate-in"><div class="value">28%</div><div class="label">数据库 CPU 高峰</div></div>
+        </div>
+        <ul class="bullets animate-in" style="margin-top:var(--s-3);">
+            <li>核心订单服务无法独立扩容，整库锁定成为主要瓶颈</li>
+            <li>团队扩张到 60+ 工程师，单仓库合并冲突频繁，发布窗口拥堵</li>
+            <li>故障爆炸半径大：一个慢查询拖垮全站</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>Source: SRE 报告 2026-03</span><span>3 / 20</span></div>
+</section>
+
+<!-- 4. CURRENT ARCH -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">CURRENT ARCHITECTURE</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">现状：单体 + 主从数据库</h2>
+        <div class="mermaid animate-in">
+graph LR
+    U[Web/Mobile Users] --> LB[Nginx LB]
+    LB --> M[Acme Monolith<br/>Java Spring]
+    M --> DB[(MySQL Primary)]
+    M --> S[(MySQL Replica)]
+    M --> R[(Redis Cache)]
+    M --> Q[RabbitMQ]
+    Q --> W[Worker Monolith]
+    W --> DB
+        </div>
+    </div>
+    <div class="slide-footer"><span>1 deployable, 1 database</span><span>4 / 20</span></div>
+</section>
+
+<!-- 5. PROPOSED ARCH -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">PROPOSED ARCHITECTURE</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">目标：领域驱动的微服务架构</h2>
+        <div class="mermaid animate-in" id="arch-new">
+flowchart TB
+    subgraph Edge["Edge Layer"]
+        U[Web / Mobile Users] --> CDN[CDN + WAF]
+        CDN --> GW[API Gateway · Kong]
+    end
+    subgraph Services["Service Layer"]
+        GW --> AUTH[Auth Service]
+        GW --> ORD[Order Service]
+        GW --> PAY[Payment Service]
+        GW --> INV[Inventory Service]
+        GW --> NOTIF[Notification Service]
+    end
+    subgraph Bus["Event Bus"]
+        MQ[Kafka]
+    end
+    ORD --> MQ
+    PAY --> MQ
+    INV --> MQ
+    subgraph Data["Data Layer"]
+        PG1[(PostgreSQL · Auth)]
+        PG2[(PostgreSQL · Order)]
+        PG3[(PostgreSQL · Payment)]
+        MGO[(MongoDB · Inventory)]
+        RDS[(Redis · Notify Cache)]
+    end
+    AUTH --> PG1
+    ORD --> PG2
+    PAY --> PG3
+    INV --> MGO
+    NOTIF --> RDS
+        </div>
+    </div>
+    <div class="slide-footer"><span>5 services · 5 databases · event-driven</span><span>5 / 20</span></div>
+</section>
+
+<!-- 6. TECH SELECTION TABLE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">TECHNOLOGY SELECTION</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">数据库选型对比</h2>
+        <table class="animate-in" id="db-table">
+            <thead><tr><th>维度</th><th>MySQL（旧）</th><th class="recommend">PostgreSQL（新）</th><th>MongoDB</th></tr></thead>
+            <tbody>
+                <tr><td>事务一致性</td><td>强 ACID</td><td class="recommend">强 ACID + MVCC</td><td>文档级</td></tr>
+                <tr><td>水平扩展</td><td>分库分表</td><td class="recommend">分区 + Citus</td><td>原生分片</td></tr>
+                <tr><td>JSON 支持</td><td>JSON 列</td><td class="recommend">JSONB（强）</td><td>原生</td></tr>
+                <tr><td>团队熟悉度</td><td>★★★★★</td><td class="recommend">★★★★</td><td>★★★</td></tr>
+                <tr><td>运维生态</td><td>成熟</td><td class="recommend">成熟 + 扩展生态</td><td>Atlas</td></tr>
+                <tr><td>推荐用途</td><td>历史遗留</td><td class="recommend">交易主库</td><td>日志/事件</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="slide-footer"><span>评估窗口：2026 Q1</span><span>6 / 20</span></div>
+</section>
+
+<!-- 6b. POSTGRESQL RATIONALE -->
+<section class="slide" id="pg-rationale">
+    <div class="slide-header"><span class="eyebrow">DATABASE RATIONALE</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">为什么选择 PostgreSQL 作为交易主库</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>1. ACID + MVCC</h3><p style="font-size:var(--text-sm);">原生多版本并发控制，长事务不阻塞读，金融级一致性保障。</p></div>
+            <div class="card animate-in"><h3>2. JSONB 一等公民</h3><p style="font-size:var(--text-sm);">订单元数据可同时享受关系建模与文档灵活性，避免双数据库。</p></div>
+            <div class="card animate-in"><h3>3. 扩展生态</h3><p style="font-size:var(--text-sm);">Citus 水平分片、TimescaleDB 时序、pgvector 向量检索一站到位。</p></div>
+            <div class="card animate-in"><h3>4. 分区与并行查询</h3><p style="font-size:var(--text-sm);">声明式分区 + 并行执行，支持单库轻松扩展到 10TB。</p></div>
+            <div class="card animate-in"><h3>5. 开源治理稳定</h3><p style="font-size:var(--text-sm);">PostgreSQL 全球社区，无单一厂商绑定，云厂商一致支持。</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Decision Record: ADR-014</span><span>7 / 20</span></div>
+</section>
+
+<!-- 7. PERFORMANCE METRICS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">PERFORMANCE TARGETS</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">目标性能指标 — 较现状提升 5 倍</h2>
+        <div class="layout-grid-4" id="kpi-grid">
+            <div class="card card-metric animate-in"><div class="value" id="kpi-qps">15,000</div><div class="label">峰值 QPS</div></div>
+            <div class="card card-metric animate-in"><div class="value" id="kpi-p99">35ms</div><div class="label">P99 延迟</div></div>
+            <div class="card card-metric animate-in"><div class="value" id="kpi-avail">99.99%</div><div class="label">可用性 SLA</div></div>
+            <div class="card card-metric animate-in"><div class="value">&lt;5min</div><div class="label">部署时长</div></div>
+        </div>
+        <div class="animate-in" style="margin-top:var(--s-3);flex:1;display:flex;align-items:center;justify-content:center;min-height:0;">
+            <img class="chart" src="./test03-assets/perf-improvement.png" alt="Performance before vs after" style="max-height:260px;">
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: 容量规划文档 v3</span><span>8 / 20</span></div>
+</section>
+
+<!-- 8. SCALABILITY -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">SCALABILITY</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">水平扩展策略</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>无状态服务</h3><p style="font-size:var(--text-sm);">所有微服务无状态，K8s HPA 基于 CPU + RPS 自动扩缩</p></div>
+            <div class="card animate-in"><h3>读写分离</h3><p style="font-size:var(--text-sm);">主库写入，多副本读取，热点数据 Redis 缓存</p></div>
+            <div class="card animate-in"><h3>异步解耦</h3><p style="font-size:var(--text-sm);">Kafka 削峰填谷，跨服务事件最终一致性</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>K8s + Kafka + Redis</span><span>9 / 20</span></div>
+</section>
+
+<!-- 9. SECURITY -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">SECURITY</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">零信任安全模型</h2>
+        <ul class="bullets animate-in">
+            <li>mTLS 全链路加密：服务间使用 Istio 自动注入证书</li>
+            <li>OAuth2 + JWT 鉴权：中央 Auth 服务统一签发短期令牌</li>
+            <li>密钥管理：Vault 动态生成数据库凭证，90 天轮换</li>
+            <li>WAF + Rate Limit：边缘网关防御 OWASP Top 10</li>
+            <li>审计日志：全链路追踪写入只追加日志库</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>SOC 2 Type II 合规目标</span><span>10 / 20</span></div>
+</section>
+
+<!-- 10. DEPLOYMENT STRATEGY -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">DEPLOYMENT</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">渐进式部署策略</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>Blue / Green</h3><p style="font-size:var(--text-sm);">关键服务双环境切换，秒级回滚</p></div>
+            <div class="card animate-in"><h3>Canary 5/25/100%</h3><p style="font-size:var(--text-sm);">基于 Argo Rollouts 自动化金丝雀</p></div>
+            <div class="card animate-in"><h3>Feature Flags</h3><p style="font-size:var(--text-sm);">LaunchDarkly 控制功能开关</p></div>
+        </div>
+        <p class="animate-in" style="margin-top:var(--s-3);font-size:var(--text-sm);">CI/CD: GitHub Actions → ArgoCD → K8s · 平均部署时长 &lt; 5 分钟</p>
+    </div>
+    <div class="slide-footer"><span>GitOps</span><span>11 / 20</span></div>
+</section>
+
+<!-- 11. PERFORMANCE CHART -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">PERFORMANCE COMPARISON</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">单体 vs 微服务：性能对比</h2>
+        <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <img class="chart" id="perf-chart" src="./test03-assets/perf-comparison.png" alt="Performance comparison">
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: 压力测试 2026-03</span><span>12 / 20</span></div>
+</section>
+
+<!-- 12. COST CHART -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">COST ANALYSIS</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">三年总拥有成本（TCO）对比</h2>
+        <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+            <img class="chart" src="./test03-assets/cost-analysis.png" alt="Cost analysis">
+        </div>
+    </div>
+    <div class="slide-footer"><span>Source: Finance + Infra 团队</span><span>13 / 20</span></div>
+</section>
+
+<!-- 13. RISK ASSESSMENT -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">RISK ASSESSMENT</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">主要技术风险与风险矩阵</h2>
+        <div class="layout-split">
+        <table class="animate-in" id="risk-table" style="font-size:var(--text-xs);">
+            <thead><tr><th>风险</th><th>影响</th><th>概率</th><th>缓解措施</th></tr></thead>
+            <tbody>
+                <tr><td>分布式事务复杂度</td><td><span class="tag tag-high">高</span></td><td><span class="tag tag-med">中</span></td><td>Saga 模式 + 事件溯源</td></tr>
+                <tr><td>数据迁移失败</td><td><span class="tag tag-high">高</span></td><td><span class="tag tag-low">低</span></td><td>双写 + 影子比对</td></tr>
+                <tr><td>团队技能差距</td><td><span class="tag tag-med">中</span></td><td><span class="tag tag-med">中</span></td><td>培训 + Pair Programming</td></tr>
+                <tr><td>运维成本上升</td><td><span class="tag tag-med">中</span></td><td><span class="tag tag-high">高</span></td><td>SRE 团队 + 自动化</td></tr>
+                <tr><td>服务间依赖混乱</td><td><span class="tag tag-med">中</span></td><td><span class="tag tag-low">低</span></td><td>服务目录 + 依赖审查</td></tr>
+                <tr><td>供应商依赖</td><td><span class="tag tag-med">中</span></td><td><span class="tag tag-med">中</span></td><td>多云策略 + 抽象层</td></tr>
+            </tbody>
+        </table>
+        <div class="animate-in" style="display:flex;align-items:center;justify-content:center;">
+            <img class="chart" src="./test03-assets/risk-matrix.png" alt="Risk matrix scatter — impact vs probability">
+        </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Risk Register v1</span><span>14 / 20</span></div>
+</section>
+
+<!-- 14. MIGRATION TIMELINE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">MIGRATION TIMELINE</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">5 阶段迁移路线图（9 个月）</h2>
+        <div class="timeline animate-in">
+            <div class="timeline-step"><div class="timeline-dot">1</div><h4>基础设施</h4><p>K8s · CI/CD · 可观测性<br/>M1-M2</p></div>
+            <div class="timeline-step"><div class="timeline-dot">2</div><h4>边缘剥离</h4><p>Auth · Notification<br/>M3-M4</p></div>
+            <div class="timeline-step"><div class="timeline-dot">3</div><h4>核心拆分</h4><p>Order · Payment<br/>M5-M6</p></div>
+            <div class="timeline-step"><div class="timeline-dot">4</div><h4>数据迁移</h4><p>双写 · 切流<br/>M7-M8</p></div>
+            <div class="timeline-step"><div class="timeline-dot">5</div><h4>下线单体</h4><p>清理 · 复盘<br/>M9</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Start: 2026-05 · End: 2027-01</span><span>15 / 20</span></div>
+</section>
+
+<!-- 15. INVESTMENT -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">INVESTMENT</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">所需投资</h2>
+        <div class="layout-grid-4">
+            <div class="card card-metric animate-in"><div class="value">$1.8M</div><div class="label">9 个月预算</div></div>
+            <div class="card card-metric animate-in"><div class="value">12</div><div class="label">核心工程师</div></div>
+            <div class="card card-metric animate-in"><div class="value">3</div><div class="label">SRE 招聘</div></div>
+            <div class="card card-metric animate-in"><div class="value">14mo</div><div class="label">投资回收期</div></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Finance 已审核</span><span>16 / 20</span></div>
+</section>
+
+<!-- 16. RECOMMENDATIONS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">RECOMMENDATIONS</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">六项核心建议</h2>
+        <ul class="bullets animate-in">
+            <li>立即启动基础设施层（K8s + 可观测性），为后续拆分打底</li>
+            <li>采用绞杀者模式而非大爆炸重写，降低业务风险</li>
+            <li>主交易库迁移至 PostgreSQL，借助 JSONB 与扩展生态降低复杂度</li>
+            <li>引入 Kafka 作为事件骨干，解耦服务边界</li>
+            <li>组建专职 SRE 团队，建立 SLO/SLI 文化</li>
+            <li>设立架构评审委员会，每季度回顾技术债</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span>Decision Required</span><span>17 / 20</span></div>
+</section>
+
+<!-- 17. SUCCESS METRICS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">SUCCESS METRICS</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">如何衡量成功</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>技术指标</h3><p style="font-size:var(--text-sm);">QPS 5x / 延迟 -75% / 可用性 99.99%</p></div>
+            <div class="card animate-in"><h3>团队指标</h3><p style="font-size:var(--text-sm);">部署频率 10x / MTTR -80%</p></div>
+            <div class="card animate-in"><h3>业务指标</h3><p style="font-size:var(--text-sm);">用户流失 -2pp / GMV +15%</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>Tracked monthly</span><span>18 / 20</span></div>
+</section>
+
+<!-- 18. CONCLUSION -->
+<section class="slide" id="conclusion">
+    <div class="slide-header"><span class="eyebrow">CONCLUSION</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">结论：我们已经准备好了</h2>
+        <p class="animate-in" id="conclusion-text" style="font-size:var(--text-lg);max-width:60ch;">
+            通过 9 个月的渐进式微服务迁移，Acme 平台将从单体瓶颈中解放，实现 5 倍 QPS 提升、延迟降低 75%、可用性达到 99.99%。建议本周启动 Phase 1。
+        </p>
+    </div>
+    <div class="slide-footer"><span>Decision: Approve / Reject</span><span>19 / 20</span></div>
+</section>
+
+<!-- 19. THANK YOU -->
+<section class="slide layout-hero">
+    <div class="slide-header"><span class="eyebrow">THANK YOU</span></div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);">问题与讨论</h1>
+        <p class="subtitle animate-in">terry@acme.com · #platform-arch</p>
+    </div>
+    <div class="slide-footer"><span>Acme Platform Engineering</span><span>20 / 20</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+    <button class="nav-btn" data-action="prev">←</button>
+    <span class="nav-counter"><span id="current">1</span> / <span id="total">20</span></span>
+    <button class="nav-btn" data-action="next">→</button>
+</nav>
+
+<script>
+(function(){
+    const slides=document.querySelectorAll('.slide');
+    const total=slides.length;
+    const cur=document.getElementById('current');
+    const tot=document.getElementById('total');
+    const pb=document.getElementById('progressBar');
+    let i=0;
+    tot.textContent=total;
+    function show(n){n=Math.max(0,Math.min(total-1,n));i=n;slides.forEach((s,k)=>s.classList.toggle('active',k===n));cur.textContent=n+1;pb.style.width=((n+1)/total*100)+'%';}
+    document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+    document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1);}if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);}});
+    show(0);
+})();
+</script>
+</body>
+</html>

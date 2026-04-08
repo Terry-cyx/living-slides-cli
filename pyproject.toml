@@ -10,6 +10,7 @@ requires-python = ">=3.11"
 dependencies = [
     "click>=8.1",
     "aiohttp>=3.9",
+    "matplotlib>=3.10.8",
 ]
 
 [project.scripts]

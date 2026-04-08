@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业级数字化转型方案 — 致 字节跳动</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+    --s-1:8px; --s-2:16px; --s-3:24px; --s-4:32px; --s-5:48px; --s-6:64px; --s-7:96px; --s-8:128px;
+    --text-xs:14px; --text-sm:16px; --text-base:20px; --text-lg:24px; --text-xl:32px;
+    --text-2xl:40px; --text-3xl:56px; --text-4xl:72px; --text-5xl:96px; --text-6xl:120px;
+    --font-display:'Inter','Noto Sans SC',sans-serif;
+    --font-body:'Inter','Noto Sans SC',sans-serif;
+    --lh-tight:1.1; --lh-snug:1.25; --lh-normal:1.5;
+    --tracking-tight:-0.03em;
+    --color-bg:#0B1121; --color-bg-elevated:#131A2E; --color-bg-accent:#1A2342;
+    --color-fg:#FAFAFA; --color-fg-muted:#A1A8BD; --color-fg-subtle:#6B7390;
+    --color-border:#27304A;
+    --color-primary:#3B82F6; --color-primary-hover:#60A5FA;
+    --color-accent:#06B6D4; --color-success:#10B981; --color-warning:#F59E0B; --color-error:#EF4444;
+    --radius-md:8px; --radius-lg:12px; --radius-xl:16px; --radius-full:9999px;
+    --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.2);
+    --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden;}
+.slide.active{opacity:1;visibility:visible;}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3);}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2);}
+p{font-size:var(--text-base);color:var(--color-fg-muted);}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.08em;color:var(--color-accent);font-weight:700;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4);}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);min-height:0;}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle);}
+.layout-hero{justify-content:center;align-items:flex-start;}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1;}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4);}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4);}
+.card-metric .value{font-size:var(--text-3xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;color:var(--color-fg-subtle);margin-top:var(--s-2);}
+table.cmp{width:100%;border-collapse:collapse;font-size:var(--text-sm);}
+table.cmp th,table.cmp td{padding:var(--s-2) var(--s-3);text-align:left;border-bottom:1px solid var(--color-border);}
+table.cmp th{font-size:var(--text-xs);color:var(--color-fg-subtle);text-transform:uppercase;font-weight:600;}
+table.cmp td.center{text-align:center;}
+.badge{display:inline-block;padding:4px 12px;background:var(--color-primary);color:#fff;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100;}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated);}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards;}
+.chart-wrap{flex:1;position:relative;min-height:0;}
+.chart-wrap img{max-width:100%;max-height:100%;object-fit:contain;display:block;margin:0 auto;border-radius:var(--radius-lg);}
+ul.clean{list-style:none;display:flex;flex-direction:column;gap:var(--s-2);}
+ul.clean li{font-size:var(--text-sm);color:var(--color-fg-muted);padding-left:var(--s-3);position:relative;}
+ul.clean li::before{content:"";position:absolute;left:0;top:10px;width:6px;height:6px;border-radius:50%;background:var(--color-primary);}
+@media (max-width:768px){.slide{padding:var(--s-4) var(--s-3);}h1.slide-title{font-size:var(--text-2xl);}h2.slide-title{font-size:var(--text-xl);}.layout-split,.layout-grid-3,.layout-grid-4{grid-template-columns:1fr;gap:var(--s-3);}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1. TITLE -->
+<section class="slide active layout-hero">
+    <div class="slide-header"><span class="eyebrow">企业级方案 · 商业机密</span><span class="eyebrow">2026 年 4 月</span></div>
+    <div class="slide-body">
+        <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:20ch;">为 <span style="background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">字节跳动</span> 打造的企业级数字化转型方案</h1>
+        <p class="subtitle animate-in">从规模化挑战到全球化机遇，我们与您并肩前行</p>
+    </div>
+    <div class="slide-footer"><span>NovaTech 解决方案事业部</span><span>1 / 16</span></div>
+</section>
+
+<!-- 2. COMPANY INTRO -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">关于我们</span><span>NovaTech</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">12 年深耕企业级数字化，服务 200+ 头部客户</h2>
+        <div class="layout-grid-4">
+            <div class="card card-metric animate-in"><div class="value">12+</div><div class="label">年行业经验</div></div>
+            <div class="card card-metric animate-in"><div class="value">200+</div><div class="label">企业客户</div></div>
+            <div class="card card-metric animate-in"><div class="value">98%</div><div class="label">客户续约率</div></div>
+            <div class="card card-metric animate-in"><div class="value">24/7</div><div class="label">全球化支持</div></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>2 / 16</span></div>
+</section>
+
+<!-- 3. UNDERSTANDING NEEDS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">需求理解</span><span>痛点洞察</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">我们听到了 字节跳动 的四个核心诉求</h2>
+        <div class="layout-grid-4">
+            <div class="card animate-in"><h3>全球化扩张</h3><p style="font-size:var(--text-sm);">业务覆盖 150+ 国家，需要统一的全球底座</p></div>
+            <div class="card animate-in"><h3>EB 级数据治理</h3><p style="font-size:var(--text-sm);">数十条业务线 EB 级数据需统一治理</p></div>
+            <div class="card animate-in"><h3>极致性能成本</h3><p style="font-size:var(--text-sm);">高并发场景下成本与性能的平衡难题</p></div>
+            <div class="card animate-in"><h3>AI 工程化</h3><p style="font-size:var(--text-sm);">大模型从训练到生产的高效闭环</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>3 / 16</span></div>
+</section>
+
+<!-- 4. SOLUTION PILLARS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">解决方案</span><span>四大支柱</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">四大支柱构建您的下一代数字底座</h2>
+        <div class="layout-grid-4">
+            <div class="card animate-in"><h3>超大规模云原生</h3><p style="font-size:var(--text-sm);">百万级容器调度 · 多 Region 多活 · 跨海全球链路</p></div>
+            <div class="card animate-in"><h3>EB 级数据湖仓</h3><p style="font-size:var(--text-sm);">秒级查询 · 千万 QPS · 毫秒级实时指标</p></div>
+            <div class="card animate-in"><h3>大模型与推荐中台</h3><p style="font-size:var(--text-sm);">万亿参数训练 · 在线 A/B · 个性化推荐底座</p></div>
+            <div class="card animate-in"><h3>全球合规与安全</h3><p style="font-size:var(--text-sm);">数据出境 · 多地区合规 · 业务连续性 SLA</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>4 / 16</span></div>
+</section>
+
+<!-- 5. ARCHITECTURE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">技术架构</span><span>系统视图</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">一套端到端架构，覆盖业务全生命周期</h2>
+        <div class="layout-split">
+            <div class="animate-in">
+                <ul class="clean">
+                    <li>接入层：API 网关 + CDN + WAF</li>
+                    <li>应用层：微服务 + 服务网格</li>
+                    <li>数据层：实时湖仓一体</li>
+                    <li>智能层：模型训练 + 在线推理</li>
+                    <li>基础设施：Kubernetes + 多云</li>
+                <li>24/7 Dedicated Support</li></ul>
+            </div>
+            <div class="card animate-in" style="aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:var(--color-fg-subtle);font-size:var(--text-sm);">
+                架构示意图（部署后展示）
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>5 / 16</span></div>
+</section>
+
+<!-- 6. IMPLEMENTATION PLAN -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">实施路径</span><span>四阶段</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">12 个月分四阶段，风险可控价值可见</h2>
+        <div class="layout-grid-4">
+            <div class="card animate-in"><div class="badge">阶段一</div><h3 style="margin-top:var(--s-2);">蓝图设计</h3><p style="font-size:var(--text-sm);">M1–M2 · 现状评估 + 架构规划</p></div>
+            <div class="card animate-in"><div class="badge">阶段二</div><h3 style="margin-top:var(--s-2);">平台搭建</h3><p style="font-size:var(--text-sm);">M3–M5 · 云底座 + 数据中台</p></div>
+            <div class="card animate-in"><div class="badge">阶段三</div><h3 style="margin-top:var(--s-2);">业务迁移</h3><p style="font-size:var(--text-sm);">M6–M9 · 试点 + 推广</p></div>
+            <div class="card animate-in"><div class="badge">阶段四</div><h3 style="margin-top:var(--s-2);">规模运营</h3><p style="font-size:var(--text-sm);">M10–M12 · 全量 + 优化</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>6 / 16</span></div>
+</section>
+
+<!-- 7. CASE STUDY 1 -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">客户案例</span><span>金融</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">某头部银行：核心交易延迟下降 72%</h2>
+        <div class="layout-split">
+            <div class="animate-in">
+                <p>通过云原生改造与数据中台落地，该银行将日均处理交易量从 3000 万笔提升至 1.2 亿笔，运维人力下降 45%。</p>
+                <ul class="clean" style="margin-top:var(--s-3);">
+                    <li>核心系统延迟：280ms → 78ms</li>
+                    <li>新业务上线：6 个月 → 3 周</li>
+                    <li>年节省成本：¥1.8 亿</li>
+                </ul>
+            </div>
+            <div class="layout-grid-4" style="grid-template-columns:1fr 1fr;">
+                <div class="card card-metric animate-in"><div class="value">-72%</div><div class="label">交易延迟</div></div>
+                <div class="card card-metric animate-in"><div class="value">4×</div><div class="label">吞吐量</div></div>
+                <div class="card card-metric animate-in"><div class="value">-45%</div><div class="label">运维人力</div></div>
+                <div class="card card-metric animate-in"><div class="value">¥1.8亿</div><div class="label">年节省</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>7 / 17</span></div>
+</section>
+
+<!-- 8. CASE STUDY 2 -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">客户案例</span><span>零售</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">某全球零售集团：会员转化率提升 38%</h2>
+        <div class="layout-split">
+            <div class="animate-in">
+                <p>统一全渠道会员中台 + AI 推荐系统，覆盖 18 国 4500 家门店与电商平台。</p>
+                <ul class="clean" style="margin-top:var(--s-3);">
+                    <li>会员数据打通耗时：6 周 → 2 天</li>
+                    <li>推荐 CTR 提升：+38%</li>
+                    <li>跨渠道复购率：+24%</li>
+                </ul>
+            </div>
+            <div class="card animate-in" style="aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;">
+                <canvas id="caseChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>8 / 17</span></div>
+</section>
+
+<!-- 8b. PEER INTERNET GIANT CASE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">同类客户案例</span><span>互联网巨头</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">某全球短视频平台：QPS 提升 5×，单位成本下降 41%</h2>
+        <div class="layout-split">
+            <div class="animate-in">
+                <p>面对日活 8 亿、跨 30+ 国家的实时分发需求，我们与该平台共建超大规模云原生与推荐底座。</p>
+                <ul class="clean" style="margin-top:var(--s-3);">
+                    <li>峰值 QPS：1200 万 → 6000 万</li>
+                    <li>推荐模型迭代周期：周 → 小时</li>
+                    <li>单请求成本：-41%</li>
+                    <li>跨海延迟：-58%</li>
+                </ul>
+            </div>
+            <div class="layout-grid-4" style="grid-template-columns:1fr 1fr;">
+                <div class="card card-metric animate-in"><div class="value">5×</div><div class="label">QPS 提升</div></div>
+                <div class="card card-metric animate-in"><div class="value">-41%</div><div class="label">单位成本</div></div>
+                <div class="card card-metric animate-in"><div class="value">8亿</div><div class="label">日活规模</div></div>
+                <div class="card card-metric animate-in"><div class="value">30+</div><div class="label">覆盖国家</div></div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>9 / 17</span></div>
+</section>
+
+<!-- 9. ROI ANALYSIS -->
+<section class="slide" id="slide-roi">
+    <div class="slide-header"><span class="eyebrow">投资回报</span><span>ROI</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">预计 12 个月内全面回本，三年 ROI 达 312%</h2>
+        <div class="layout-split">
+            <div class="animate-in">
+                <ul class="clean">
+                    <li>一次性投入：¥4,800 万</li>
+                    <li>年化节省：¥3,200 万</li>
+                    <li>新增营收：¥2,100 万 / 年</li>
+                    <li id="payback-line">回本周期：12 个月</li>
+                    <li>三年净收益：¥1.1 亿</li>
+                </ul>
+            </div>
+            <div class="card animate-in chart-wrap" style="aspect-ratio:4/3;padding:var(--s-3);">
+                <img src="./test05-assets/roi-timeline.png" alt="ROI Timeline - Break-even at Month 12">
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech · 数据基于客户提供基线测算</span><span>10 / 17</span></div>
+</section>
+
+<!-- 10. PRICING -->
+<section class="slide" id="slide-pricing">
+    <div class="slide-header"><span class="eyebrow">价格方案</span><span>三档</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">透明定价，按规模灵活选择</h2>
+        <div class="layout-grid-3" style="align-items:stretch;">
+            <div class="card animate-in">
+                <h3>标准版</h3>
+                <div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-3) 0;">¥520万<span style="font-size:var(--text-sm);color:var(--color-fg-muted);">/年</span></div>
+                <ul class="clean">
+                    <li>云平台基础能力</li>
+                    <li>数据中台 (5 业务域)</li>
+                    <li>工作时间支持</li>
+                </ul>
+            </div>
+            <div class="card animate-in" style="border-color:var(--color-primary);box-shadow:0 0 0 1px var(--color-primary);position:relative;">
+                <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);" class="badge">推荐</div>
+                <h3>专业版</h3>
+                <div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-3) 0;">¥980万<span style="font-size:var(--text-sm);color:var(--color-fg-muted);">/年</span></div>
+                <ul class="clean">
+                    <li>全部标准版功能</li>
+                    <li>AI 智能引擎</li>
+                    <li>专属 CSM 团队</li>
+                    <li>SLA 99.9%</li>
+                </ul>
+            </div>
+            <div class="card animate-in">
+                <h3>企业旗舰</h3>
+                <div style="font-size:var(--text-2xl);font-weight:800;margin:var(--s-3) 0;">定制</div>
+                <ul class="clean">
+                    <li>全部专业版功能</li>
+                    <li>多云 + 私有化</li>
+                    <li>定制开发</li>
+                    <li>SLA 99.99%</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>11 / 17</span></div>
+</section>
+
+<!-- 11. SUPPORT PACKAGE -->
+<section class="slide" id="slide-support">
+    <div class="slide-header"><span class="eyebrow">服务保障</span><span>支持包</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">分级服务保障，匹配业务关键性</h2>
+        <table class="cmp animate-in" id="serviceTable">
+            <thead><tr><th>服务项</th><th class="center">基础版</th><th class="center">标准版</th><th class="center">高级版</th></tr></thead>
+            <tbody>
+                <tr><td>响应时间</td><td class="center">8 小时</td><td class="center">2 小时</td><td class="center">15 分钟</td></tr>
+                <tr><td>SLA 保障</td><td class="center">99.5%</td><td class="center">99.9%</td><td class="center">99.99%</td></tr>
+                <tr><td>专属 CSM</td><td class="center" style="color:var(--color-error);">✗</td><td class="center" style="color:var(--color-success);">✓</td><td class="center" style="color:var(--color-success);">✓</td></tr>
+                <tr><td>季度业务复盘</td><td class="center" style="color:var(--color-error);">✗</td><td class="center" style="color:var(--color-success);">✓</td><td class="center" style="color:var(--color-success);">✓</td></tr>
+                <tr><td>年度架构演进</td><td class="center" style="color:var(--color-error);">✗</td><td class="center" style="color:var(--color-error);">✗</td><td class="center" style="color:var(--color-success);">✓</td></tr>
+                <tr><td>24/7 Dedicated Support</td><td class="center" style="color:var(--color-error);">✗</td><td class="center" style="color:var(--color-warning);">部分</td><td class="center" style="color:var(--color-success);">✓</td></tr>
+            </tbody>
+        </table>
+        <div class="chart-wrap animate-in" style="margin-top:var(--s-3);max-height:36vh;">
+            <img src="./test05-assets/service-levels.png" alt="Service Level Comparison">
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>12 / 17</span></div>
+</section>
+
+<!-- 12. TIMELINE -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">时间表</span><span>里程碑</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">12 个月里程碑一目了然</h2>
+        <div class="chart-wrap animate-in"><canvas id="timelineChart"></canvas></div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>13 / 17</span></div>
+</section>
+
+<!-- 13. TEAM -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">交付团队</span><span>核心成员</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">资深团队，平均行业经验 12 年</h2>
+        <div class="layout-grid-4">
+            <div class="card animate-in"><h3>项目总监</h3><p style="font-size:var(--text-sm);">15 年企业架构 · 前 BAT 技术总监</p></div>
+            <div class="card animate-in"><h3>架构师</h3><p style="font-size:var(--text-sm);">10+ 大型云原生项目</p></div>
+            <div class="card animate-in"><h3>数据专家</h3><p style="font-size:var(--text-sm);">湖仓一体 · 实时数据</p></div>
+            <div class="card animate-in"><h3>客户成功</h3><p style="font-size:var(--text-sm);">7×24 专属对接</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>14 / 17</span></div>
+</section>
+
+<!-- 14. RISK & MITIGATION -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">风险控制</span><span>保障措施</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">三重保障，把风险关进笼子</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><h3>技术风险</h3><p style="font-size:var(--text-sm);">灰度迁移 · 双活回滚 · 全程演练</p></div>
+            <div class="card animate-in"><h3>交付风险</h3><p style="font-size:var(--text-sm);">里程碑验收 · 周报双向同步</p></div>
+            <div class="card animate-in"><h3>合规风险</h3><p style="font-size:var(--text-sm);">等保三级 · ISO27001 · GDPR</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>15 / 17</span></div>
+</section>
+
+<!-- 15. NEXT STEPS -->
+<section class="slide">
+    <div class="slide-header"><span class="eyebrow">下一步</span><span>行动项</span></div>
+    <div class="slide-body">
+        <h2 class="slide-title animate-in">两周内启动，三步完成立项</h2>
+        <div class="layout-grid-3">
+            <div class="card animate-in"><div class="badge">第 1 步</div><h3 style="margin-top:var(--s-2);">深度访谈</h3><p style="font-size:var(--text-sm);">本周内 · 业务负责人 1:1</p></div>
+            <div class="card animate-in"><div class="badge">第 2 步</div><h3 style="margin-top:var(--s-2);">联合 PoC</h3><p style="font-size:var(--text-sm);">下周内 · 试点场景验证</p></div>
+            <div class="card animate-in"><div class="badge">第 3 步</div><h3 style="margin-top:var(--s-2);">合同签署</h3><p style="font-size:var(--text-sm);">两周内 · 启动会 + 立项</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>16 / 17</span></div>
+</section>
+
+<!-- 16. CTA -->
+<section class="slide layout-hero">
+    <div class="slide-header"><span class="eyebrow">让我们开始</span><span></span></div>
+    <div class="slide-body" style="justify-content:center;">
+        <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:20ch;">准备好把 字节跳动 推向下一个十年了吗？</h1>
+        <p class="subtitle animate-in">contact@novatech.com · +86 400-888-0000</p>
+    </div>
+    <div class="slide-footer"><span>NovaTech</span><span>17 / 17</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+    <button class="nav-btn" data-action="prev">←</button>
+    <span class="nav-counter"><span id="current">1</span> / <span id="total">16</span></span>
+    <button class="nav-btn" data-action="next">→</button>
+</nav>
+
+<script>
+Chart.defaults.font.family = "'Inter','Noto Sans SC',sans-serif";
+Chart.defaults.font.size = 13;
+Chart.defaults.color = '#A1A8BD';
+Chart.defaults.borderColor = '#27304A';
+
+const themed = {grid:{color:'rgba(255,255,255,0.06)'},ticks:{color:'#A1A8BD'}};
+
+new Chart(document.getElementById('caseChart'),{
+    type:'bar',
+    data:{labels:['会员数','复购','GMV'],datasets:[{label:'改造前',data:[100,100,100],backgroundColor:'#27304A'},{label:'改造后',data:[148,124,162],backgroundColor:'#3B82F6'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#FAFAFA'}}},scales:{x:themed,y:themed}}
+});
+
+// roiChart replaced with static matplotlib image (./test05-assets/roi-timeline.png)
+
+new Chart(document.getElementById('timelineChart'),{
+    type:'bar',
+    data:{labels:['蓝图设计','平台搭建','业务迁移','规模运营'],datasets:[{label:'月份',data:[[0,2],[2,5],[5,9],[9,12]],backgroundColor:['#3B82F6','#06B6D4','#8B5CF6','#10B981'],borderRadius:6}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...themed,min:0,max:12,title:{display:true,text:'月份',color:'#A1A8BD'}},y:themed}}
+});
+
+(function(){
+    const slides=document.querySelectorAll('.slide');
+    const total=slides.length;
+    const cur=document.getElementById('current'),tot=document.getElementById('total'),pb=document.getElementById('progressBar');
+    let n=0; tot.textContent=total;
+    function show(i){i=Math.max(0,Math.min(total-1,i));n=i;slides.forEach((s,k)=>s.classList.toggle('active',k===i));cur.textContent=i+1;pb.style.width=((i+1)/total*100)+'%';}
+    document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(n+1)));
+    document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(n-1)));
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(n+1);}if(e.key==='ArrowLeft'){e.preventDefault();show(n-1);}});
+    show(0);
+})();
+</script>
+</body>
+</html>

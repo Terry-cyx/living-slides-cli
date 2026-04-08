@@ -40,6 +40,12 @@ class _TagExtractor(HTMLParser):
             self._stack[-1]["text"] += text
 
     def _make_selector(self, tag: str, attrs: dict) -> str:
+        # `data-oid` is htmlcli's stable object identifier (adapted from
+        # frontend-slides-editable's editor-runtime DOM contract). When present,
+        # it is the most reliable selector — it survives DOM-path drift after
+        # the user moves elements around in the visual editor.
+        if "data-oid" in attrs:
+            return f'[data-oid="{attrs["data-oid"]}"]'
         sel = tag
         if "id" in attrs:
             sel += f"#{attrs['id']}"

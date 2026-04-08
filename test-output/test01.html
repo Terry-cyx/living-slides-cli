@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acme Q3 2026 季度业务汇报</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 32px;
+            --s-5: 48px; --s-6: 64px; --s-7: 96px; --s-8: 128px;
+            --text-xs: 14px; --text-sm: 16px; --text-base: 20px;
+            --text-lg: 24px; --text-xl: 32px; --text-2xl: 40px;
+            --text-3xl: 56px; --text-4xl: 72px; --text-5xl: 96px;
+            --text-6xl: 120px;
+            --font-display: 'Inter', -apple-system, system-ui, sans-serif;
+            --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+            --lh-tight: 1.1; --lh-snug: 1.25; --lh-normal: 1.5;
+            --tracking-tight: -0.03em; --tracking-wide: 0.05em;
+            --color-bg: #0A0A0A;
+            --color-bg-elevated: #161616;
+            --color-bg-accent: #1F1F23;
+            --color-fg: #FAFAFA;
+            --color-fg-muted: #A1A1AA;
+            --color-fg-subtle: #71717A;
+            --color-border: #27272A;
+            --color-primary: #6366F1;
+            --color-accent: #F59E0B;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-error: #EF4444;
+            --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px; --radius-full: 9999px;
+            --shadow-md: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.08);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-base: 300ms;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%;
+            background: #000;
+            color: var(--color-fg);
+            font-family: var(--font-body);
+            font-size: var(--text-base);
+            line-height: var(--lh-normal);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+        }
+
+        .deck {
+            position: fixed; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #000;
+        }
+        .slide {
+            position: absolute;
+            width: min(100vw, calc(100vh * 16 / 9));
+            height: min(100vh, calc(100vw * 9 / 16));
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            padding: var(--s-6) var(--s-7);
+            background: var(--color-bg);
+            opacity: 0; visibility: hidden;
+            transition: opacity var(--duration-base) var(--ease-out);
+            overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; }
+
+        h1.slide-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 800;
+            line-height: var(--lh-tight);
+            letter-spacing: var(--tracking-tight);
+            color: var(--color-fg);
+        }
+        h2.slide-title {
+            font-family: var(--font-display);
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            line-height: var(--lh-tight);
+            letter-spacing: var(--tracking-tight);
+            color: var(--color-fg);
+            margin-bottom: var(--s-4);
+        }
+        h3 {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--color-fg);
+            margin-bottom: var(--s-2);
+        }
+        p { font-size: var(--text-base); color: var(--color-fg-muted); }
+        .subtitle { font-size: var(--text-lg); color: var(--color-fg-muted); margin-top: var(--s-3); }
+        .eyebrow {
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wide);
+            color: var(--color-fg-subtle);
+            font-weight: 600;
+        }
+
+        .slide-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: var(--s-4);
+        }
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: var(--s-4);
+        }
+        .slide-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: var(--s-4);
+            font-size: var(--text-xs);
+            color: var(--color-fg-subtle);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .layout-hero { justify-content: center; }
+        .layout-hero h1.slide-title { font-size: var(--text-5xl); max-width: 18ch; }
+
+        .layout-split {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: var(--s-6); align-items: center; flex: 1;
+        }
+        .layout-grid-3 {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3);
+        }
+        .layout-grid-4 {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3);
+        }
+
+        .card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--s-4);
+        }
+        .card-metric .value {
+            font-size: var(--text-4xl);
+            font-weight: 800;
+            letter-spacing: var(--tracking-tight);
+            line-height: 1;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-metric .label {
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-fg-subtle);
+            margin-top: var(--s-2);
+        }
+        .card-metric .delta {
+            font-size: var(--text-xs);
+            color: var(--color-success);
+            margin-top: var(--s-1);
+            font-weight: 600;
+        }
+
+        .chart-img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            background: var(--color-bg-elevated);
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            border: 1px solid var(--color-border);
+            color: var(--color-fg-muted);
+        }
+        .pill.success { color: var(--color-success); border-color: rgba(16,185,129,0.4); }
+        .pill.warning { color: var(--color-warning); border-color: rgba(245,158,11,0.4); }
+        .pill.error { color: var(--color-error); border-color: rgba(239,68,68,0.4); }
+
+        .risk-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 3fr;
+            gap: var(--s-3);
+            padding: var(--s-3);
+            border-bottom: 1px solid var(--color-border);
+            align-items: center;
+        }
+        .risk-row:last-child { border-bottom: none; }
+        .risk-row .name { font-size: var(--text-base); font-weight: 600; color: var(--color-fg); }
+        .risk-row .desc { font-size: var(--text-sm); color: var(--color-fg-muted); }
+
+        .team-card { text-align: left; }
+        .team-card .avatar {
+            width: 56px; height: 56px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            margin-bottom: var(--s-2);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #fff; font-size: var(--text-lg);
+        }
+        .team-card .name { font-size: var(--text-base); font-weight: 700; color: var(--color-fg); }
+        .team-card .title { font-size: var(--text-xs); color: var(--color-fg-muted); margin-top: 4px; }
+
+        .step {
+            display: flex;
+            gap: var(--s-3);
+            padding: var(--s-3) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .step:last-child { border-bottom: none; }
+        .step .num {
+            font-size: var(--text-2xl);
+            font-weight: 800;
+            color: var(--color-primary);
+            line-height: 1;
+            min-width: 48px;
+        }
+        .step .text { font-size: var(--text-base); color: var(--color-fg); font-weight: 500; }
+        .step .meta { font-size: var(--text-xs); color: var(--color-fg-subtle); margin-top: 4px; }
+
+        .nav {
+            position: fixed;
+            bottom: var(--s-3);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: var(--s-2);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--color-border);
+            padding: var(--s-1) var(--s-3);
+            border-radius: var(--radius-full);
+            z-index: 100;
+        }
+        .nav-btn {
+            background: transparent;
+            color: var(--color-fg-muted);
+            border: none;
+            width: 28px; height: 28px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: var(--text-sm);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { color: var(--color-fg); background: var(--color-bg-elevated); }
+        .nav-counter { font-size: var(--text-xs); color: var(--color-fg-subtle); font-variant-numeric: tabular-nums; }
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 2px;
+            background: var(--color-primary);
+            transition: width 300ms var(--ease-out);
+            z-index: 101;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide.active .animate-in { animation: fadeUp 600ms var(--ease-out) forwards; }
+        .slide.active .animate-in:nth-child(1) { animation-delay: 0ms; }
+        .slide.active .animate-in:nth-child(2) { animation-delay: 80ms; }
+        .slide.active .animate-in:nth-child(3) { animation-delay: 160ms; }
+        .slide.active .animate-in:nth-child(4) { animation-delay: 240ms; }
+    </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width: 0%"></div>
+
+<div class="deck">
+
+    <!-- 1: TITLE -->
+    <section class="slide active layout-hero">
+        <div class="slide-header">
+            <span class="eyebrow">ACME INC · QBR</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h1 class="slide-title animate-in">提前一季达成全年目标：Acme 进入加速期</h1>
+            <p class="subtitle animate-in">2026 Q3 季度业务汇报 · 收入 620 万 · NPS 87 · 增速 42%</p>
+        </div>
+        <div class="slide-footer">
+            <span>Prepared by Growth Team</span>
+            <span>1 / 16</span>
+        </div>
+    </section>
+
+    <!-- 2: AGENDA -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">AGENDA</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">六个核心问题，串起 Acme 全年最强季度</h2>
+            <div class="layout-grid-3">
+                <div class="card animate-in"><h3>01 · 业务概览</h3><p style="font-size:var(--text-sm)">关键指标与同比增长</p></div>
+                <div class="card animate-in"><h3>02 · 收入与增长</h3><p style="font-size:var(--text-sm)">趋势分析与驱动因素</p></div>
+                <div class="card animate-in"><h3>03 · 客户与 NPS</h3><p style="font-size:var(--text-sm)">满意度与留存</p></div>
+                <div class="card"><h3>04 · 团队与组织</h3><p style="font-size:var(--text-sm)">核心成员与协作</p></div>
+                <div class="card"><h3>05 · 风险评估</h3><p style="font-size:var(--text-sm)">识别与缓解</p></div>
+                <div class="card"><h3>06 · 下一步行动</h3><p style="font-size:var(--text-sm)">Q4 计划与目标</p></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>2 / 16</span></div>
+    </section>
+
+    <!-- 3: KPI DASHBOARD -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">KEY METRICS</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">收入冲上 620 万，提前一个季度锁定年度目标</h2>
+            <div class="layout-grid-4">
+                <div class="card card-metric animate-in">
+                    <div class="value">620万</div>
+                    <div class="label">季度收入</div>
+                    <div class="delta">+42% QoQ</div>
+                </div>
+                <div class="card card-metric animate-in">
+                    <div class="value">42%</div>
+                    <div class="label">环比增长率</div>
+                    <div class="delta">+8 pts</div>
+                </div>
+                <div class="card card-metric animate-in">
+                    <div class="value">87</div>
+                    <div class="label">NPS</div>
+                    <div class="delta">+5 pts</div>
+                </div>
+                <div class="card card-metric animate-in">
+                    <div class="value">2.1%</div>
+                    <div class="label">月度流失率</div>
+                    <div class="delta">-0.6 pts</div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>3 / 16</span></div>
+    </section>
+
+    <!-- 4: REVENUE TREND -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">REVENUE TREND</span>
+            <span class="eyebrow">FY 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">四个季度，收入从 280 万跃升到 620 万</h2>
+            <img src="./test01-assets/revenue-trend.png" alt="Revenue trend" class="chart-img animate-in" style="max-height: 480px; object-fit: contain;">
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>4 / 16</span></div>
+    </section>
+
+    <!-- 5: GROWTH DRIVERS -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">GROWTH DRIVERS</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">三个引擎合力，把环比增长从 27% 推到 42%</h2>
+            <div class="layout-grid-3">
+                <div class="card animate-in"><h3>新客户获取</h3><p style="font-size:var(--text-sm)">CAC 下降 18%，转化率提升至 4.6%</p></div>
+                <div class="card animate-in"><h3>企业客户扩张</h3><p style="font-size:var(--text-sm)">Top 50 客户 ARPU 增长 27%</p></div>
+                <div class="card animate-in"><h3>渠道升级</h3><p style="font-size:var(--text-sm)">合作伙伴贡献 32% 的新签</p></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>5 / 16</span></div>
+    </section>
+
+    <!-- 6: CUSTOMER SEGMENTS -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">CUSTOMER MIX</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">企业客户首次贡献过半收入</h2>
+            <img src="./test01-assets/customer-mix.png" alt="Customer mix" class="chart-img animate-in" style="max-height: 480px; object-fit: contain;">
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>6 / 16</span></div>
+    </section>
+
+    <!-- 7: NPS DETAIL -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">CUSTOMER VOICE</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">NPS 攀升到 87，进入行业前 5%</h2>
+            <div class="layout-split">
+                <div class="card animate-in">
+                    <h3>推荐者声音</h3>
+                    <p style="font-size:var(--text-base); color:var(--color-fg); font-style:italic">“Acme 把我们三个供应商整合成一个工作流，团队效率翻倍。”</p>
+                    <p style="font-size:var(--text-xs); color:var(--color-fg-subtle); margin-top:var(--s-2)">— Lisa Chen, Director of Ops, Northstar</p>
+                </div>
+                <div class="card animate-in">
+                    <h3>关键改进点</h3>
+                    <p style="font-size:var(--text-sm); margin-bottom:var(--s-1)">· 企业 SSO 上线后，IT 摩擦减少</p>
+                    <p style="font-size:var(--text-sm); margin-bottom:var(--s-1)">· 客户成功响应时间缩短至 2.4 小时</p>
+                    <p style="font-size:var(--text-sm)">· 中文文档覆盖率从 40% 提升到 95%</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>7 / 16</span></div>
+    </section>
+
+    <!-- 8: PRODUCT MILESTONES -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">PRODUCT</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">三项决定性能力，把"领先"变成"难以追赶"</h2>
+            <div class="layout-grid-3">
+                <div class="card animate-in"><h3>AI 智能助手</h3><p style="font-size:var(--text-sm)">日活渗透率达 68%</p></div>
+                <div class="card animate-in"><h3>企业 SSO</h3><p style="font-size:var(--text-sm)">解锁 12 笔企业大单</p></div>
+                <div class="card animate-in"><h3>API 速率提升 3 倍</h3><p style="font-size:var(--text-sm)">P95 延迟降至 120ms</p></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>8 / 16</span></div>
+    </section>
+
+    <!-- TRANSITION: PEOPLE -->
+    <section class="slide layout-hero">
+        <div class="slide-header">
+            <span class="eyebrow">PART II · PEOPLE</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h1 class="slide-title animate-in" style="font-size: var(--text-4xl); max-width: 18ch;">数字背后，是把这些结果做出来的人</h1>
+            <p class="subtitle animate-in">接下来，让我们走近 Acme 的核心团队与组织结构</p>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>Transition</span></div>
+    </section>
+
+    <!-- ORG CHART -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">ORG CHART</span>
+            <span class="eyebrow">Q4 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">四个直接汇报线，七个职能小组</h2>
+            <img src="./test01-assets/org-chart.png" alt="Acme org chart" class="chart-img animate-in" style="max-height: 480px; object-fit: contain;">
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>Org</span></div>
+    </section>
+
+    <!-- 14: TEAM -->
+    <section class="slide" id="team-slide">
+        <div class="slide-header">
+            <span class="eyebrow">TEAM</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">引领下一阶段增长的核心团队</h2>
+            <div class="layout-grid-4">
+                <div class="card team-card animate-in">
+                    <div class="avatar">SL</div>
+                    <div class="name">Sarah Liu</div>
+                    <div class="title">CEO &amp; Co-founder</div>
+                </div>
+                <div class="card team-card animate-in">
+                    <div class="avatar">DW</div>
+                    <div class="name">David Wang</div>
+                    <div class="title">Chief Architect &amp; Co-founder</div>
+                </div>
+                <div class="card team-card animate-in">
+                    <div class="avatar">MZ</div>
+                    <div class="name">Mei Zhang</div>
+                    <div class="title">SVP of Product &amp; Design</div>
+                </div>
+                <div class="card team-card animate-in">
+                    <div class="avatar">JK</div>
+                    <div class="name">James Kim</div>
+                    <div class="title">Head of Revenue</div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>14 / 16</span></div>
+    </section>
+
+    <!-- 9: RISK ASSESSMENT -->
+    <section class="slide" id="risks-slide">
+        <div class="slide-header">
+            <span class="eyebrow">RISKS</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">四个风险需要在 Q4 主动管理</h2>
+            <div class="card animate-in" style="padding: var(--s-2) var(--s-4)">
+                <div class="risk-row">
+                    <div><div class="name">人才招聘瓶颈</div><div class="desc">资深工程师缺口 8 人</div></div>
+                    <div><span class="pill warning">中等</span></div>
+                    <div class="desc">影响 Q4 平台路线图，延后 2-3 周</div>
+                </div>
+                <div class="risk-row">
+                    <div><div class="name">大客户集中度</div><div class="desc">前 5 大客户占收入 38%</div></div>
+                    <div><span class="pill warning">中等</span></div>
+                    <div class="desc">需扩展中型客户群体降低集中度</div>
+                </div>
+                <div class="risk-row">
+                    <div><div class="name">竞品价格战</div><div class="desc">三家厂商进入低价区间</div></div>
+                    <div><span class="pill error">高</span></div>
+                    <div class="desc">需以 AI 差异化保住高价位</div>
+                </div>
+                <div class="risk-row">
+                    <div><div class="name">供应链延迟</div><div class="desc">关键芯片交期延长 6-8 周</div></div>
+                    <div><span class="pill error">高</span></div>
+                    <div class="desc">影响 Q4 硬件交付与企业部署节奏</div>
+                </div>
+                                <div class="risk-row">
+                    <div><div class="name">数据隐私法规变化</div><div class="desc">欧盟 AI Act 即将生效</div></div>
+                    <div><span class="pill warning">中等</span></div>
+                    <div class="desc">需在 Q4 前完成模型合规审查</div>
+                </div>
+                <div class="risk-row">
+                    <div><div class="name">合规审计</div><div class="desc">SOC 2 Type II 续审在 Q4</div></div>
+                    <div><span class="pill success">低</span></div>
+                    <div class="desc">流程已就绪，预算 $80k</div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>9 / 16</span></div>
+    </section>
+
+    <!-- RISK MITIGATION (Round 3) -->
+    <section class="slide" id="risk-mitigation-slide">
+        <div class="slide-header">
+            <span class="eyebrow">RISK MITIGATION</span>
+            <span class="eyebrow">Q4 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">每个风险都已配上责任人和缓解动作</h2>
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: var(--s-6); align-items: center;">
+                <img src="./test01-assets/risk-severity.png" alt="Risk severity scores" class="chart-img animate-in" style="max-width: 100%; max-height: 480px; object-fit: contain; border-radius: var(--radius-lg);">
+                <div class="card animate-in" style="padding: var(--s-4) var(--s-5)">
+                    <div class="risk-row" style="grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-2) 0; border-bottom: 1px solid var(--color-border);">
+                        <div><strong style="color: var(--color-primary);">数据隐私法规变化 (8/10)</strong></div>
+                        <div class="desc">法务 + AI 团队 4 周内完成 EU AI Act 模型合规审查与文档化；预算 $60k</div>
+                    </div>
+                    <div class="risk-row" style="grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-2) 0; border-bottom: 1px solid var(--color-border);">
+                        <div><strong style="color: var(--color-primary);">供应链延迟 (8/10)</strong></div>
+                        <div class="desc">运营负责人锁定二级芯片供应商，预付 30% 库存；硬件交付改为分批</div>
+                    </div>
+                    <div class="risk-row" style="grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-2) 0; border-bottom: 1px solid var(--color-border);">
+                        <div><strong style="color: var(--color-primary);">竞品价格战 (7/10)</strong></div>
+                        <div class="desc">产品 + 市场推出 AI 差异化叙事与年付折扣，目标维持 ASP &gt; $24k</div>
+                    </div>
+                    <div class="risk-row" style="grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-2) 0;">
+                        <div><strong style="color: var(--color-primary);">人才缺口 (6/10)</strong></div>
+                        <div class="desc">HR 启动定向猎头 + 内部转岗，目标 Q4 关闭 6/8 工程师岗</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR · Risk Mitigation</span><span>Mitigation</span></div>
+    </section>
+
+    <!-- 10: FINANCIAL HEALTH -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">FINANCIAL HEALTH</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">现金流首次转正，跑道延长至 28 个月</h2>
+            <div class="layout-grid-4">
+                <div class="card card-metric animate-in"><div class="value">$12M</div><div class="label">现金储备</div></div>
+                <div class="card card-metric animate-in"><div class="value">28月</div><div class="label">运营跑道</div></div>
+                <div class="card card-metric animate-in"><div class="value">68%</div><div class="label">毛利率</div></div>
+                <div class="card card-metric animate-in"><div class="value">+$0.4M</div><div class="label">季度净现金流</div></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>10 / 16</span></div>
+    </section>
+
+    <!-- 11: COMPETITIVE -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">COMPETITIVE</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">在 AI 工作流赛道，我们已是市场前三</h2>
+            <div class="layout-split">
+                <div class="card animate-in">
+                    <h3>市场地位</h3>
+                    <p style="font-size:var(--text-sm)">G2 排名第 3，从 Q1 的第 7 位上升 4 位</p>
+                </div>
+                <div class="card animate-in">
+                    <h3>差异化壁垒</h3>
+                    <p style="font-size:var(--text-sm)">原生 AI 助手 + 合规一体化，竞品需要 3-4 个工具拼接</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>11 / 16</span></div>
+    </section>
+
+    <!-- 12: Q4 OBJECTIVES -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">Q4 OBJECTIVES</span>
+            <span class="eyebrow">FY 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">Q4 我们要冲击三个明确目标</h2>
+            <div class="card animate-in">
+                <div class="step"><div class="num">01</div><div><div class="text">收入达成 700 万，全年突破 2200 万</div><div class="meta">Owner: Sales · Due: Dec 31</div></div></div>
+                <div class="step"><div class="num">02</div><div><div class="text">企业客户数从 48 增长到 75</div><div class="meta">Owner: Enterprise GTM · Due: Dec 31</div></div></div>
+                <div class="step"><div class="num">03</div><div><div class="text">推出 AI Agent 市场，吸引 200 个开发者</div><div class="meta">Owner: Product · Due: Nov 30</div></div></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>12 / 16</span></div>
+    </section>
+
+    <!-- 13: NEXT STEPS -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">NEXT STEPS</span>
+            <span class="eyebrow">Q4 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">未来 30 天的关键动作清单</h2>
+            <div class="card animate-in">
+                <div class="step"><div class="num">·</div><div><div class="text">完成 8 名工程师招聘 — 缓解平台路线图风险</div><div class="meta">Owner: People Ops</div></div></div>
+                <div class="step"><div class="num">·</div><div><div class="text">启动企业续约谈判季 — 锁定 Top 20 客户</div><div class="meta">Owner: CSM Lead</div></div></div>
+                <div class="step"><div class="num">·</div><div><div class="text">发布 AI Agent 早期访问 — 收集 50 份反馈</div><div class="meta">Owner: PM Lead</div></div></div>
+                <div class="step"><div class="num">·</div><div><div class="text">SOC 2 Type II 续审准备就绪</div><div class="meta">Owner: Security</div></div></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>13 / 16</span></div>
+    </section>
+
+    <!-- 15: ASKS -->
+    <section class="slide">
+        <div class="slide-header">
+            <span class="eyebrow">BOARD ASKS</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h2 class="slide-title animate-in">我们需要董事会三项支持</h2>
+            <div class="layout-grid-3">
+                <div class="card animate-in"><h3>招聘批准</h3><p style="font-size:var(--text-sm)">扩编 8 名工程师 + 4 名 GTM</p></div>
+                <div class="card animate-in"><h3>市场预算</h3><p style="font-size:var(--text-sm)">追加 $1.2M Q4 营销投放</p></div>
+                <div class="card animate-in"><h3>战略合作</h3><p style="font-size:var(--text-sm)">引荐两家 Fortune 500 试点</p></div>
+            </div>
+        </div>
+        <div class="slide-footer"><span>Acme · Q3 QBR</span><span>15 / 16</span></div>
+    </section>
+
+    <!-- 16: CLOSING -->
+    <section class="slide layout-hero" id="closing-slide">
+        <div class="slide-header">
+            <span class="eyebrow">CLOSING</span>
+            <span class="eyebrow">Q3 2026</span>
+        </div>
+        <div class="slide-body">
+            <h1 class="slide-title animate-in">Q3 已经超越全年目标 — Q4 我们冲击全新高度</h1>
+            <p class="subtitle animate-in">提前 90 天超越全年目标 · 全年预计冲上 2400 万（+20% 超额） · 42% 增速持续领跑</p>
+        </div>
+        <div class="slide-footer"><span>Thank you · Questions?</span><span>16 / 16</span></div>
+    </section>
+
+</div>
+
+<nav class="nav">
+    <button class="nav-btn" data-action="prev" aria-label="Previous slide">←</button>
+    <span class="nav-counter"><span id="current">1</span> / <span id="total">16</span></span>
+    <button class="nav-btn" data-action="next" aria-label="Next slide">→</button>
+</nav>
+
+<script>
+(function() {
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progressBar');
+    let current = 0;
+    totalEl.textContent = total;
+    function showSlide(n) {
+        n = Math.max(0, Math.min(total - 1, n));
+        current = n;
+        slides.forEach((s, i) => s.classList.toggle('active', i === n));
+        currentEl.textContent = n + 1;
+        progressEl.style.width = ((n + 1) / total * 100) + '%';
+    }
+    function next() { showSlide(current + 1); }
+    function prev() { showSlide(current - 1); }
+    document.querySelectorAll('[data-action="next"]').forEach(b => b.addEventListener('click', next));
+    document.querySelectorAll('[data-action="prev"]').forEach(b => b.addEventListener('click', prev));
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+        if (e.key === 'Home') showSlide(0);
+        if (e.key === 'End') showSlide(total - 1);
+    });
+    showSlide(0);
+})();
+</script>
+
+</body>
+</html>

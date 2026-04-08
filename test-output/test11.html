@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q1 (Final) 2026 市场营销季度总结</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+--s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+--text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+--font-display:'Inter','Noto Sans SC',sans-serif;--font-body:'Inter','Noto Sans SC',sans-serif;
+--lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+--tracking-tight:-0.03em;--tracking-wide:0.05em;
+--color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+--color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+--color-border:#27272A;
+--color-primary:#6366F1;--color-accent:#F59E0B;
+--color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+--shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+--ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:var(--color-bg);color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000;}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-6) var(--s-7);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden;}
+.slide.active{opacity:1;visibility:visible;}
+h1.slide-title{font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);}
+h2.slide-title{font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);margin-bottom:var(--s-3);}
+h3{font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2);}
+p{font-size:var(--text-base);color:var(--color-fg-muted);}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3);}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600;}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-3);}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-3);min-height:0;}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-3);font-size:var(--text-xs);color:var(--color-fg-subtle);}
+.layout-hero{justify-content:center;}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);align-items:center;flex:1;}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-3);}
+.card-metric .value{font-size:var(--text-3xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-subtle);margin-top:var(--s-2);}
+.card-metric .delta{font-size:var(--text-xs);margin-top:var(--s-1);color:var(--color-success);}
+.delta.negative{color:var(--color-error);}
+.data-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
+.data-table th{text-align:left;padding:var(--s-2) var(--s-3);font-size:var(--text-sm);font-weight:600;color:var(--color-fg-subtle);border-bottom:1px solid var(--color-border);}
+.data-table td{padding:var(--s-2) var(--s-3);font-size:var(--text-sm);border-bottom:1px solid var(--color-border);}
+.data-table td.positive{color:var(--color-success);}
+.data-table td.negative{color:var(--color-error);}
+.data-table td.highlight{color:var(--color-primary);font-weight:600;}
+.chart-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--radius-lg);}
+.chart-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;}
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:var(--s-2);}
+.bullet-list li{font-size:var(--text-base);color:var(--color-fg-muted);padding-left:var(--s-3);position:relative;}
+.bullet-list li::before{content:"";position:absolute;left:0;top:0.7em;width:8px;height:2px;background:var(--color-primary);}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100;}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated);}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards;}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1 TITLE -->
+<section class="slide active layout-hero">
+<div class="slide-header"><span class="eyebrow">市场营销部</span><span class="eyebrow">2026 年 4 月</span></div>
+<div class="slide-body">
+<h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">Q1 营销引爆增长，Q2 加速冲刺</h1>
+<p class="subtitle animate-in">2026 第一季度总结 · 第二季度作战计划</p>
+</div>
+<div class="slide-footer"><span>市场营销部 · CMO Office</span><span>1 / 16</span></div>
+</section>
+
+<!-- 2 Q1 OVERVIEW -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">Q1 总览</span><span class="eyebrow">KEY METRICS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">Q1 营销 ROI 同比提升 38%</h2>
+<div class="layout-grid-4">
+<div class="card card-metric animate-in"><div class="value">¥8.4M</div><div class="label">营销总投入</div><div class="delta">↑ 18% QoQ</div></div>
+<div class="card card-metric animate-in"><div class="value">¥34.2M</div><div class="label">归因营收</div><div class="delta">↑ 42% QoQ</div></div>
+<div class="card card-metric animate-in"><div class="value">4.07x</div><div class="label">综合 ROI</div><div class="delta">↑ 0.6x QoQ</div></div>
+<div class="card card-metric animate-in"><div class="value">12,840</div><div class="label">新增 MQL</div><div class="delta">↑ 27% QoQ</div></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>2 / 16</span></div>
+</section>
+
+<!-- 3 CHANNEL PERFORMANCE -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">渠道表现</span><span class="eyebrow">CHANNEL ROI</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">五大渠道 ROI 分化明显，SEO 与内容营销领跑</h2>
+<table class="data-table animate-in">
+<thead><tr><th>渠道</th><th>投入</th><th>归因营收</th><th>ROI</th><th>MQL</th></tr></thead>
+<tbody>
+<tr><td>SEO 自然搜索</td><td>¥1.2M</td><td>¥7.8M</td><td class="highlight" id="roi-seo">6.5x</td><td>3,420</td></tr>
+<tr><td>内容营销</td><td>¥1.6M</td><td>¥8.9M</td><td class="highlight" id="roi-content">5.6x</td><td>2,890</td></tr>
+<tr><td>付费广告 (SEM)</td><td>¥2.8M</td><td>¥9.2M</td><td class="highlight" id="roi-sem">3.3x</td><td>3,650</td></tr>
+<tr><td>社交媒体</td><td>¥1.4M</td><td>¥4.6M</td><td class="highlight" id="roi-social">3.3x</td><td>1,820</td></tr>
+<tr><td>邮件营销</td><td>¥0.6M</td><td>¥2.4M</td><td class="highlight" id="roi-email">4.0x</td><td>1,060</td></tr>
+</tbody>
+</table>
+<img src="./test11-assets/channel-roi.png" alt="Channel ROI" class="chart-img" style="max-width:100%;margin-top:16px;border-radius:8px;" />
+</div>
+<div class="slide-footer"><span>来源：内部归因模型</span><span>3 / 16</span></div>
+</section>
+
+<!-- 4 CAMPAIGN HIGHLIGHTS -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">明星活动</span><span class="eyebrow">CAMPAIGNS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">三场重点活动贡献 60% 季度营收</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3>春节品牌大片</h3><p style="font-size:var(--text-sm);">曝光 1.2 亿次，品牌搜索量 +85%，斩获 4 项行业奖。</p></div>
+<div class="card animate-in"><h3>3·8 女王节直播</h3><p style="font-size:var(--text-sm);">单场 GMV ¥6.8M，转化率 8.4%，复购率 32%。</p></div>
+<div class="card animate-in"><h3>开发者大会 2026</h3><p style="font-size:var(--text-sm);">2,400 名报名，800 篇媒体报道，签约 18 家企业客户。</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>4 / 16</span></div>
+</section>
+
+<!-- 5 CONTENT MARKETING -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">内容营销</span><span class="eyebrow">CONTENT</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">内容产出翻倍，单篇互动量同比 +120%</h2>
+<div class="layout-grid-4">
+<div class="card card-metric animate-in"><div class="value">186</div><div class="label">原创文章</div></div>
+<div class="card card-metric animate-in"><div class="value">42</div><div class="label">视频/播客</div></div>
+<div class="card card-metric animate-in"><div class="value">2.8M</div><div class="label">总阅读量</div></div>
+<div class="card card-metric animate-in"><div class="value">14.2%</div><div class="label">平均互动率</div></div>
+</div>
+</div>
+
+<div class="top-hits animate-in" style="margin-top:16px;">
+<h3 style="color:#FAFAFA;font-size:1rem;margin-bottom:8px;">Top 3 爆款内容</h3>
+<ul style="color:#A1A1AA;font-size:0.9rem;line-height:1.6;">
+<li><strong style="color:#EC4899;">《AI 时代的增长黑客手册》</strong> — 互动量 2,400 / 分享 1,800</li>
+<li><strong style="color:#EC4899;">《2026 内容营销趋势报告》</strong> — 互动量 1,900 / 分享 1,500</li>
+<li><strong style="color:#EC4899;">《私域运营 0 到 1 实战》</strong> — 互动量 2,100 / 分享 2,000</li>
+</ul>
+</div>
+<img src="./test11-assets/content-scatter.png" alt="Content scatter" class="chart-img" style="max-width:100%;margin-top:16px;border-radius:8px;" />
+<div class="slide-footer"><span>市场营销部</span><span>5 / 16</span></div>
+</section>
+
+<!-- 6 SOCIAL MEDIA -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">社交媒体</span><span class="eyebrow">SOCIAL</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">私域粉丝突破 50 万，互动率行业 Top 5%</h2>
+<div class="layout-grid-4">
+<div class="card card-metric animate-in"><div class="value">528K</div><div class="label">总粉丝</div><div class="delta">↑ 18%</div></div>
+<div class="card card-metric animate-in"><div class="value">8.4%</div><div class="label">平均互动率</div></div>
+<div class="card card-metric animate-in"><div class="value">3.2M</div><div class="label">月度曝光</div></div>
+<div class="card card-metric animate-in"><div class="value">42</div><div class="label">爆款内容数</div></div>
+</div>
+</div>
+<div class="slide-footer"><span>来源：微博/抖音/小红书后台</span><span>6 / 16</span></div>
+</section>
+
+<!-- 7 LEAD GENERATION -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">线索获取</span><span class="eyebrow">LEAD GEN</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">12,840 条 MQL，转化率 18.6%</h2>
+<table class="data-table animate-in">
+<thead><tr><th>阶段</th><th>数量</th><th>转化率</th><th>QoQ</th></tr></thead>
+<tbody>
+<tr><td>访客 (Visitors)</td><td>1,840,000</td><td>—</td><td class="positive">+24%</td></tr>
+<tr><td>线索 (Leads)</td><td>68,200</td><td>3.7%</td><td class="positive">+18%</td></tr>
+<tr><td>MQL</td><td>12,840</td><td>18.8%</td><td class="positive">+27%</td></tr>
+<tr><td>SQL</td><td>3,420</td><td>26.6%</td><td class="positive">+14%</td></tr>
+<tr><td>成交客户</td><td>586</td><td>17.1%</td><td class="positive">+22%</td></tr>
+</tbody>
+</table>
+<img src="./test11-assets/marketing-funnel.png" alt="Marketing Funnel" class="chart-img" style="max-width:100%;margin-top:16px;border-radius:8px;" />
+</div>
+<div class="slide-footer"><span>来源：CRM Salesforce</span><span>7 / 16</span></div>
+</section>
+
+<!-- 8 CAC / LTV -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">单位经济</span><span class="eyebrow">CAC / LTV</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">LTV/CAC 比值升至 5.8，单位经济持续优化</h2>
+<div class="layout-grid-4">
+<div class="card card-metric animate-in"><div class="value">¥1,432</div><div class="label">综合 CAC</div><div class="delta">↓ 12%</div></div>
+<div class="card card-metric animate-in"><div class="value">¥8,310</div><div class="label">12 月 LTV</div><div class="delta">↑ 22%</div></div>
+<div class="card card-metric animate-in"><div class="value">5.8x</div><div class="label">LTV / CAC</div><div class="delta">↑ 38%</div></div>
+<div class="card card-metric animate-in"><div class="value">3.4 月</div><div class="label">CAC 回本周期</div><div class="delta">↓ 1.1 月</div></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>8 / 16</span></div>
+</section>
+
+<!-- 9 TOP WINS -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">关键胜利</span><span class="eyebrow">TOP WINS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">Q1 五大胜利</h2>
+<ul class="bullet-list animate-in">
+<li>品牌搜索量同比 +85%，首次进入行业前三认知度</li>
+<li>SEO 流量翻倍，21 个核心词稳居 Top 3</li>
+<li>开发者大会签约 18 家头部企业客户，直接贡献 ¥12M 营收</li>
+<li>私域复购率提升至 32%，比 Q4 提高 9 个百分点</li>
+<li>内容团队首次实现 100% 自给自足，外包成本归零</li>
+</ul>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>9 / 16</span></div>
+</section>
+
+<!-- 10 LESSONS LEARNED -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">经验教训</span><span class="eyebrow">LESSONS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">三个我们必须直面的问题</h2>
+<ul class="bullet-list animate-in">
+<li>SEM 出价过高导致 CPC 上涨 28%，需要重构关键词策略</li>
+<li>视频内容产出滞后，仅完成季度计划的 65%</li>
+<li>邮件营销打开率下滑至 18%，需要重做用户分层</li>
+<li>线索流转 SLA 平均 4.8 小时，远高于 2 小时目标</li>
+<li>北区市场预算执行率仅 72%，区域协同需要加强</li>
+</ul>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>10 / 16</span></div>
+</section>
+
+<!-- 11 Q2 BUDGET -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">Q2 预算</span><span class="eyebrow">BUDGET</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">Q2 预算 ¥10.2M，向高 ROI 渠道倾斜</h2>
+<table class="data-table animate-in">
+<thead><tr><th>类别</th><th>Q1 投入</th><th>Q2 预算</th><th>变化</th><th>占比</th></tr></thead>
+<tbody>
+<tr><td>SEO / 内容</td><td>¥2.8M</td><td>¥4.0M</td><td class="positive" id="bud-seo-delta">+29%</td><td>35%</td></tr>
+<tr><td>付费广告</td><td>¥2.8M</td><td>¥2.5M</td><td class="negative" id="bud-sem-delta">-11%</td><td>25%</td></tr>
+<tr><td>社交 / 私域</td><td>¥1.4M</td><td>¥1.8M</td><td class="positive" id="bud-social-delta">+29%</td><td>17%</td></tr>
+<tr><td>线下活动</td><td>¥0.8M</td><td>¥1.5M</td><td class="positive" id="bud-event-delta">+88%</td><td>15%</td></tr>
+<tr><td>邮件 / 工具</td><td>¥0.6M</td><td>¥0.8M</td><td class="positive" id="bud-tool-delta">+33%</td><td>8%</td></tr>
+</tbody>
+</table>
+<img src="./test11-assets/budget-q1-q2.png" alt="Q1 vs Q2 Budget" class="chart-img" style="max-width:100%;margin-top:16px;border-radius:8px;" />
+</div>
+<div class="slide-footer"><span>财务批准 2026-03-28</span><span>11 / 16</span></div>
+</section>
+
+<!-- 12 Q2 INITIATIVES -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">Q2 战略举措</span><span class="eyebrow">INITIATIVES</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">六大战略举措驱动 Q2 增长</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3>1. AI 内容工厂</h3><p style="font-size:var(--text-sm);">部署 AI 写作流水线，月产能从 60 → 180 篇。</p></div>
+<div class="card animate-in"><h3>2. 出海开局</h3><p style="font-size:var(--text-sm);">东南亚 3 国本地化落地，建立 SEA 增长团队。</p></div>
+<div class="card animate-in"><h3>3. 私域 2.0</h3><p style="font-size:var(--text-sm);">企微 + 小程序闭环，目标复购率 40%。</p></div>
+<div class="card animate-in"><h3>4. 行业 ABM</h3><p style="font-size:var(--text-sm);">锁定 200 家目标企业，1v1 定制内容。</p></div>
+<div class="card animate-in"><h3>5. 数据中台</h3><p style="font-size:var(--text-sm);">CDP 上线，实现归因从 Last-Touch → Multi-Touch。</p></div>
+<div class="card animate-in"><h3>6. 创作者计划</h3><p style="font-size:var(--text-sm);">招募 100 位 KOC，UGC 月产出 500+。</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>12 / 16</span></div>
+</section>
+
+<!-- 13 KPI TARGETS -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">Q2 KPI</span><span class="eyebrow">TARGETS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">Q2 KPI 目标：营收 +30%，CAC 再降 10%</h2>
+<div class="layout-grid-4">
+<div class="card card-metric animate-in"><div class="value">¥44M</div><div class="label">归因营收</div><div class="delta">↑ 30%</div></div>
+<div class="card card-metric animate-in"><div class="value">16,500</div><div class="label">MQL</div><div class="delta">↑ 28%</div></div>
+<div class="card card-metric animate-in"><div class="value">¥1,290</div><div class="label">CAC</div><div class="delta">↓ 10%</div></div>
+<div class="card card-metric animate-in"><div class="value">4.5x</div><div class="label">综合 ROI</div><div class="delta">↑ 0.4x</div></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>13 / 16</span></div>
+</section>
+
+<!-- 14 RISKS -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">风险与依赖</span><span class="eyebrow">RISKS</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">三大关键风险，需要跨部门协同化解</h2>
+<ul class="bullet-list animate-in">
+<li>SEM 平台政策变动可能影响 Q2 30% 流量</li>
+<li>出海项目依赖法务/合规批准，时间窗口紧</li>
+<li>CDP 上线延迟会导致归因数据缺失 4-6 周</li>
+</ul>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>14 / 16</span></div>
+</section>
+
+<!-- 15 TIMELINE -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">Q2 节奏</span><span class="eyebrow">TIMELINE</span></div>
+<div class="slide-body">
+<h2 class="slide-title animate-in">Q2 月度作战节奏</h2>
+<div class="layout-grid-3">
+<div class="card animate-in"><h3>4 月 · 启动</h3><p style="font-size:var(--text-sm);">AI 内容工厂上线，出海团队组建完成，CDP 进入 UAT。</p></div>
+<div class="card animate-in"><h3>5 月 · 加速</h3><p style="font-size:var(--text-sm);">SEA 首个市场启动，618 大促预热，ABM 第一批触达。</p></div>
+<div class="card animate-in"><h3>6 月 · 收官</h3><p style="font-size:var(--text-sm);">618 主战役，Q2 复盘，Q3 规划提案。</p></div>
+</div>
+</div>
+<div class="slide-footer"><span>市场营销部</span><span>15 / 16</span></div>
+</section>
+
+<!-- 16 CTA -->
+<section class="slide">
+<div class="slide-header"><span class="eyebrow">下一步</span><span class="eyebrow">NEXT</span></div>
+<div class="slide-body" style="justify-content:center;align-items:flex-start;gap:var(--s-4);">
+<h2 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">让 Q2 成为我们最强劲的一个季度</h2>
+<p class="animate-in subtitle">需要协同：销售 / 产品 / 财务 / 法务 / 数据团队</p>
+<p class="animate-in" style="font-size:var(--text-sm);color:var(--color-fg-subtle);">marketing@company.com · 2026-04-04</p>
+</div>
+<div class="slide-footer"><span>市场营销部 · CMO Office</span><span>16 / 16</span></div>
+</section>
+
+</div>
+<nav class="nav">
+<button class="nav-btn" data-action="prev">←</button>
+<span class="nav-counter"><span id="current">1</span> / <span id="total">16</span></span>
+<button class="nav-btn" data-action="next">→</button>
+</nav>
+<script>
+(function(){
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+const cur=document.getElementById('current');
+const tot=document.getElementById('total');
+const pb=document.getElementById('progressBar');
+let n=0;
+tot.textContent=total;
+function show(i){i=Math.max(0,Math.min(total-1,i));n=i;slides.forEach((s,k)=>s.classList.toggle('active',k===i));cur.textContent=i+1;pb.style.width=((i+1)/total*100)+'%';}
+document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(n+1)));
+document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(n-1)));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(n+1);}if(e.key==='ArrowLeft'){e.preventDefault();show(n-1);}});
+show(0);
+})();
+</script>
+</body>
+</html>

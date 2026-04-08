@@ -1,4 +1,4 @@
-# Python-generated files
+# Python
 __pycache__/
 *.py[oc]
 build/
@@ -9,5 +9,23 @@ wheels/
 # Virtual environments
 .venv
 
-# Superpowers brainstorm files
+# Superpowers
 .superpowers/
+.pytest_cache/
+
+# Cloned reference projects (kept locally for inspiration analysis, not part of this repo)
+frontend-slides/
+frontend-slides-editable/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# slive runtime files (per-deck changelogs are local artifacts)
+*.changelog.json
+*.changelog.history.jsonl

@@ -75,9 +75,19 @@ def open(filepath: str, port: int):
 
 @main.command()
 @click.argument("filepath")
-@click.option("--template", "-t", default="default", help="Template to use (run 'htmlcli templates' to list)")
-def create(filepath: str, template: str):
-    """Create a new HTML file from template."""
+@click.option("--template", "-t", default=None, help="Content template (run 'htmlcli templates' to list)")
+@click.option("--preset", "-p", default=None, help="Visual style preset (run 'htmlcli presets' to list)")
+def create(filepath: str, template: str | None, preset: str | None):
+    """Create a new HTML file from a template or visual preset.
+
+    Templates pick by content shape (presentation, business, tech).
+    Presets pick by visual aesthetic (bold-signal, dark-botanical, terminal-green).
+    Pass exactly one of --template or --preset; pass neither for the default empty page.
+    """
+    if template and preset:
+        click.echo("Error: pass --template OR --preset, not both.", err=True)
+        sys.exit(1)
+
     path = Path(filepath).resolve()
     if path.exists():
         click.echo(f"Error: File already exists: {path}", err=True)
@@ -86,9 +96,15 @@ def create(filepath: str, template: str):
     title = path.stem.replace("-", " ").replace("_", " ").title()
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    if template == "default":
-        path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
-    else:
+    if preset:
+        from htmlcli.templates import get_preset
+        try:
+            content = get_preset(preset, title)
+        except ValueError as e:
+            click.echo(f"Error: {e}", err=True)
+            sys.exit(1)
+        path.write_text(content, encoding="utf-8")
+    elif template and template != "default":
         from htmlcli.templates import get_template
         try:
             content = get_template(template, title)
@@ -96,6 +112,8 @@ def create(filepath: str, template: str):
             click.echo(f"Error: {e}", err=True)
             sys.exit(1)
         path.write_text(content, encoding="utf-8")
+    else:
+        path.write_text(TEMPLATE.format(title=title), encoding="utf-8")
 
     click.echo(f"Created: {path}")
     click.echo(f"Run 'htmlcli open {filepath}' to edit visually.")
@@ -103,12 +121,24 @@ def create(filepath: str, template: str):
 
 @main.command()
 def templates():
-    """List available templates."""
+    """List available content templates."""
     from htmlcli.templates import list_templates
-    click.echo("Available templates:")
+    click.echo("Content templates (--template):")
     click.echo(f"  default          - Simple single-page HTML")
     for t in list_templates():
         click.echo(f"  {t['name']:<16} - {t['description']}")
+
+
+@main.command()
+def presets():
+    """List available visual style presets."""
+    from htmlcli.templates import list_presets
+    click.echo("Visual style presets (--preset):")
+    for p in list_presets():
+        click.echo(f"  {p['name']:<16} - {p['description']}")
+    click.echo("")
+    click.echo("More presets are documented in skills/htmlcli/references/style-presets.md")
+    click.echo("(adapted from zarazhangrui/frontend-slides under MIT) — AI can generate any of them on demand.")
 
 
 @main.command()
@@ -141,6 +171,90 @@ def diff(filepath: str):
             click.echo(f"  [{ctype}] {sel} ({change['tag']})")
         else:
             click.echo(f"  [{ctype}] {sel}")
+
+
+@main.group()
+def asset():
+    """Manage assets (charts, images, diagrams) for an HTML file."""
+    pass
+
+
+@asset.command("list")
+@click.argument("filepath")
+def asset_list(filepath: str):
+    """List all assets for an HTML file."""
+    from htmlcli.assets import list_assets, get_assets_dir
+
+    assets = list_assets(filepath)
+    assets_dir = get_assets_dir(filepath)
+    click.echo(f"Assets directory: {assets_dir}")
+
+    if not assets:
+        click.echo("No assets yet.")
+        return
+
+    click.echo(f"\n{len(assets)} asset(s):")
+    for a in assets:
+        size_kb = a["size"] / 1024
+        click.echo(f"  {a['name']:<30} {a['type']:<6} {size_kb:>8.1f} KB")
+
+
+@asset.command("gen-chart")
+@click.argument("filepath")
+@click.option("--name", required=True, help="Asset name (without extension)")
+@click.option("--type", "chart_type", required=True,
+              type=click.Choice(["bar", "hbar", "line", "pie", "scatter"]))
+@click.option("--data", required=True, help="JSON data string or path to JSON file")
+@click.option("--title", default=None, help="Chart title")
+@click.option("--theme", default="dark", type=click.Choice(["dark", "light"]))
+def asset_gen_chart(filepath: str, name: str, chart_type: str, data: str,
+                    title: str | None, theme: str):
+    """Generate a chart image using matplotlib.
+
+    Example:
+      htmlcli asset gen-chart deck.html --name revenue --type bar \\
+        --data '{"labels":["Q1","Q2","Q3"],"values":[100,200,300]}' \\
+        --title "Revenue by Quarter"
+    """
+    from htmlcli.assets import generate_chart
+
+    # Data can be inline JSON or a file path
+    if Path(data).exists():
+        data_dict = json.loads(Path(data).read_text(encoding="utf-8"))
+    else:
+        data_dict = json.loads(data)
+
+    try:
+        rel_path = generate_chart(
+            filepath, name, chart_type, data_dict,
+            title=title, theme=theme
+        )
+        click.echo(f"Chart generated: {rel_path}")
+        click.echo(f"Embed in HTML: <img src=\"{rel_path}\" alt=\"{title or name}\">")
+    except RuntimeError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
+@asset.command("import")
+@click.argument("filepath")
+@click.option("--name", required=True, help="Target asset name (without extension)")
+@click.option("--from", "source", required=True, help="Source image path")
+def asset_import(filepath: str, name: str, source: str):
+    """Import an externally-generated image into the assets directory.
+
+    Example:
+      htmlcli asset import deck.html --name hero --from ./my-generated-image.png
+    """
+    from htmlcli.assets import save_external_image
+
+    try:
+        rel_path = save_external_image(filepath, name, source)
+        click.echo(f"Imported: {rel_path}")
+        click.echo(f"Embed in HTML: <img src=\"{rel_path}\">")
+    except FileNotFoundError as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

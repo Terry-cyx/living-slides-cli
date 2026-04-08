@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Q1 2026 董事会季度汇报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+  --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+  --font-display:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+  --tracking-tight:-0.03em;--tracking-wide:0.05em;
+  --color-bg:#0B1121;--color-bg-elevated:#131A2E;--color-bg-accent:#1A2238;
+  --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+  --color-border:#27314A;
+  --color-primary:#3B82F6;--color-accent:#06B6D4;
+  --color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);font-family:var(--font-display);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+h1.slide-title{font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight)}
+h2.slide-title{font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);margin-bottom:var(--s-3)}
+h3{font-size:var(--text-lg);font-weight:600;margin-bottom:var(--s-2)}
+p{font-size:var(--text-base);color:var(--color-fg-muted)}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3)}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4)}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4)}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle)}
+.layout-hero{justify-content:center;align-items:flex-start}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3)}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+.layout-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-3)}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4)}
+.card-metric .value{font-size:var(--text-4xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;color:var(--color-fg-subtle);margin-top:var(--s-2)}
+.card-metric .delta{font-size:var(--text-sm);color:var(--color-success);margin-top:var(--s-1)}
+.card-metric .delta.down{color:var(--color-error)}
+.tag{display:inline-block;font-size:var(--text-xs);padding:4px 10px;border-radius:var(--radius-full);font-weight:600;letter-spacing:.05em}
+.tag-ok{background:rgba(16,185,129,.15);color:var(--color-success)}
+.tag-warn{background:rgba(245,158,11,.15);color:var(--color-warning)}
+.tag-risk{background:rgba(239,68,68,.15);color:var(--color-error)}
+.bullet-list{list-style:none;display:flex;flex-direction:column;gap:var(--s-2)}
+.bullet-list li{font-size:var(--text-base);color:var(--color-fg-muted);padding-left:var(--s-3);position:relative}
+.bullet-list li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:50%;background:var(--color-primary)}
+.chart-img{max-width:100%;max-height:100%;border-radius:var(--radius-lg);display:block;margin:0 auto}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm)}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated)}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards}
+.risk-table{width:100%;border-collapse:collapse}
+.risk-table th,.risk-table td{padding:var(--s-2) var(--s-3);text-align:left;font-size:var(--text-sm);border-bottom:1px solid var(--color-border)}
+.risk-table th{color:var(--color-fg-subtle);text-transform:uppercase;letter-spacing:.05em;font-size:var(--text-xs);font-weight:600}
+.init-row{display:grid;grid-template-columns:1fr 120px 100px;gap:var(--s-3);padding:var(--s-3);border-bottom:1px solid var(--color-border);align-items:center}
+.progress-track{height:8px;background:var(--color-bg-accent);border-radius:var(--radius-full);overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--color-primary),var(--color-accent));border-radius:var(--radius-full)}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1: TITLE -->
+<section class="slide active layout-hero">
+  <div class="slide-header"><span class="eyebrow">BOARD MEETING</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">Q1 2026 董事会季度汇报</h1>
+    <p class="subtitle animate-in">业务节奏稳健，进入规模化扩张关键季</p>
+  </div>
+  <div class="slide-footer"><span>CEO · 王志远</span><span>1 / 19</span></div>
+</section>
+
+<!-- 2: EXEC SUMMARY -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">EXECUTIVE SUMMARY</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">收入超预期 18%，跑道延长至 22 个月</h2>
+    <ul class="bullet-list animate-in">
+      <li>营收 ¥52.8M，环比增长 27%，超出预算 18%</li>
+      <li>毛利率提升至 71%，单位经济模型转正</li>
+      <li>核心客户净收入留存 NDR 达 128%</li>
+      <li>完成 B+ 轮 5,000 万美元融资，账上现金 ¥320M</li>
+      <li>三大战略举措按时推进，团队扩至 186 人</li>
+    </ul>
+  </div>
+  <div class="slide-footer"><span>CEO · 王志远</span><span>2 / 19</span></div>
+</section>
+
+<!-- 3: FINANCIAL SUMMARY (target of Round 1 edits) -->
+<section class="slide" id="slide-financial-summary">
+  <div class="slide-header"><span class="eyebrow">FINANCIAL HIGHLIGHTS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">财务摘要：收入加速、烧钱可控、跑道充足</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value" id="kpi-revenue">¥52.8M</div><div class="label">季度营收</div><div class="delta">+39% QoQ</div></div>
+      <div class="card card-metric animate-in"><div class="value" id="kpi-burn">¥10.2M</div><div class="label">月度烧钱率</div><div class="delta down">+8% QoQ</div></div>
+      <div class="card card-metric animate-in"><div class="value" id="kpi-runway">28 月</div><div class="label">现金跑道</div><div class="delta">充足</div></div>
+      <div class="card card-metric animate-in"><div class="value">71%</div><div class="label">毛利率</div><div class="delta">+4pp</div></div>
+    </div>
+    <div class="animate-in" style="margin-top:var(--s-3);display:flex;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/financial-dashboard.png" alt="Financial health dashboard" style="max-height:32vh;">
+    </div>
+  </div>
+  <div class="slide-footer"><span>CFO · 李静</span><span>3 / 19</span></div>
+</section>
+
+<!-- 4: REVENUE TREND CHART -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">REVENUE TREND</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">营收连续 5 个季度加速增长</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/financial-trend.png" alt="Financial trend">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：财务系统，2026 Q1</span><span>4 / 19</span></div>
+</section>
+
+<!-- 5: SPEND BREAKDOWN -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">SPEND</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">支出结构：研发投入占比 52%</h2>
+    <div class="layout-split">
+      <div class="animate-in">
+        <ul class="bullet-list">
+          <li>研发 ¥19.5M（52%）— 平台核心 + AI 团队</li>
+          <li>市场销售 ¥10.1M（27%）— 海外拓展启动</li>
+          <li>客户成功 ¥4.5M（12%）— 大客户专项</li>
+          <li>行政管理 ¥3.4M（9%）— 合规建设</li>
+        </ul>
+      </div>
+      <div class="card animate-in"><h3>支出总额</h3><div style="font-size:var(--text-3xl);font-weight:800;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">¥37.5M</div><p style="margin-top:var(--s-2);font-size:var(--text-sm);">环比 +12%，低于营收增速 15pp</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CFO · 李静</span><span>5 / 19</span></div>
+</section>
+
+<!-- 6: RUNWAY -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">RUNWAY</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">现金跑道：¥320M / 22 个月</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>账上现金</h3><p style="font-size:var(--text-2xl);color:var(--color-fg);font-weight:800;">¥320M</p><p style="font-size:var(--text-sm);">B+ 轮融资到账</p></div>
+      <div class="card animate-in"><h3>月度净烧钱</h3><p style="font-size:var(--text-2xl);color:var(--color-fg);font-weight:800;">¥12.5M</p><p style="font-size:var(--text-sm);">考虑营收抵扣后</p></div>
+      <div class="card animate-in"><h3>下一里程碑</h3><p style="font-size:var(--text-2xl);color:var(--color-fg);font-weight:800;">¥200M ARR</p><p style="font-size:var(--text-sm);">预计 2027 Q2 达成</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CFO · 李静</span><span>6 / 19</span></div>
+</section>
+
+<!-- 7: UNIT ECONOMICS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">UNIT ECONOMICS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">单位经济：LTV/CAC 突破 4.2x</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">¥18.6K</div><div class="label">CAC</div><div class="delta">-12% QoQ</div></div>
+      <div class="card card-metric animate-in"><div class="value">¥78.1K</div><div class="label">LTV</div><div class="delta">+19% QoQ</div></div>
+      <div class="card card-metric animate-in"><div class="value">4.2x</div><div class="label">LTV / CAC</div><div class="delta">健康</div></div>
+      <div class="card card-metric animate-in"><div class="value">9.4 月</div><div class="label">回本周期</div><div class="delta">-2 月</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CFO · 李静</span><span>7 / 19</span></div>
+</section>
+
+<!-- 8: GROWTH CHART -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">GROWTH</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">付费客户数翻倍至 1,240 家</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/growth-chart.png" alt="Growth chart">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：CRM，2026 Q1</span><span>8 / 19</span></div>
+</section>
+
+<!-- 9: GROWTH METRICS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">GROWTH METRICS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">增长引擎全面发力</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">1,240</div><div class="label">付费客户</div><div class="delta">+108% YoY</div></div>
+      <div class="card card-metric animate-in"><div class="value">¥155K</div><div class="label">ARPU</div><div class="delta">+22%</div></div>
+      <div class="card card-metric animate-in"><div class="value">42%</div><div class="label">海外占比</div><div class="delta">+11pp</div></div>
+      <div class="card card-metric animate-in"><div class="value">¥193M</div><div class="label">ARR</div><div class="delta">+131% YoY</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CRO · 陈思琪</span><span>9 / 19</span></div>
+</section>
+
+<!-- 10: RETENTION & NPS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">RETENTION & NPS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">客户健康度持续走强</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">128%</div><div class="label">NDR 净留存</div><div class="delta">+6pp</div></div>
+      <div class="card card-metric animate-in"><div class="value">96%</div><div class="label">Logo 留存</div><div class="delta">+1pp</div></div>
+      <div class="card card-metric animate-in"><div class="value">68</div><div class="label">NPS</div><div class="delta">+9</div></div>
+      <div class="card card-metric animate-in"><div class="value">1.8%</div><div class="label">月流失率</div><div class="delta">-0.4pp</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CCO · 周敏</span><span>10 / 19</span></div>
+</section>
+
+<!-- 11: STRATEGIC INITIATIVES (target of Round 2 edits) -->
+<section class="slide" id="slide-initiatives">
+  <div class="slide-header"><span class="eyebrow">STRATEGIC INITIATIVES</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三大战略举措整体按计划推进</h2>
+    <div class="animate-in" id="initiatives-list">
+      <div class="init-row"><div><strong>企业版平台 2.0</strong><div style="font-size:var(--text-sm);color:var(--color-fg-subtle);">面向 5K 员工以上客户</div></div><div class="progress-track"><div class="progress-fill" style="width:75%"></div></div><div><span class="tag tag-ok">75% · 顺利</span></div></div>
+      <div class="init-row"><div><strong>东南亚市场拓展</strong><div style="font-size:var(--text-sm);color:var(--color-fg-subtle);">新加坡、印尼办公室落地</div></div><div class="progress-track"><div class="progress-fill" style="width:55%"></div></div><div><span class="tag tag-warn">55% · 待加速</span></div></div>
+      <div class="init-row"><div><strong>AI Copilot 嵌入</strong><div style="font-size:var(--text-sm);color:var(--color-fg-subtle);">大模型能力全产品化</div></div><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><div><span class="tag tag-warn">40% · 早期</span></div></div>
+      <div class="init-row"><div><strong>AI 智能助手</strong><div style="font-size:var(--text-sm);color:var(--color-fg-subtle);">全产品线集成大模型</div></div><div class="progress-track"><div class="progress-fill" style="width:30%"></div></div><div><span class="tag tag-warn">30% · 新启动</span></div></div>
+    </div>
+    <div class="animate-in" style="margin-top:var(--s-3);display:flex;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/initiatives-progress.png" alt="Strategic initiatives progress" style="max-height:24vh;">
+    </div>
+  </div>
+  <div class="slide-footer"><span>COO · 张立</span><span>11 / 19</span></div>
+</section>
+
+<!-- 12: INITIATIVE DETAIL -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">INITIATIVE DETAIL</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">企业版平台 2.0：进度 75%</h2>
+    <div class="layout-split">
+      <div class="animate-in">
+        <h3>本季度交付</h3>
+        <ul class="bullet-list">
+          <li>SSO / SCIM 完成认证</li>
+          <li>权限模型重构上线</li>
+          <li>3 家灯塔客户参与内测</li>
+        </ul>
+      </div>
+      <div class="animate-in">
+        <h3>下季度计划</h3>
+        <ul class="bullet-list">
+          <li>4 月发布 GA 版本</li>
+          <li>签约 10 家新企业客户</li>
+          <li>客户成功团队扩编 8 人</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>COO · 张立</span><span>12 / 19</span></div>
+</section>
+
+<!-- 13: PRODUCT UPDATES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">PRODUCT</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">产品节奏：6 项重大发布</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>AI 模板生成</h3><p style="font-size:var(--text-sm);">使用率 62%，省时 40%</p></div>
+      <div class="card animate-in"><h3>多人协作 v2</h3><p style="font-size:var(--text-sm);">实时 OT，延迟 &lt;80ms</p></div>
+      <div class="card animate-in"><h3>API 开放平台</h3><p style="font-size:var(--text-sm);">已有 120 家集成</p></div>
+      <div class="card animate-in"><h3>移动端 App</h3><p style="font-size:var(--text-sm);">DAU 12K，评分 4.7</p></div>
+      <div class="card animate-in"><h3>数据看板</h3><p style="font-size:var(--text-sm);">企业版核心卖点</p></div>
+      <div class="card animate-in"><h3>合规审计</h3><p style="font-size:var(--text-sm);">SOC2 Type II 通过</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CPO · 林海</span><span>13 / 19</span></div>
+</section>
+
+<!-- 14: DECISIONS NEEDED -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">BOARD DECISIONS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">本次会议需要董事会决策的 3 项议题</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><div class="tag tag-ok">议题 1</div><h3 style="margin-top:var(--s-2);">期权池扩容</h3><p style="font-size:var(--text-sm);">从 10% 扩至 14%，支撑未来 18 个月招聘</p></div>
+      <div class="card animate-in"><div class="tag tag-ok">议题 2</div><h3 style="margin-top:var(--s-2);">海外子公司架构</h3><p style="font-size:var(--text-sm);">设立新加坡控股，优化全球税务</p></div>
+      <div class="card animate-in"><div class="tag tag-ok">议题 3</div><h3 style="margin-top:var(--s-2);">CTO 任命</h3><p style="font-size:var(--text-sm);">推荐前阿里 P10 加入，需股权审批</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CEO · 王志远</span><span>14 / 19</span></div>
+</section>
+
+<!-- 15: RISKS (target of Round 3) -->
+<section class="slide" id="slide-risks">
+  <div class="slide-header"><span class="eyebrow">RISKS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">主要风险与缓解措施</h2>
+    <table class="risk-table animate-in" id="risk-table">
+      <thead><tr><th>风险</th><th>影响</th><th>概率</th><th>严重度</th><th>缓解措施</th></tr></thead>
+      <tbody>
+        <tr><td>大客户集中度过高</td><td>高</td><td>中</td><td><span class="tag tag-warn">中</span></td><td>Top10 占比从 38% 降至 30%</td></tr>
+        <tr><td>AI 模型成本上涨</td><td>高</td><td>高</td><td><span class="tag tag-risk">高</span></td><td>多模型路由 + 自研小模型</td></tr>
+        <tr><td>东南亚监管不确定</td><td>高</td><td>中</td><td><span class="tag tag-risk">高</span></td><td>本地法务团队 + 数据合规</td></tr>
+        <tr><td>核心人才流失</td><td>高</td><td>中</td><td><span class="tag tag-risk">高</span></td><td>期权扩容 + 文化建设</td></tr>
+        <tr><td>竞品低价倾销</td><td>中</td><td>中</td><td><span class="tag tag-warn">中</span></td><td>聚焦中大型客户差异化</td></tr>
+      </tbody>
+    </table>
+    <div class="animate-in" style="margin-top:var(--s-3);display:flex;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/risk-matrix.png" alt="Risk matrix scatter" style="max-height:28vh;">
+    </div>
+  </div>
+  <div class="slide-footer"><span>COO · 张立</span><span>15 / 19</span></div>
+</section>
+
+<!-- 16: RISK CHART -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">RISK ANALYSIS</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">风险敞口量化评估</h2>
+    <div class="animate-in" style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <img class="chart-img" src="./test10-assets/risk-chart.png" alt="Risk chart">
+    </div>
+  </div>
+  <div class="slide-footer"><span>来源：风险委员会评估</span><span>16 / 19</span></div>
+</section>
+
+<!-- 17: Q2 PRIORITIES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">Q2 PRIORITIES</span><span class="eyebrow">2026 Q2</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q2 五大优先级</h2>
+    <ul class="bullet-list animate-in" style="font-size:var(--text-lg);">
+      <li>企业版 2.0 GA 发布并签约 10 家新客户</li>
+      <li>AI Copilot Beta 上线，覆盖 30% 付费用户</li>
+      <li>东南亚团队招聘到位（25 人），新加坡办公室开业</li>
+      <li>ARR 突破 ¥240M，NDR 维持 125% 以上</li>
+      <li>完成 SOC2 Type II 续审 + ISO 27001 认证</li>
+    </ul>
+  </div>
+  <div class="slide-footer"><span>CEO · 王志远</span><span>17 / 19</span></div>
+</section>
+
+<!-- 18: APPENDIX -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">APPENDIX</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">附录：补充数据</h2>
+    <div class="layout-grid-2">
+      <div class="card animate-in"><h3>团队构成</h3><p style="font-size:var(--text-sm);">总员工 186 人 · 研发 98 · 市场销售 42 · 客户成功 28 · G&A 18</p></div>
+      <div class="card animate-in"><h3>地域分布</h3><p style="font-size:var(--text-sm);">中国大陆 132 · 新加坡 22 · 美国 18 · 欧洲 14</p></div>
+      <div class="card animate-in"><h3>客户行业</h3><p style="font-size:var(--text-sm);">科技 38% · 金融 22% · 制造 16% · 零售 12% · 其他 12%</p></div>
+      <div class="card animate-in"><h3>融资历史</h3><p style="font-size:var(--text-sm);">种子 → A → B → B+ 累计 ¥720M，估值 ¥4.8B</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>CFO · 李静</span><span>18 / 19</span></div>
+</section>
+
+<!-- 19: Q&A -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">DISCUSSION</span><span class="eyebrow">2026 Q1</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:flex-start;">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">期待董事会的指导与决策</h1>
+    <p class="subtitle animate-in">Q&amp;A · 议题表决</p>
+  </div>
+  <div class="slide-footer"><span>CEO · 王志远</span><span>19 / 19</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">19</span></span>
+  <button class="nav-btn" data-action="next">→</button>
+</nav>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const pb=document.getElementById('progressBar');
+  let i=0;
+  tot.textContent=total;
+  function show(n){n=Math.max(0,Math.min(total-1,n));i=n;slides.forEach((s,k)=>s.classList.toggle('active',k===n));cur.textContent=n+1;pb.style.width=((n+1)/total*100)+'%';}
+  document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+  document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1)}if(e.key==='ArrowLeft'){e.preventDefault();show(i-1)}});
+  show(0);
+})();
+</script>
+</body>
+</html>

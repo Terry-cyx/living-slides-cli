@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q1 用户行为分析季度报告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+  --text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;
+  --text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+  --font-display:'Inter','Noto Sans SC',sans-serif;
+  --font-body:'Inter','Noto Sans SC',sans-serif;
+  --lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+  --tracking-tight:-0.03em;--tracking-wide:0.05em;
+  --color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+  --color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+  --color-border:#27272A;
+  --color-primary:#6366F1;--color-accent:#F59E0B;
+  --color-success:#10B981;--color-error:#EF4444;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+  --shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-7) var(--s-8);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg)}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3)}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2)}
+p{font-size:var(--text-base);color:var(--color-fg-muted)}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3)}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-4)}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-4);min-height:0}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-4);font-size:var(--text-xs);color:var(--color-fg-subtle)}
+.layout-hero{justify-content:center;align-items:flex-start}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-6);align-items:center;flex:1}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4)}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-4)}
+.card-metric .value{font-size:var(--text-4xl);font-weight:800;letter-spacing:var(--tracking-tight);line-height:1;background:linear-gradient(135deg,var(--color-primary),var(--color-accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.card-metric .label{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.05em;color:var(--color-fg-subtle);margin-top:var(--s-2)}
+.card-metric .delta{font-size:var(--text-sm);margin-top:var(--s-2);color:var(--color-success);font-weight:600}
+.delta.neg{color:var(--color-error)}
+.chart-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--radius-lg)}
+.chart-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+ul.bullets{list-style:none;display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-3)}
+ul.bullets li{padding-left:var(--s-3);position:relative;color:var(--color-fg-muted);font-size:var(--text-base)}
+ul.bullets li::before{content:"";position:absolute;left:0;top:.7em;width:8px;height:2px;background:var(--color-primary)}
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;justify-content:center}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated)}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards}
+/* CSS Funnel */
+.css-funnel{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:760px;margin:0 auto}
+.css-funnel .stage{background:linear-gradient(135deg,var(--color-primary),var(--color-accent));color:#fff;font-weight:700;text-align:center;padding:var(--s-3) var(--s-4);border-radius:var(--radius-md);font-size:var(--text-base);clip-path:polygon(4% 0,96% 0,92% 100%,8% 100%)}
+.css-funnel .stage:nth-child(1){width:100%}
+.css-funnel .stage:nth-child(2){width:84%}
+.css-funnel .stage:nth-child(3){width:66%}
+.css-funnel .stage:nth-child(4){width:48%}
+.css-funnel .stage:nth-child(5){width:30%}
+.css-funnel .stage small{display:block;font-size:var(--text-xs);font-weight:500;opacity:.85;margin-top:4px}
+.insight-box{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-left:3px solid var(--color-primary);border-radius:var(--radius-md);padding:var(--s-3) var(--s-4)}
+.insight-box .tag{font-size:var(--text-xs);text-transform:uppercase;color:var(--color-primary);font-weight:700;letter-spacing:.05em}
+.insight-box p{margin-top:var(--s-1);color:var(--color-fg);font-size:var(--text-base)}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:var(--text-sm)}
+.tbl th,.tbl td{text-align:left;padding:var(--s-2) var(--s-3);border-bottom:1px solid var(--color-border)}
+.tbl th{color:var(--color-fg-subtle);font-weight:600}
+.tbl td.num{text-align:right}
+.cohort-cell{display:inline-block;min-width:46px;text-align:center;padding:4px 8px;border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1. TITLE -->
+<section class="slide active layout-hero">
+  <div class="slide-header"><span class="eyebrow">Q1 2026 · 数据分析</span><span class="eyebrow">2026.04.04</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">Q1 用户行为分析季度报告</h1>
+    <p class="subtitle animate-in">数据驱动的产品决策 · 增长洞察 · 优化建议</p>
+  </div>
+  <div class="slide-footer"><span>数据团队 · Analytics Team</span><span>1 / 16</span></div>
+</section>
+
+<!-- 2. EXECUTIVE SUMMARY -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">执行摘要</span><span class="eyebrow">EXECUTIVE SUMMARY</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">注册转化率突破历史新高,激活率稳步提升</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>核心成果</h3><p style="font-size:var(--text-sm)">注册转化率达 15%,环比提升 3pp;月活用户突破 280 万,创历史新高。</p></div>
+      <div class="card animate-in"><h3>主要挑战</h3><p style="font-size:var(--text-sm)">付费转化漏斗结算环节流失率 38%,移动端较桌面端低 22%。</p></div>
+      <div class="card animate-in"><h3>下季重点</h3><p style="font-size:var(--text-sm)">优化结算流程、深耕高价值用户、建立精细化分群运营体系。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>2 / 16</span></div>
+</section>
+
+<!-- 3. KEY METRICS DASHBOARD -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">核心指标</span><span class="eyebrow">KEY METRICS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">关键指标全部超越季度目标</h2>
+    <div class="layout-grid-4">
+      <div class="card card-metric animate-in"><div class="value">2.8M</div><div class="label">月活跃用户</div><div class="delta">↑ 18% QoQ</div></div>
+      <div class="card card-metric animate-in" id="metric-signup"><div class="value">22%</div><div class="label">注册转化率</div><div class="delta">↑ 7pp QoQ</div></div>
+      <div class="card card-metric animate-in" id="metric-active"><div class="value">55%</div><div class="label">激活率</div><div class="delta">↑ 15pp QoQ</div></div>
+      <div class="card card-metric animate-in"><div class="value">¥184</div><div class="label">人均 ARPU</div><div class="delta">↑ 12% QoQ</div></div>
+    </div>
+    <div class="layout-grid-4" style="margin-top:var(--s-2)">
+      <div class="card card-metric animate-in"><div class="value">5.8%</div><div class="label">付费转化率</div><div class="delta">↑ 0.6pp</div></div>
+      <div class="card card-metric animate-in"><div class="value">D7 42%</div><div class="label">7 日留存</div><div class="delta">↑ 4pp</div></div>
+      <div class="card card-metric animate-in"><div class="value">68 NPS</div><div class="label">用户满意度</div><div class="delta">↑ 6 pts</div></div>
+      <div class="card card-metric animate-in"><div class="value">2.1%</div><div class="label">流失率</div><div class="delta">↓ 0.4pp</div></div>
+    </div>
+    <div class="animate-in chart-wrap" style="margin-top:var(--s-3);max-height:240px">
+      <img class="chart-img" src="./test06-assets/conversion-improvement.png" alt="Conversion improvement before vs after">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 内部分析平台 · 优化对比</span><span>3 / 16</span></div>
+</section>
+
+<!-- 4. FUNNEL ANALYSIS -->
+<section class="slide" id="slide-funnel">
+  <div class="slide-header"><span class="eyebrow">漏斗分析</span><span class="eyebrow">CONVERSION FUNNEL</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">付费漏斗:结算环节是最大流失点</h2>
+    <div class="animate-in chart-wrap">
+      <img class="chart-img" src="./test06-assets/funnel-chart.png" alt="Conversion funnel matplotlib">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 行为埋点 · matplotlib</span><span>4 / 16</span></div>
+</section>
+
+<!-- 4b. FUNNEL INSIGHTS -->
+<section class="slide" id="slide-funnel-insights">
+  <div class="slide-header"><span class="eyebrow">漏斗洞察</span><span class="eyebrow">FUNNEL INSIGHTS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">从 1.5M 访问到 22.5K 付费,四大关键洞察</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3 style="color:var(--color-primary)">访问→注册 22%</h3><p style="font-size:var(--text-sm)">较上季 +7pp,着陆页与注册诱导优化已显成效,获客质量同步提升。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-accent)">注册→激活 55%</h3><p style="font-size:var(--text-sm)">新手引导改版后激活率突破 50% 大关,三月队列首日完成率最高。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-error)">下单→支付 45%</h3><p style="font-size:var(--text-sm)">结算环节仍是最大黑洞,移动端流失率高达 60%,Q2 重点攻坚。</p></div>
+    </div>
+    <div class="insight-box animate-in" style="margin-top:var(--s-3)">
+      <span class="tag">KEY TAKEAWAY</span>
+      <p>整体漏斗规模较去年同期扩大 50%,但结算转化未同步提升;若结算转化率从 45% 提升至 60%,Q2 付费用户预计可达 30K+。</p>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 行为漏斗复盘</span><span>5 / 17</span></div>
+</section>
+
+<!-- 5. CONVERSION TRENDS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">转化趋势</span><span class="eyebrow">CONVERSION TRENDS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三大转化率持续 12 周稳步上升</h2>
+    <div class="animate-in chart-wrap">
+      <img class="chart-img" src="./test06-assets/conversion-trends.png" alt="Conversion trends">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 数据中台 · matplotlib</span><span>5 / 16</span></div>
+</section>
+
+<!-- 6. USER SEGMENTATION -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">用户分群</span><span class="eyebrow">USER SEGMENTATION</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">四类核心用户群体,贡献度差异显著</h2>
+    <div class="layout-grid-4">
+      <div class="card animate-in"><h3 style="color:var(--color-primary)">高价值用户</h3><p style="font-size:var(--text-sm)">人数占比 8%,贡献 GMV 52%。月均下单 6.2 次。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-accent)">活跃用户</h3><p style="font-size:var(--text-sm)">人数占比 24%,贡献 GMV 31%。每周访问 3+ 次。</p></div>
+      <div class="card animate-in"><h3>普通用户</h3><p style="font-size:var(--text-sm)">人数占比 48%,贡献 GMV 15%。月均访问 2-4 次。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-fg-subtle)">沉睡用户</h3><p style="font-size:var(--text-sm)">人数占比 20%,贡献 GMV 2%。30 天内无活跃。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: RFM 模型分析</span><span>6 / 16</span></div>
+</section>
+
+<!-- 7. COHORT ANALYSIS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">同期群分析</span><span class="eyebrow">COHORT ANALYSIS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三月新增用户留存表现最佳</h2>
+    <table class="tbl animate-in">
+      <thead><tr><th>Cohort</th><th>新增</th><th>D1</th><th>D7</th><th>D14</th><th>D30</th><th>D60</th></tr></thead>
+      <tbody>
+        <tr><td>2026-01</td><td class="num">128K</td><td><span class="cohort-cell" style="background:rgba(99,102,241,.7)">68%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.5)">42%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.4)">34%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.3)">26%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.25)">21%</span></td></tr>
+        <tr><td>2026-02</td><td class="num">142K</td><td><span class="cohort-cell" style="background:rgba(99,102,241,.75)">72%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.55)">45%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.45)">38%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.35)">29%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.3)">24%</span></td></tr>
+        <tr><td>2026-03</td><td class="num">168K</td><td><span class="cohort-cell" style="background:rgba(99,102,241,.8)">75%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.6)">49%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.5)">42%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.4)">33%</span></td><td><span class="cohort-cell" style="background:rgba(99,102,241,.35)">28%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-footer"><span>Source: 同期群留存矩阵</span><span>7 / 16</span></div>
+</section>
+
+<!-- 8. ENGAGEMENT PATTERNS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">参与度模式</span><span class="eyebrow">ENGAGEMENT</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">用户在结算页的停留时间显著偏短</h2>
+    <div class="animate-in chart-wrap">
+      <img class="chart-img" src="./test06-assets/engagement-bar.png" alt="Engagement by page">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 页面热力埋点 · matplotlib</span><span>8 / 16</span></div>
+</section>
+
+<!-- 9. RETENTION CURVES -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">留存曲线</span><span class="eyebrow">RETENTION</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三月队列留存曲线优于一月队列 7pp</h2>
+    <div class="animate-in chart-wrap">
+      <img class="chart-img" src="./test06-assets/retention-curves.png" alt="Retention curves">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 用户留存表 · matplotlib</span><span>9 / 16</span></div>
+</section>
+
+<!-- 10. ENGAGEMENT DETAIL -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">使用习惯</span><span class="eyebrow">USAGE BEHAVIOR</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">晚 8 点是用户活跃峰值时段</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><div class="value" style="font-size:var(--text-2xl);font-weight:800">8.4 min</div><p style="font-size:var(--text-sm);margin-top:var(--s-2)">单次会话平均时长</p></div>
+      <div class="card animate-in"><div class="value" style="font-size:var(--text-2xl);font-weight:800">5.2 次</div><p style="font-size:var(--text-sm);margin-top:var(--s-2)">人均周访问频次</p></div>
+      <div class="card animate-in"><div class="value" style="font-size:var(--text-2xl);font-weight:800">20:00</div><p style="font-size:var(--text-sm);margin-top:var(--s-2)">活跃高峰时段</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 用户行为分析</span><span>10 / 16</span></div>
+</section>
+
+<!-- 11. TOP INSIGHTS -->
+<section class="slide" id="slide-insights">
+  <div class="slide-header"><span class="eyebrow">关键洞察</span><span class="eyebrow">TOP INSIGHTS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">五大洞察驱动下季度行动</h2>
+    <ul class="bullets animate-in">
+      <li>结算环节流失最严重,移动端尤甚——优化空间最大</li>
+      <li>三月队列各项指标均优于前两月,产品迭代见效</li>
+      <li>高价值用户占 8% 却贡献 52% GMV,是 LTV 增长的核心</li>
+      <li>晚间 8-10 点为活跃峰值,营销投放节奏需对齐</li>
+      <li>沉睡用户占 20%,召回潜力巨大但成本可控</li>
+    </ul>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>11 / 16</span></div>
+</section>
+
+<!-- 12. RECOMMENDATIONS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">建议</span><span class="eyebrow">RECOMMENDATIONS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三大优化方向,直击业务痛点</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3>1 · 结算流程重构</h3><p style="font-size:var(--text-sm)">移动端一键支付、地址智能填充、错误友好提示。预计提升结算转化 15%。</p></div>
+      <div class="card animate-in"><h3>2 · 高价值用户运营</h3><p style="font-size:var(--text-sm)">VIP 专享权益、客户成功专人对接、个性化推荐。目标 LTV +25%。</p></div>
+      <div class="card animate-in"><h3>3 · 沉睡用户唤醒</h3><p style="font-size:var(--text-sm)">分层 Push、场景化优惠券、流失预警模型。目标召回率 12%。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>12 / 16</span></div>
+</section>
+
+<!-- 13. NEXT STEPS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">下一步</span><span class="eyebrow">NEXT STEPS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">Q2 行动路线图</h2>
+    <table class="tbl animate-in">
+      <thead><tr><th>时间</th><th>动作</th><th>负责团队</th><th>关键指标</th></tr></thead>
+      <tbody>
+        <tr><td>4 月</td><td>结算流程 A/B 测试</td><td>产品 + 工程</td><td>结算转化 +10%</td></tr>
+        <tr><td>5 月</td><td>VIP 用户分层运营上线</td><td>运营 + CRM</td><td>VIP ARPU +20%</td></tr>
+        <tr><td>5 月</td><td>沉睡用户召回 Push</td><td>增长 + 数据</td><td>召回率 ≥ 10%</td></tr>
+        <tr><td>6 月</td><td>新版数据看板交付</td><td>数据团队</td><td>覆盖 5 大业务线</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>13 / 16</span></div>
+</section>
+
+<!-- 14. RISKS -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">风险</span><span class="eyebrow">RISKS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三大风险需密切监控</h2>
+    <div class="layout-grid-3">
+      <div class="card animate-in"><h3 style="color:var(--color-error)">竞品价格战</h3><p style="font-size:var(--text-sm)">行业普遍降价 8-12%,需关注客单价压力。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-accent)">数据合规</h3><p style="font-size:var(--text-sm)">新隐私法规 6 月生效,埋点策略需复核。</p></div>
+      <div class="card animate-in"><h3 style="color:var(--color-error)">人才流失</h3><p style="font-size:var(--text-sm)">数据工程师市场紧张,需启动梯队建设。</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>14 / 16</span></div>
+</section>
+
+<!-- 15. CONCLUSION -->
+<section class="slide" id="slide-conclusion">
+  <div class="slide-header"><span class="eyebrow">结论</span><span class="eyebrow">CONCLUSION</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">优化措施落地,增长飞轮全面提速</h2>
+    <p class="animate-in" style="color:var(--color-fg);font-size:var(--text-lg);max-width:60ch">经过本季度优化,注册与激活双双突破历史新高,留存曲线明显抬升。产品-数据-运营三方协同的精细化策略已初见规模化成效,下季度将持续放大优化杠杆。</p>
+    <ul class="bullets animate-in">
+      <li>注册转化率由 15% 跃升至 22%,绝对值 +7pp,环比 +47%</li>
+      <li>激活率由 40% 提升至 55%,绝对值 +15pp,创历史新高</li>
+      <li>留存率由 60% 改善至 72%,三月队列继续领跑全年</li>
+      <li>三大核心转化率全面优于优化前基线,验证策略有效</li>
+    </ul>
+  </div>
+  <div class="slide-footer"><span>数据团队</span><span>15 / 16</span></div>
+</section>
+
+<!-- 16. THANK YOU -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">致谢</span><span class="eyebrow">Q&amp;A</span></div>
+  <div class="slide-body" style="justify-content:center;align-items:flex-start">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl)">感谢聆听</h1>
+    <p class="subtitle animate-in">数据团队 · analytics@company.com</p>
+  </div>
+  <div class="slide-footer"><span>Q1 2026 数据分析季度报告</span><span>16 / 16</span></div>
+</section>
+
+<section class="slide" id="slide-user-segments"><div class="slide-header"><span class="eyebrow">USER SEGMENTS</span><span class="eyebrow">用户细分</span></div><div class="slide-body"><h2 class="slide-title">用户细分分布</h2><div id="user-segments" class="chart-wrap"><img class="chart-img" src="./test06-assets/user-segments.png" alt="User segments pie chart"></div></div><div class="slide-footer"><span>Source: RFM 分群</span><span>NEW</span></div></section></div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev" aria-label="Previous">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">16</span></span>
+  <button class="nav-btn" data-action="next" aria-label="Next">→</button>
+</nav>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const prog=document.getElementById('progressBar');
+  let i=0;
+  tot.textContent=total;
+  function show(n){n=Math.max(0,Math.min(total-1,n));i=n;slides.forEach((s,j)=>s.classList.toggle('active',j===n));cur.textContent=n+1;prog.style.width=((n+1)/total*100)+'%';}
+  document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+  document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1)}if(e.key==='ArrowLeft'){e.preventDefault();show(i-1)}if(e.key==='Home')show(0);if(e.key==='End')show(total-1)});
+  show(0);
+})();
+</script>
+</body>
+</html>

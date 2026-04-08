@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python 高级培训 — 装饰器、异步、元类与描述符</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+--s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:128px;
+--text-xs:14px;--text-sm:16px;--text-base:20px;--text-lg:24px;--text-xl:32px;--text-2xl:40px;--text-3xl:56px;--text-4xl:72px;--text-5xl:96px;--text-6xl:120px;
+--font-display:'Inter',-apple-system,system-ui,sans-serif;
+--font-body:'Inter',-apple-system,system-ui,sans-serif;
+--font-mono:'JetBrains Mono','Cascadia Code',ui-monospace,monospace;
+--lh-tight:1.1;--lh-snug:1.25;--lh-normal:1.5;
+--tracking-tight:-0.03em;--tracking-wide:0.05em;
+--color-bg:#0A0A0A;--color-bg-elevated:#161616;--color-bg-accent:#1F1F23;
+--color-fg:#FAFAFA;--color-fg-muted:#A1A1AA;--color-fg-subtle:#71717A;
+--color-border:#27272A;
+--color-primary:#3776AB;
+--color-accent:#FFD43B;
+--color-success:#10B981;--color-warning:#F59E0B;--color-error:#EF4444;
+--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-full:9999px;
+--shadow-md:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.08);
+--ease-out:cubic-bezier(0.16,1,0.3,1);
+
+/* VS Code dark theme tokens */
+--vs-bg:#1E1E1E;--vs-fg:#D4D4D4;--vs-comment:#6A9955;--vs-keyword:#569CD6;
+--vs-string:#CE9178;--vs-number:#B5CEA8;--vs-func:#DCDCAA;--vs-class:#4EC9B0;
+--vs-decorator:#DCDCAA;--vs-builtin:#4FC1FF;--vs-operator:#D4D4D4;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:var(--color-fg);font-family:var(--font-body);font-size:var(--text-base);line-height:var(--lh-normal);-webkit-font-smoothing:antialiased;overflow:hidden}
+.deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.slide{position:absolute;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));aspect-ratio:16/9;display:flex;flex-direction:column;padding:var(--s-6) var(--s-7);background:var(--color-bg);opacity:0;visibility:hidden;transition:opacity 300ms var(--ease-out);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+
+h1.slide-title{font-family:var(--font-display);font-size:var(--text-3xl);font-weight:800;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg)}
+h2.slide-title{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:700;line-height:var(--lh-tight);letter-spacing:var(--tracking-tight);color:var(--color-fg);margin-bottom:var(--s-3)}
+h3{font-family:var(--font-display);font-size:var(--text-lg);font-weight:600;color:var(--color-fg);margin-bottom:var(--s-2)}
+p{font-size:var(--text-base);color:var(--color-fg-muted)}
+.subtitle{font-size:var(--text-lg);color:var(--color-fg-muted);margin-top:var(--s-3)}
+.eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);color:var(--color-fg-subtle);font-weight:600}
+.slide-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:var(--s-3)}
+.slide-body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:var(--s-3);min-height:0}
+.slide-footer{display:flex;justify-content:space-between;align-items:center;padding-top:var(--s-3);font-size:var(--text-xs);color:var(--color-fg-subtle)}
+.layout-hero{justify-content:center;align-items:flex-start}
+.layout-split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-5);align-items:center;flex:1;min-height:0}
+.layout-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3)}
+.layout-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3)}
+
+.card{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--s-3)}
+.card h3{margin-bottom:var(--s-1)}
+.card p{font-size:var(--text-sm)}
+
+/* ===== VS Code-style code block ===== */
+.code{background:var(--vs-bg);border:1px solid #2D2D30;border-radius:var(--radius-lg);font-family:var(--font-mono);font-size:14px;line-height:1.55;overflow:hidden;box-shadow:var(--shadow-md);min-height:0;display:flex;flex-direction:column}
+.code-header{display:flex;align-items:center;gap:var(--s-1);padding:8px 14px;background:#252526;border-bottom:1px solid #2D2D30}
+.code-header .dot{width:11px;height:11px;border-radius:50%;background:#3E3E42}
+.code-header .dot.r{background:#FF5F56}.code-header .dot.y{background:#FFBD2E}.code-header .dot.g{background:#27C93F}
+.code-header .file{margin-left:var(--s-2);font-size:12px;color:#858585;font-family:var(--font-mono)}
+.code pre{margin:0;padding:var(--s-3) var(--s-4);color:var(--vs-fg);overflow:auto;flex:1;min-height:0}
+.code .k{color:var(--vs-keyword)}      /* keyword */
+.code .s{color:var(--vs-string)}       /* string */
+.code .c{color:var(--vs-comment);font-style:italic} /* comment */
+.code .n{color:var(--vs-number)}       /* number */
+.code .f{color:var(--vs-func)}         /* function */
+.code .cl{color:var(--vs-class)}       /* class */
+.code .d{color:var(--vs-decorator)}    /* decorator */
+.code .b{color:var(--vs-builtin)}      /* builtin */
+.code .o{color:var(--vs-operator)}
+
+.tag{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 10px;border-radius:var(--radius-full);background:var(--color-bg-accent);color:var(--color-fg-muted);border:1px solid var(--color-border)}
+.tag.easy{color:#10B981;border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.08)}
+.tag.med{color:#F59E0B;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+.tag.hard{color:#EF4444;border-color:rgba(239,68,68,.3);background:rgba(239,68,68,.08)}
+
+.quiz{background:var(--color-bg-elevated);border:1px solid var(--color-border);border-left:3px solid var(--color-accent);border-radius:var(--radius-lg);padding:var(--s-3)}
+.quiz .q{font-weight:600;color:var(--color-fg);margin-bottom:var(--s-1)}
+.quiz .a{font-size:var(--text-sm);color:var(--color-fg-muted)}
+
+.chart-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.chart-wrap img{max-width:100%;max-height:100%;border-radius:var(--radius-lg);border:1px solid var(--color-border)}
+
+/* Navigation */
+.nav{position:fixed;bottom:var(--s-3);left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:var(--s-2);background:rgba(0,0,0,.6);backdrop-filter:blur(12px);border:1px solid var(--color-border);padding:var(--s-1) var(--s-3);border-radius:var(--radius-full);z-index:100}
+.nav-btn{background:transparent;color:var(--color-fg-muted);border:none;width:28px;height:28px;border-radius:var(--radius-full);cursor:pointer;font-size:var(--text-sm)}
+.nav-btn:hover{color:var(--color-fg);background:var(--color-bg-elevated)}
+.nav-counter{font-size:var(--text-xs);color:var(--color-fg-subtle);font-variant-numeric:tabular-nums}
+.progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--color-primary);transition:width 300ms var(--ease-out);z-index:101}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .animate-in{animation:fadeUp 600ms var(--ease-out) forwards}
+.slide.active .animate-in:nth-child(1){animation-delay:0ms}
+.slide.active .animate-in:nth-child(2){animation-delay:80ms}
+.slide.active .animate-in:nth-child(3){animation-delay:160ms}
+.slide.active .animate-in:nth-child(4){animation-delay:240ms}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media (max-width:768px){.slide{padding:var(--s-3)}.layout-split,.layout-grid-3,.layout-grid-4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+<div class="deck">
+
+<!-- 1 TITLE -->
+<section class="slide active layout-hero">
+  <div class="slide-header"><span class="eyebrow">PYTHON 高级培训</span><span class="eyebrow">2026 · 工程师课程</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl);max-width:18ch;">写出更 Pythonic 的代码</h1>
+    <p class="subtitle animate-in">装饰器 · 异步编程 · 元类 · 描述符 — 四大高级特性深度解析</p>
+  </div>
+  <div class="slide-footer"><span>Python Advanced · 内部培训</span><span>1 / 19</span></div>
+</section>
+
+<!-- 2 AGENDA -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">课程大纲</span><span class="eyebrow">19 张幻灯片 · 90 分钟</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">四个模块,一次掌握</h2>
+    <div class="layout-grid-4">
+      <div class="card animate-in"><h3>01 · 装饰器</h3><p>函数包装、参数化、链式</p></div>
+      <div class="card animate-in"><h3>02 · 异步编程</h3><p>asyncio、协程、事件循环</p></div>
+      <div class="card animate-in"><h3>03 · 元类</h3><p>type、__new__、ORM 实战</p></div>
+      <div class="card animate-in"><h3>04 · 描述符</h3><p>属性协议、惰性求值</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>Python Advanced</span><span>2 / 19</span></div>
+</section>
+
+<!-- 3 装饰器 章节封面 -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">第一章</span><span class="eyebrow">DECORATORS</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">装饰器是高阶函数的语法糖</h1>
+    <p class="subtitle animate-in">在不修改原函数的前提下,扩展其行为</p>
+  </div>
+  <div class="slide-footer"><span>第一章 · 装饰器</span><span>3 / 19</span></div>
+</section>
+
+<!-- 4 装饰器示例代码 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">装饰器 · 基础示例</span><span class="eyebrow">代码 + 注释</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">@log_calls:记录函数调用日志</h2>
+      <p>装饰器接收函数作为参数,返回一个新函数。<br>下面的 <code style="color:var(--vs-decorator);font-family:var(--font-mono)">@log_calls</code> 会在调用前后输出结构化日志,包含函数名、参数、返回值与耗时,便于排查线上问题。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· functools.wraps 保留元数据</li>
+        <li>· *args, **kwargs 透传所有参数</li>
+        <li>· 同时输出 INFO 与 ERROR 日志</li>
+        <li>· 可叠加多个装饰器</li>
+      </ul>
+    </div>
+    <div class="code animate-in" id="decorator-example">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">log_calls.py</span></div>
+<pre><span class="k">import</span> <span class="b">logging</span>
+<span class="k">from</span> <span class="b">functools</span> <span class="k">import</span> wraps
+
+logger <span class="o">=</span> logging.getLogger(<span class="s">"app"</span>)
+
+<span class="k">def</span> <span class="f">log_calls</span>(func):
+    <span class="c"># 包装器:记录函数调用与返回</span>
+    <span class="d">@wraps</span>(func)
+    <span class="k">def</span> <span class="f">wrapper</span>(*args, **kwargs):
+        logger.info(<span class="s">f"-> {func.__name__} args={args} kw={kwargs}"</span>)
+        <span class="k">try</span>:
+            result <span class="o">=</span> func(*args, **kwargs)
+            logger.info(<span class="s">f"&lt;- {func.__name__} ok"</span>)
+            <span class="k">return</span> result
+        <span class="k">except</span> <span class="cl">Exception</span> <span class="k">as</span> e:
+            logger.error(<span class="s">f"!! {func.__name__} failed: {e}"</span>)
+            <span class="k">raise</span>
+    <span class="k">return</span> wrapper
+
+<span class="d">@log_calls</span>
+<span class="k">def</span> <span class="f">slow_query</span>(n):
+    <span class="k">return</span> <span class="b">sum</span>(i*i <span class="k">for</span> i <span class="k">in</span> <span class="b">range</span>(n))</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第一章 · 装饰器</span><span>4 / 19</span></div>
+</section>
+
+<!-- 4b @log_calls 实战场景 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">装饰器 · 实战场景</span><span class="eyebrow">PRODUCTION USE CASE</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">线上 API 调用全链路日志</h2>
+      <p>把 <code style="color:var(--vs-decorator);font-family:var(--font-mono)">@log_calls</code> 贴到所有外部依赖调用上,你立刻获得:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· 每次请求的入参 / 返回 / 异常</li>
+        <li>· 失败的精确堆栈,无需 try/except 散落在业务代码</li>
+        <li>· 配合 ELK / Loki 一行命令检索任意函数调用</li>
+        <li>· 可与 trace_id 结合做分布式追踪</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">payments.py</span></div>
+<pre><span class="k">import</span> <span class="b">requests</span>
+
+<span class="d">@log_calls</span>
+<span class="k">def</span> <span class="f">charge_card</span>(user_id, amount):
+    <span class="c"># 调用支付网关</span>
+    r <span class="o">=</span> requests.post(
+        <span class="s">"https://api.stripe.com/v1/charges"</span>,
+        json<span class="o">=</span>{<span class="s">"user"</span>: user_id, <span class="s">"amount"</span>: amount},
+        timeout<span class="o">=</span><span class="n">5</span>,
+    )
+    r.raise_for_status()
+    <span class="k">return</span> r.json()
+
+<span class="d">@log_calls</span>
+<span class="k">def</span> <span class="f">send_receipt</span>(user_id, charge_id):
+    <span class="c"># 发送收据邮件</span>
+    <span class="k">return</span> mailer.send(user_id, charge_id)
+
+<span class="c"># 一次完整调用会输出 4 条日志:</span>
+<span class="c"># -> charge_card / &lt;- charge_card</span>
+<span class="c"># -> send_receipt / &lt;- send_receipt</span></pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第一章 · 装饰器</span><span>5 / 20</span></div>
+</section>
+
+<!-- 5 装饰器进阶:参数化 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">装饰器 · 进阶</span><span class="eyebrow">带参数的装饰器</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">三层嵌套:参数化装饰器</h2>
+      <p>当装饰器需要配置项时,需要再包一层函数,形成 <strong>装饰器工厂</strong>。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>外层:接收装饰器参数</li>
+        <li>中层:接收被装饰函数</li>
+        <li>内层:替换原函数的逻辑</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">retry.py</span></div>
+<pre><span class="k">def</span> <span class="f">retry</span>(times<span class="o">=</span><span class="n">3</span>, delay<span class="o">=</span><span class="n">1</span>):
+    <span class="k">def</span> <span class="f">decorator</span>(func):
+        <span class="d">@wraps</span>(func)
+        <span class="k">def</span> <span class="f">wrapper</span>(*args, **kw):
+            <span class="k">for</span> i <span class="k">in</span> <span class="b">range</span>(times):
+                <span class="k">try</span>:
+                    <span class="k">return</span> func(*args, **kw)
+                <span class="k">except</span> <span class="cl">Exception</span> <span class="k">as</span> e:
+                    time.sleep(delay)
+            <span class="k">raise</span>
+        <span class="k">return</span> wrapper
+    <span class="k">return</span> decorator
+
+<span class="d">@retry</span>(times<span class="o">=</span><span class="n">5</span>, delay<span class="o">=</span><span class="n">2</span>)
+<span class="k">def</span> <span class="f">fetch</span>(url): ...</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第一章 · 装饰器</span><span>5 / 19</span></div>
+</section>
+
+<!-- 6 装饰器实战:类装饰器 / 单例 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">装饰器 · 实战</span><span class="eyebrow">类装饰器</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">用装饰器实现单例模式</h2>
+      <p>装饰器不仅能装饰函数,也能装饰类。下面的 <code style="color:var(--vs-decorator);font-family:var(--font-mono)">@singleton</code> 保证一个类只有一个实例。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· 配置管理器 / 日志器 / 数据库连接</li>
+        <li>· 比 Borg 模式更直观</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">singleton.py</span></div>
+<pre><span class="k">def</span> <span class="f">singleton</span>(cls):
+    instances <span class="o">=</span> {}
+    <span class="k">def</span> <span class="f">get_instance</span>(*args, **kw):
+        <span class="k">if</span> cls <span class="k">not in</span> instances:
+            instances[cls] <span class="o">=</span> cls(*args, **kw)
+        <span class="k">return</span> instances[cls]
+    <span class="k">return</span> get_instance
+
+<span class="d">@singleton</span>
+<span class="k">class</span> <span class="cl">Config</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self):
+        self.db <span class="o">=</span> <span class="s">"postgres://..."</span>
+
+a <span class="o">=</span> Config()
+b <span class="o">=</span> Config()
+<span class="b">assert</span> a <span class="k">is</span> b  <span class="c"># True</span></pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第一章 · 装饰器</span><span>6 / 19</span></div>
+</section>
+
+<!-- 7 异步章节封面 -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">第二章</span><span class="eyebrow">ASYNC / AWAIT</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">异步:用单线程跑出多线程的吞吐量</h1>
+    <p class="subtitle animate-in">事件循环 + 协程 + 非阻塞 I/O</p>
+  </div>
+  <div class="slide-footer"><span>第二章 · 异步</span><span>7 / 19</span></div>
+</section>
+
+<!-- 8 异步基础 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">异步 · 基础</span><span class="eyebrow">async / await</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">协程 = 可暂停的函数</h2>
+      <p><code style="color:var(--vs-keyword);font-family:var(--font-mono)">async def</code> 定义协程,<code style="color:var(--vs-keyword);font-family:var(--font-mono)">await</code> 让出控制权。</p>
+      <p style="margin-top:var(--s-2);font-size:var(--text-sm)">关键概念:</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:6px;font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· Event Loop:事件循环调度器</li>
+        <li>· Task:协程的调度单元</li>
+        <li>· gather:并发等待多个 Task</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">async_basic.py</span></div>
+<pre><span class="k">import</span> <span class="b">asyncio</span>
+<span class="k">import</span> <span class="b">aiohttp</span>
+
+<span class="k">async def</span> <span class="f">fetch</span>(session, url):
+    <span class="k">async with</span> session.get(url) <span class="k">as</span> r:
+        <span class="k">return</span> <span class="k">await</span> r.text()
+
+<span class="k">async def</span> <span class="f">main</span>():
+    urls <span class="o">=</span> [<span class="s">"https://api.x/1"</span>, <span class="s">"https://api.x/2"</span>]
+    <span class="k">async with</span> aiohttp.ClientSession() <span class="k">as</span> s:
+        results <span class="o">=</span> <span class="k">await</span> asyncio.gather(
+            *[fetch(s, u) <span class="k">for</span> u <span class="k">in</span> urls]
+        )
+    <span class="k">return</span> results
+
+asyncio.run(main())</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第二章 · 异步</span><span>8 / 19</span></div>
+</section>
+
+<!-- 8b 同步 vs 异步对比代码 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">异步 · 对比</span><span class="eyebrow">SYNC vs ASYNC</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">同样的逻辑,两种写法</h2>
+      <p>读取 5 个 URL 的内容。同步版本必须排队等待,异步版本利用 I/O 等待时间并发跑满。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· 同步:总耗时 ≈ 各请求耗时之和</li>
+        <li>· 异步:总耗时 ≈ 最慢的那一个</li>
+        <li>· 代码量几乎相同,性能差距 5-10 倍</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">sync_vs_async.py</span></div>
+<pre><span class="c"># --- 同步版本 ---</span>
+<span class="k">import</span> <span class="b">requests</span>
+
+<span class="k">def</span> <span class="f">fetch_all_sync</span>(urls):
+    <span class="k">return</span> [requests.get(u).text <span class="k">for</span> u <span class="k">in</span> urls]
+
+<span class="c"># --- 异步版本 ---</span>
+<span class="k">import</span> <span class="b">asyncio</span>, <span class="b">aiohttp</span>
+
+<span class="k">async def</span> <span class="f">fetch_all_async</span>(urls):
+    <span class="k">async with</span> aiohttp.ClientSession() <span class="k">as</span> s:
+        <span class="k">return</span> <span class="k">await</span> asyncio.gather(
+            *[s.get(u) <span class="k">for</span> u <span class="k">in</span> urls]
+        )</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第二章 · 异步</span><span>9 / 20</span></div>
+</section>
+
+<!-- 9 异步进阶:并发控制 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">异步 · 并发控制</span><span class="eyebrow">Semaphore</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">用信号量限制并发数</h2>
+      <p>真实场景下,后端不能承受 1000 个并发请求。用 <code style="color:var(--vs-class);font-family:var(--font-mono)">asyncio.Semaphore</code> 控制最大并发,既快又稳。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· 爬虫限流</li>
+        <li>· 数据库连接池</li>
+        <li>· API 速率限制</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">semaphore.py</span></div>
+<pre>sem <span class="o">=</span> asyncio.Semaphore(<span class="n">10</span>)
+
+<span class="k">async def</span> <span class="f">guarded_fetch</span>(url):
+    <span class="k">async with</span> sem:
+        <span class="k">return</span> <span class="k">await</span> fetch(url)
+
+<span class="k">async def</span> <span class="f">main</span>():
+    tasks <span class="o">=</span> [
+        guarded_fetch(u)
+        <span class="k">for</span> u <span class="k">in</span> all_urls  <span class="c"># 1000 个 URL</span>
+    ]
+    <span class="k">return</span> <span class="k">await</span> asyncio.gather(*tasks)</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第二章 · 异步</span><span>9 / 19</span></div>
+</section>
+
+<!-- 10 异步性能图 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">异步 · 性能</span><span class="eyebrow">PERFORMANCE</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">异步在 I/O 密集任务上提速 5-10 倍</h2>
+    <div class="chart-wrap animate-in">
+      <img src="./test08-assets/sync-vs-async.png" alt="同步 vs 异步性能对比">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: 内部基准测试 (100 个 HTTP 请求)</span><span>10 / 19</span></div>
+</section>
+
+<!-- 11 元类章节封面 -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">第三章</span><span class="eyebrow">METACLASSES</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">元类:创造类的类</h1>
+    <p class="subtitle animate-in">"如果你不知道是否需要元类,你就不需要它"— Tim Peters</p>
+  </div>
+  <div class="slide-footer"><span>第三章 · 元类</span><span>11 / 19</span></div>
+</section>
+
+<!-- 12 元类基础 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">元类 · 基础</span><span class="eyebrow">type</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">type 既是函数也是元类</h2>
+      <p>所有类的默认元类是 <code style="color:var(--vs-builtin);font-family:var(--font-mono)">type</code>。重写 <code style="color:var(--vs-func);font-family:var(--font-mono)">__new__</code> 可以拦截类的创建过程。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· 自动注册子类</li>
+        <li>· 强制接口规范</li>
+        <li>· ORM 字段映射</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">meta.py</span></div>
+<pre><span class="k">class</span> <span class="cl">UpperAttrMeta</span>(<span class="b">type</span>):
+    <span class="k">def</span> <span class="f">__new__</span>(mcs, name, bases, attrs):
+        upper_attrs <span class="o">=</span> {
+            (k.upper() <span class="k">if not</span> k.startswith(<span class="s">"__"</span>) <span class="k">else</span> k): v
+            <span class="k">for</span> k, v <span class="k">in</span> attrs.items()
+        }
+        <span class="k">return</span> <span class="b">super</span>().__new__(mcs, name, bases, upper_attrs)
+
+<span class="k">class</span> <span class="cl">Foo</span>(metaclass<span class="o">=</span>UpperAttrMeta):
+    bar <span class="o">=</span> <span class="s">"hello"</span>
+
+<span class="b">print</span>(Foo.BAR)  <span class="c"># "hello"</span></pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第三章 · 元类</span><span>12 / 19</span></div>
+</section>
+
+<!-- 13 元类实战:Mini ORM -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">元类 · 实战</span><span class="eyebrow">MINI ORM</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">Django/SQLAlchemy 都靠元类</h2>
+      <p>声明 <code style="color:var(--vs-class);font-family:var(--font-mono)">Field</code> 类属性,元类自动收集成 <code style="color:var(--vs-builtin);font-family:var(--font-mono)">_fields</code> 字典,生成 SQL 模板。</p>
+      <p style="margin-top:var(--s-2);font-size:var(--text-sm)">优势:声明式 API,使用者完全无感。</p>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">mini_orm.py</span></div>
+<pre><span class="k">class</span> <span class="cl">ModelMeta</span>(<span class="b">type</span>):
+    <span class="k">def</span> <span class="f">__new__</span>(mcs, name, bases, attrs):
+        fields <span class="o">=</span> {k: v <span class="k">for</span> k, v <span class="k">in</span> attrs.items()
+                  <span class="k">if</span> <span class="b">isinstance</span>(v, Field)}
+        attrs[<span class="s">"_fields"</span>] <span class="o">=</span> fields
+        attrs[<span class="s">"_table"</span>] <span class="o">=</span> name.lower()
+        <span class="k">return</span> <span class="b">super</span>().__new__(mcs, name, bases, attrs)
+
+<span class="k">class</span> <span class="cl">User</span>(metaclass<span class="o">=</span>ModelMeta):
+    id   <span class="o">=</span> IntField()
+    name <span class="o">=</span> StrField(max_length<span class="o">=</span><span class="n">100</span>)
+
+<span class="b">print</span>(User._fields)  <span class="c"># {'id':..,'name':..}</span></pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第三章 · 元类</span><span>13 / 19</span></div>
+</section>
+
+<!-- 14 描述符章节封面 -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">第四章</span><span class="eyebrow">DESCRIPTORS</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-4xl);max-width:18ch;">描述符:属性访问的协议</h1>
+    <p class="subtitle animate-in">@property、classmethod、staticmethod 都是描述符</p>
+  </div>
+  <div class="slide-footer"><span>第四章 · 描述符</span><span>14 / 19</span></div>
+</section>
+
+<!-- 15 描述符基础 + 概念图 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">描述符 · 协议</span><span class="eyebrow">概念关系</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">三个魔法方法定义协议</h2>
+    <div class="chart-wrap animate-in" style="margin-top:var(--s-2)">
+      <img src="./test08-assets/descriptor-concepts.png" alt="描述符协议概念图">
+    </div>
+  </div>
+  <div class="slide-footer"><span>Source: Python Data Model · PEP 252</span><span>15 / 19</span></div>
+</section>
+
+<!-- 16 描述符示例代码 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">描述符 · 示例</span><span class="eyebrow">类型校验</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">用描述符做字段校验</h2>
+      <p>定义一个 <code style="color:var(--vs-class);font-family:var(--font-mono)">Typed</code> 描述符,赋值时自动检查类型,赋错值立刻报错。</p>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted)">
+        <li>· dataclass 字段约束</li>
+        <li>· 配置项验证</li>
+        <li>· 取代大量 setter</li>
+      </ul>
+    </div>
+    <div class="code animate-in">
+      <div class="code-header"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">descriptor.py</span></div>
+<pre><span class="k">class</span> <span class="cl">Typed</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self, expected):
+        self.expected <span class="o">=</span> expected
+    <span class="k">def</span> <span class="f">__set_name__</span>(self, owner, name):
+        self.name <span class="o">=</span> name
+    <span class="k">def</span> <span class="f">__get__</span>(self, inst, owner):
+        <span class="k">return</span> inst.__dict__[self.name]
+    <span class="k">def</span> <span class="f">__set__</span>(self, inst, value):
+        <span class="k">if not</span> <span class="b">isinstance</span>(value, self.expected):
+            <span class="k">raise</span> <span class="cl">TypeError</span>(self.name)
+        inst.__dict__[self.name] <span class="o">=</span> value
+
+<span class="k">class</span> <span class="cl">Order</span>:
+    qty   <span class="o">=</span> Typed(<span class="b">int</span>)
+    price <span class="o">=</span> Typed(<span class="b">float</span>)</pre>
+    </div>
+  </div>
+  <div class="slide-footer"><span>第四章 · 描述符</span><span>16 / 19</span></div>
+</section>
+
+<!-- 17a 练习题总览 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">练习总览</span><span class="eyebrow">EXERCISE OVERVIEW</span></div>
+  <div class="slide-body layout-split">
+    <div class="animate-in">
+      <h2 class="slide-title">13 道练习,覆盖四大主题</h2>
+      <ol style="list-style:decimal inside;display:flex;flex-direction:column;gap:4px;margin-top:var(--s-2);font-size:var(--text-sm);color:var(--color-fg-muted);columns:2;column-gap:24px">
+        <li><span class="tag easy">E</span> @wraps 的作用</li>
+        <li><span class="tag easy">E</span> 写一个 @timer 装饰器</li>
+        <li><span class="tag easy">E</span> 给函数加 @retry(times=3)</li>
+        <li><span class="tag easy">E</span> 用装饰器实现 @memoize</li>
+        <li><span class="tag med">M</span> async 能否在普通函数调用</li>
+        <li><span class="tag med">M</span> 写 @log_calls 含异常处理</li>
+        <li><span class="tag med">M</span> 用 Semaphore 限制并发为 5</li>
+        <li><span class="tag med">M</span> asyncio.gather vs as_completed</li>
+        <li><span class="tag med">M</span> 用元类自动小写所有方法名</li>
+        <li><span class="tag med">M</span> 描述符 vs property 的区别</li>
+        <li><span class="tag hard">H</span> 元类实现插件自动注册</li>
+        <li><span class="tag hard">H</span> 描述符实现 TypedField 校验</li>
+        <li><span class="tag hard">H</span> 写一个迷你 ORM 元类</li>
+      </ol>
+    </div>
+    <div class="chart-wrap animate-in">
+      <img src="./test08-assets/exercise-difficulty.png" alt="练习题难度分布">
+    </div>
+  </div>
+  <div class="slide-footer"><span>练习总览 · 13 题</span><span>17 / 21</span></div>
+</section>
+
+<!-- 17 测验题 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">课堂练习</span><span class="eyebrow">QUIZ</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">检验一下学习成果</h2>
+    <div class="layout-grid-3">
+      <div class="quiz animate-in">
+        <span class="tag easy">EASY · Q1</span>
+        <div class="q" style="margin-top:8px">@wraps 的作用是什么?</div>
+        <div class="a">提示:函数元数据</div>
+      </div>
+      <div class="quiz animate-in">
+        <span class="tag med">MEDIUM · Q2</span>
+        <div class="q" style="margin-top:8px">async 函数能在普通函数里直接调用吗?</div>
+        <div class="a">提示:返回值的类型</div>
+      </div>
+      <div class="quiz animate-in">
+        <span class="tag hard">HARD · Q3</span>
+        <div class="q" style="margin-top:8px">用元类实现一个自动注册插件的基类</div>
+        <div class="a">提示:__init_subclass__ 也行</div>
+      </div>
+      <div class="quiz animate-in">
+        <span class="tag med">MEDIUM · Q4</span>
+        <div class="q" style="margin-top:8px">写一个 @log_calls 装饰器,记录函数入参与异常</div>
+        <div class="a">提示:functools.wraps + try/except</div>
+      </div>
+      <div class="quiz animate-in">
+        <span class="tag hard">HARD · Q5</span>
+        <div class="q" style="margin-top:8px">用描述符实现一个带类型校验的字段类 TypedField</div>
+        <div class="a">提示:__set_name__ + 类型注解</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>课堂练习</span><span>17 / 19</span></div>
+</section>
+
+<!-- 18 关键要点 -->
+<section class="slide">
+  <div class="slide-header"><span class="eyebrow">总结</span><span class="eyebrow">KEY TAKEAWAYS</span></div>
+  <div class="slide-body">
+    <h2 class="slide-title animate-in">四个核心要点</h2>
+    <div class="layout-grid-4">
+      <div class="card animate-in"><h3>装饰器</h3><p>函数即对象,组合优于继承</p></div>
+      <div class="card animate-in"><h3>异步</h3><p>I/O 等待时间 = 优化空间</p></div>
+      <div class="card animate-in"><h3>元类</h3><p>除非必要,优先用 __init_subclass__</p></div>
+      <div class="card animate-in"><h3>描述符</h3><p>是 property 背后的真正魔法</p></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span>总结</span><span>18 / 19</span></div>
+</section>
+
+<!-- 19 Q&A 结尾 -->
+<section class="slide layout-hero">
+  <div class="slide-header"><span class="eyebrow">Q &amp; A</span><span class="eyebrow">谢谢!</span></div>
+  <div class="slide-body">
+    <h1 class="slide-title animate-in" style="font-size:var(--text-5xl)">Questions?</h1>
+    <p class="subtitle animate-in">课件、代码示例、参考资料 → python-advanced/README.md</p>
+  </div>
+  <div class="slide-footer"><span>Python Advanced · 内部培训</span><span>19 / 19</span></div>
+</section>
+
+</div>
+
+<nav class="nav">
+  <button class="nav-btn" data-action="prev" aria-label="Previous">←</button>
+  <span class="nav-counter"><span id="current">1</span> / <span id="total">19</span></span>
+  <button class="nav-btn" data-action="next" aria-label="Next">→</button>
+</nav>
+
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const total=slides.length;
+  const cur=document.getElementById('current');
+  const tot=document.getElementById('total');
+  const pb=document.getElementById('progressBar');
+  let i=0;
+  tot.textContent=total;
+  function show(n){
+    n=Math.max(0,Math.min(total-1,n));
+    i=n;
+    slides.forEach((s,k)=>s.classList.toggle('active',k===n));
+    cur.textContent=n+1;
+    pb.style.width=((n+1)/total*100)+'%';
+  }
+  document.querySelectorAll('[data-action="next"]').forEach(b=>b.addEventListener('click',()=>show(i+1)));
+  document.querySelectorAll('[data-action="prev"]').forEach(b=>b.addEventListener('click',()=>show(i-1)));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1);}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(i-1);}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(total-1);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
