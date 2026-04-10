@@ -146,12 +146,61 @@ AI can generate any of them on demand.
 This adds the `living-slides` skill, which teaches Claude to read the
 changelog before touching any deck — preserve + cascade out of the box.
 
+## Visual editor features
+
+`slive open deck.html` launches a local GrapesJS-based editor with:
+
+- **Toolbar** — font family/size, bold/italic/underline, text color,
+  alignment, image insert, save button
+- **Block resize** — click any `.block` / `.item` / `.summary` etc.
+  to get top/bottom drag handles. Siblings auto-freeze so flex layouts
+  don't fight you
+- **Image paste / drag-drop / upload** — paste from clipboard or drag
+  a file onto the canvas. Images are absolutely positioned with a
+  default 500 px width. Corner + side resize handles appear on click
+- **Inline text editing** — double-click any text element (including
+  `<td>` / `<th>`) to edit in-place. Escape or blur to commit
+- **Snapshot & revert** — every save (editor or AI) snapshots the
+  previous state. `Ctrl+Shift+Z` reverts one step back (file-level
+  undo). Up to 50 snapshots are kept per deck
+- **Overflow detection** — slides whose content exceeds the viewport
+  get a red `data-overflow="true"` badge. No auto-shrink — the user
+  decides whether to trim content or adjust layout
+- **Auto-reload** — the editor polls `/api/version` every 2 s. When
+  an external process (e.g. Claude editing the file) changes the HTML,
+  the canvas reloads automatically
+- **Chat panel** — a draggable floating panel lets the user type
+  messages. Messages are appended to `<deck>.chat.jsonl` as
+  `{role:"user", text, selection, timestamp}`. An AI agent watching
+  the file can pick up the message, edit the HTML, and append an
+  `{role:"assistant"}` reply — the panel shows both sides
+- **Selection pin** — clicking an element and pressing the pin button
+  (or opening the chat panel) writes a three-layer selection hierarchy
+  (page / frames / element) to `<deck>.selection.json`, so the AI
+  knows *where* "this" / "here" actually is
+
+### Server API endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/` | GET | Serve the editor page |
+| `/api/load` | GET | Return current HTML content |
+| `/api/save` | POST | Save HTML, compute changelog, take snapshot |
+| `/api/version` | GET | Return file mtime (for auto-reload) |
+| `/api/pin` | POST | Write selection hierarchy to `.selection.json` |
+| `/api/chat` | GET/POST | Read / append to `.chat.jsonl` |
+| `/api/upload` | POST | Upload image to `<deck>-assets/` |
+| `/api/snapshot` | POST | Take a manual snapshot |
+| `/api/revert` | POST | Revert to most recent snapshot |
+| `/api/snapshots` | GET | List available snapshots |
+
 ## Architecture
 
 ```
 src/living_slides/
   cli.py        — Click CLI: create, open, diff, adopt, verify, templates, presets, asset
   server.py     — aiohttp local server; on save, computes diff and appends to changelog history
+                  snapshot/revert system, chat bridge, image upload, selection pin
   differ.py     — HTML diff engine (text_edit, attribute_change, element_resized, element_moved,
                   slides_reordered, element_added, element_removed); recognizes data-oid as canonical
   history.py    — append-mode .changelog.history.jsonl + touched-set computation
@@ -159,7 +208,11 @@ src/living_slides/
   verify.py     — img/script/link/video/audio/source reference checker
   templates.py  — starter template + 3 visual presets (12 more available via skill references)
   assets.py     — matplotlib chart pipeline (bar / hbar / line / pie / scatter)
-  static/       — GrapesJS editor (loaded from CDN)
+  static/       — GrapesJS editor frontend
+    editor.html — toolbar, chat panel, editor shell
+    editor.js   — GrapesJS init, save/undo/redo/revert shortcuts, block resize,
+                  image paste/drag/upload, inline editing, overflow detection,
+                  auto-reload, selection hierarchy, chat integration
 
 skills/living-slides/
   SKILL.md                       — preserve + cascade rules + iteration checklist
